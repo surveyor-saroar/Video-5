@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Tap-to-Toggle Auto-Play AI & Smart Scanning (10 Scenes)</title>
+  <title>index.html - 9:16 Reel AI & Smart Scanning + Web Audio SFX</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --outer-bg: #111827;
+      --outer-bg: #070b14;
       --stage-bg: #111827;
       --card-bg: #ffffff;
       --accent-green: #0f9d76;
@@ -33,27 +33,36 @@
       overflow: hidden;
     }
 
+    /* পুরো স্ক্রিন জুড়ে ডার্ক ব্যাকগ্রাউন্ড */
     body {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      background-color: var(--outer-bg);
+      gap: 10px;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(15, 157, 118, 0.16), transparent 42%),
+        radial-gradient(circle at 82% 80%, rgba(34, 211, 238, 0.12), transparent 45%),
+        var(--outer-bg);
       font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
       color: var(--text-light);
-      padding: 16px;
+      padding: 12px;
     }
 
-    .stage {
+    /* ৯:১৬ ভার্টিক্যাল রিল স্টেজ */
+    .reel-stage {
       position: relative;
-      width: 100%;
-      max-width: 1040px;
-      aspect-ratio: 16 / 9;
-      border-radius: 20px;
+      height: min(83vh, 780px);
+      aspect-ratio: 9 / 16;
+      max-width: 94vw;
+      border-radius: 26px;
       overflow: hidden;
-      background-color: var(--stage-bg);
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.65);
+      background:
+        radial-gradient(circle at 50% 12%, rgba(15, 157, 118, 0.18), transparent 46%),
+        var(--stage-bg);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.78);
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -61,16 +70,16 @@
 
     .tap-indicator {
       position: absolute;
-      top: 16px;
-      right: 18px;
+      top: 14px;
+      right: 14px;
       z-index: 25;
-      background: rgba(15, 23, 42, 0.72);
+      background: rgba(15, 23, 42, 0.78);
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.18);
       color: #f9fafb;
-      padding: 5px 12px;
+      padding: 4px 11px;
       border-radius: 999px;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 700;
       opacity: 0;
       transform: translateY(-6px);
@@ -83,13 +92,15 @@
       transform: translateY(0);
     }
 
+    /* প্রতিটি সিন ভার্টিক্যাল লেআউটে সাজানো */
     .scene {
       position: absolute;
       inset: 0;
-      padding: 32px 44px 118px;
+      padding: 26px 20px 132px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
+      gap: 14px;
       opacity: 0;
       transform: scale(0.96);
       transition: opacity calc(var(--sync-duration) * 0.22) var(--ease-out),
@@ -103,47 +114,38 @@
       pointer-events: auto;
     }
 
-    .grid-2 {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 28px;
-      align-items: center;
-    }
-
     .stagger {
       opacity: 0;
-      transform: translateY(18px) translateX(-8px);
+      transform: translateY(16px);
       transition: opacity calc(var(--sync-duration) * 0.24) var(--ease-out),
                   transform calc(var(--sync-duration) * 0.30) var(--ease-out);
     }
 
     .scene.active .stagger {
       opacity: 1;
-      transform: translateY(0) translateX(0);
+      transform: translateY(0);
     }
 
     .badge {
+      align-self: flex-start;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(15, 157, 118, 0.2);
+      gap: 6px;
+      background: rgba(15, 157, 118, 0.22);
       border: 1px solid rgba(16, 185, 129, 0.45);
       color: #34d399;
       font-weight: 700;
-      padding: 5px 14px;
+      padding: 4px 12px;
       border-radius: 999px;
-      font-size: 0.88rem;
-      margin-bottom: 10px;
+      font-size: 0.8rem;
       transition-delay: calc(var(--sync-duration) * 0.03);
     }
 
     .hero-title {
-      font-size: clamp(1.7rem, 3vw, 2.55rem);
-      line-height: 1.24;
+      font-size: clamp(1.38rem, 3.1vh, 1.85rem);
+      line-height: 1.26;
       font-weight: 700;
       color: var(--text-light);
-      margin-bottom: 10px;
       transition-delay: calc(var(--sync-duration) * 0.08);
     }
 
@@ -175,10 +177,9 @@
     }
 
     .sub-copy {
-      font-size: 0.98rem;
+      font-size: 0.88rem;
       color: var(--text-muted-light);
-      line-height: 1.5;
-      margin-bottom: 16px;
+      line-height: 1.45;
       transition-delay: calc(var(--sync-duration) * 0.12);
     }
 
@@ -186,24 +187,26 @@
       position: relative;
       background: var(--card-bg);
       color: var(--text-dark);
-      border-radius: 18px;
-      padding: 18px 20px;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      border-radius: 16px;
+      padding: 14px 15px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
       overflow: hidden;
+      transition-delay: calc(var(--sync-duration) * 0.15);
     }
 
     .dark-popup {
       background: #1f2937;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       color: #f8fafc;
-      border-radius: 14px;
-      padding: 11px 16px;
+      border-radius: 13px;
+      padding: 9px 13px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+      font-size: 0.84rem;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.42);
       opacity: 0;
-      transform: translateY(14px) scale(0.95);
+      transform: translateY(12px) scale(0.95);
       transition: opacity calc(var(--sync-duration) * 0.24) var(--ease-out) calc(var(--sync-duration) * 0.72),
                   transform calc(var(--sync-duration) * 0.28) var(--ease-out) calc(var(--sync-duration) * 0.72);
     }
@@ -213,14 +216,15 @@
       transform: translateY(0) scale(1);
     }
 
+    /* স্ক্যান লেজার বিম */
     .scan-beam {
       position: absolute;
       left: 0;
       right: 0;
       top: 4%;
-      height: 4px;
+      height: 3.5px;
       background: linear-gradient(90deg, transparent, #0f9d76, #22d3ee, #0f9d76, transparent);
-      box-shadow: 0 0 16px rgba(34, 211, 238, 0.85);
+      box-shadow: 0 0 14px rgba(34, 211, 238, 0.9);
       opacity: 0;
     }
 
@@ -235,31 +239,32 @@
       100% { top: 94%; opacity: 0; }
     }
 
+    /* সিন ১ মেট্রিক্স ও ক্রস */
     .metrics-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      transition-delay: calc(var(--sync-duration) * 0.15);
+      gap: 10px;
+      transition-delay: calc(var(--sync-duration) * 0.18);
     }
 
     .metric-card {
       background: var(--card-bg);
       color: var(--text-dark);
-      border-radius: 14px;
-      padding: 11px 14px;
+      border-radius: 13px;
+      padding: 9px 11px;
     }
 
     .metric-top {
       display: flex;
       justify-content: space-between;
-      font-size: 0.88rem;
+      font-size: 0.8rem;
       font-weight: 700;
-      margin-bottom: 7px;
+      margin-bottom: 6px;
     }
 
     .progress-track {
       width: 100%;
-      height: 8px;
+      height: 7px;
       border-radius: 99px;
       background: #e2e8f0;
       overflow: hidden;
@@ -280,12 +285,12 @@
     .matrix-grid {
       display: grid;
       grid-template-columns: repeat(8, 1fr);
-      gap: 5px;
+      gap: 4px;
     }
 
     .matrix-dot {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 2px;
       background: #cbd5e1;
       transform: scale(0.6);
@@ -298,10 +303,10 @@
     }
 
     .skeleton-line {
-      height: 9px;
+      height: 8px;
       border-radius: 99px;
       background: #e2e8f0;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       transform: scaleX(0);
       transform-origin: left;
       transition: transform calc(var(--sync-duration) * 0.22) var(--ease-out);
@@ -320,8 +325,8 @@
     }
 
     .cross-line {
-      stroke-dasharray: 460;
-      stroke-dashoffset: 460;
+      stroke-dasharray: 420;
+      stroke-dashoffset: 420;
       transition: stroke-dashoffset calc(var(--sync-duration) * 0.35) var(--ease-out) calc(var(--sync-duration) * 0.36);
     }
 
@@ -329,66 +334,68 @@
       stroke-dashoffset: 0;
     }
 
+    /* সিন ২ ডকুমেন্ট ফ্রেম */
     .doc-frame {
       position: relative;
       border: 2px dashed #94a3b8;
-      border-radius: 14px;
-      padding: 16px;
+      border-radius: 12px;
+      padding: 13px;
       background: #f8fafc;
-      margin-bottom: 4px;
     }
 
     .corner {
       position: absolute;
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       border-color: #0f9d76;
       border-style: solid;
     }
-    .corner.tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-radius: 6px 0 0 0; }
-    .corner.tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; border-radius: 0 6px 0 0; }
-    .corner.bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; border-radius: 0 0 0 6px; }
-    .corner.br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-radius: 0 0 6px 0; }
+    .corner.tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-radius: 5px 0 0 0; }
+    .corner.tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; border-radius: 0 5px 0 0; }
+    .corner.bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; border-radius: 0 0 0 5px; }
+    .corner.br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-radius: 0 0 5px 0; }
 
+    /* সিন ৩ OCR */
     .ocr-box {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 10px;
-      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .ocr-pill {
       background: #f1f5f9;
-      padding: 12px;
-      border-radius: 12px;
-      font-size: 0.9rem;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.84rem;
       font-weight: 600;
     }
 
+    /* সিন ৪ চিপস */
     .chip-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 6px;
     }
 
     .chip {
-      background: #e6f7f2;
-      color: #0f9d76;
+      background: rgba(15, 157, 118, 0.22);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      color: #6ee7b7;
       font-weight: 700;
-      padding: 5px 12px;
+      padding: 4px 10px;
       border-radius: 999px;
-      font-size: 0.85rem;
+      font-size: 0.78rem;
     }
 
+    /* সিন ৫ হাব SVG */
     .hub-svg {
       width: 100%;
-      height: 215px;
+      height: 175px;
     }
 
     .hub-line {
-      stroke-dasharray: 160;
-      stroke-dashoffset: 160;
+      stroke-dasharray: 150;
+      stroke-dashoffset: 150;
       transition: stroke-dashoffset calc(var(--sync-duration) * 0.55) var(--ease-out) calc(var(--sync-duration) * 0.20);
     }
 
@@ -396,41 +403,45 @@
       stroke-dashoffset: 0;
     }
 
+    /* সিন ৬ টেবিল */
     .mini-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.84rem;
     }
 
     .mini-table td {
-      padding: 8px 6px;
+      padding: 7px 4px;
       border-bottom: 1px solid #e2e8f0;
     }
 
+    /* সিন ৭ কোড */
     .code-box {
       background: #0f172a;
       color: #38bdf8;
       font-family: monospace;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 0.86rem;
-      line-height: 1.5;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      line-height: 1.48;
     }
 
+    /* সিন ৮ চেকলিস্ট */
     .check-item {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 12px;
+      gap: 8px;
+      padding: 7px 10px;
       background: #f1f5f9;
-      border-radius: 10px;
-      margin-bottom: 8px;
+      border-radius: 9px;
+      margin-bottom: 7px;
       font-weight: 600;
-      font-size: 0.92rem;
+      font-size: 0.82rem;
     }
 
+    /* সিন ৯ শিল্ড */
     .shield-bar {
-      height: 10px;
+      height: 9px;
       border-radius: 999px;
       background: #e2e8f0;
       overflow: hidden;
@@ -448,29 +459,30 @@
       width: 100%;
     }
 
+    /* সিন ১০ সামারি */
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 12px;
+      gap: 8px;
     }
 
     .sum-tile {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 14px;
-      padding: 14px;
+      border-radius: 12px;
+      padding: 10px 6px;
       text-align: center;
     }
 
+    /* নিচ থেকে প্রায় ১ ইঞ্চি ওপরে কারাওকে ক্যাপশন বক্স */
     #bottom-caption {
       position: absolute;
       left: 50%;
-      bottom: clamp(56px, 1in, 104px);
+      bottom: clamp(46px, 0.85in, 86px);
       transform: translateX(-50%);
-      width: min(88%, 840px);
-      padding: 10px 20px;
-      border-radius: 14px;
+      width: 90%;
+      padding: 8px 12px;
+      border-radius: 13px;
       background: rgba(15, 23, 42, var(--caption-bg-alpha));
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.18);
@@ -478,20 +490,20 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      gap: 6px 8px;
+      gap: 4px 6px;
       z-index: 20;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
     }
 
     .cap-word {
       display: inline-block;
-      padding: 2px 7px;
-      border-radius: 6px;
-      font-size: clamp(0.98rem, 1.75vw, 1.25rem);
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-size: clamp(0.86rem, 1.65vh, 1.04rem);
       font-weight: 700;
       color: #ffffff;
       text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
-      transition: background-color 0.16s ease, color 0.16s ease, transform 0.18s var(--ease-out);
+      transition: background-color 0.15s ease, color 0.15s ease, transform 0.18s var(--ease-out);
     }
 
     .cap-word.spoken {
@@ -513,20 +525,20 @@
       transform: none;
     }
 
+    /* কন্ট্রোল ও প্রোগ্রেস বার */
     .hud-bar {
-      width: 100%;
-      max-width: 1040px;
+      width: min(94vw, 560px);
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       z-index: 30;
     }
 
     .progress-wrap {
       width: 100%;
-      height: 6px;
+      height: 5px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.15);
       overflow: hidden;
     }
 
@@ -542,39 +554,38 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
     .counter-badge {
       background: rgba(255, 255, 255, 0.1);
       color: #f9fafb;
-      padding: 6px 14px;
+      padding: 5px 11px;
       border-radius: 8px;
       font-weight: 700;
-      font-size: 0.95rem;
-      letter-spacing: 0.5px;
+      font-size: 0.85rem;
       font-variant-numeric: tabular-nums;
     }
 
     .btn-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
     .btn {
-      padding: 7px 14px;
+      padding: 5px 10px;
       border: none;
       border-radius: 8px;
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       background: #1f2937;
       color: #f9fafb;
       border: 1px solid rgba(255, 255, 255, 0.14);
@@ -598,283 +609,249 @@
 </head>
 <body>
 
-  <div class="stage" id="stage" title="টাচ/ক্লিক করলে অটো চালু বা বন্ধ হবে">
+  <!-- ৯:১৬ রিল স্টেজ -->
+  <div class="reel-stage" id="stage" title="টাচ/ক্লিক করলে অটো চালু বা বন্ধ হবে">
     <div class="tap-indicator" id="tapIndicator">▶ অটো চালু</div>
 
     <!-- সিন ০১ -->
     <section class="scene active" data-scene="0">
-      <div class="grid-2">
-        <div>
-          <span class="badge stagger">01 • AI Scan Revolution</span>
-          <h1 class="hero-title stagger">তুমি এখনো হাতে লিখে <span class="hl">১০টা লিংক</span> ঘাঁটো?</h1>
-          <p class="sub-copy stagger">এআই স্ক্যানিং প্রযুক্তিতে জটিল তথ্য ও ছবি এখন এক পলকেই পড়া ও বোঝা যায়।</p>
-          <div class="metrics-row stagger">
-            <div class="metric-card">
-              <div class="metric-top"><span>Scan Speed</span><span id="s1Speed">25%</span></div>
-              <div class="progress-track"><div class="progress-fill"></div></div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-top"><span>AI Accuracy</span><span id="s1Matrix">1x</span></div>
-              <div class="matrix-grid" id="matrixGrid"></div>
-            </div>
-          </div>
+      <span class="badge stagger">01 • AI Scan Revolution</span>
+      <h1 class="hero-title stagger">তুমি এখনো হাতে লিখে <span class="hl">১০টা লিংক</span> ঘাঁটো?</h1>
+      <p class="sub-copy stagger">এআই স্ক্যানিং প্রযুক্তিতে জটিল তথ্য ও ছবি এখন এক পলকেই পড়া ও বোঝা যায়।</p>
+
+      <div class="white-card stagger">
+        <div style="background:#f1f5f9; padding:7px 10px; border-radius:9px; font-weight:600; font-size:0.84rem; margin-bottom:10px;">
+          🔍 <span id="s1Typed"></span>
         </div>
-        <div class="stagger" style="display:flex; flex-direction:column; gap:12px;">
-          <div class="white-card">
-            <div style="background:#f1f5f9; padding:8px 12px; border-radius:10px; font-weight:600; font-size:0.9rem; margin-bottom:12px;">
-              🔍 <span id="s1Typed"></span>
-            </div>
-            <div class="skeleton-line" style="width:92%;"></div>
-            <div class="skeleton-line" style="width:76%;"></div>
-            <div class="skeleton-line" style="width:84%;"></div>
-            <svg class="cross-svg" viewBox="0 0 400 180">
-              <line class="cross-line" x1="55" y1="20" x2="345" y2="160" stroke="#0f9d76" stroke-width="9" stroke-linecap="round" />
-              <line class="cross-line" x1="345" y1="20" x2="55" y2="160" stroke="#0f172a" stroke-width="9" stroke-linecap="round" />
-            </svg>
-          </div>
-          <div class="dark-popup">
-            <span>⚡ Smart AI Scan Ready</span>
-            <strong style="color:#ffd24c;">10x Faster</strong>
-          </div>
+        <div class="skeleton-line" style="width:92%;"></div>
+        <div class="skeleton-line" style="width:76%;"></div>
+        <div class="skeleton-line" style="width:84%; margin-bottom:0;"></div>
+        <svg class="cross-svg" viewBox="0 0 320 130">
+          <line class="cross-line" x1="40" y1="16" x2="280" y2="114" stroke="#0f9d76" stroke-width="8" stroke-linecap="round" />
+          <line class="cross-line" x1="280" y1="16" x2="40" y2="114" stroke="#0f172a" stroke-width="8" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <div class="metrics-row stagger">
+        <div class="metric-card">
+          <div class="metric-top"><span>Scan Speed</span><span id="s1Speed">25%</span></div>
+          <div class="progress-track"><div class="progress-fill"></div></div>
         </div>
+        <div class="metric-card">
+          <div class="metric-top"><span>AI Accuracy</span><span id="s1Matrix">1x</span></div>
+          <div class="matrix-grid" id="matrixGrid"></div>
+        </div>
+      </div>
+
+      <div class="dark-popup">
+        <span>⚡ Smart AI Scan Ready</span>
+        <strong style="color:#ffd24c;">10x Faster</strong>
       </div>
     </section>
 
     <!-- সিন ০২ -->
     <section class="scene" data-scene="1">
-      <div class="grid-2">
-        <div>
-          <span class="badge stagger">02 • Smart Document Scan</span>
-          <h1 class="hero-title stagger">যেকোনো কাগজ বা ছবি <span class="hl">স্ক্যান করো</span> এক ক্লিকে</h1>
-          <p class="sub-copy stagger">অস্পষ্ট নোট, বইয়ের পাতা কিংবা ফর্ম—এআই অটোমেটিক বর্ডার ধরে পরিষ্কার করে নেয়।</p>
+      <span class="badge stagger">02 • Smart Document Scan</span>
+      <h1 class="hero-title stagger">যেকোনো কাগজ বা ছবি <span class="hl">স্ক্যান করো</span> এক ক্লিকে</h1>
+      <p class="sub-copy stagger">অস্পষ্ট নোট, বইয়ের পাতা কিংবা ফর্ম—এআই অটোমেটিক বর্ডার ধরে পরিষ্কার করে নেয়।</p>
+
+      <div class="white-card stagger">
+        <div class="doc-frame">
+          <span class="corner tl"></span><span class="corner tr"></span>
+          <span class="corner bl"></span><span class="corner br"></span>
+          <div class="scan-beam"></div>
+          <strong style="font-size:0.88rem;">📄 Land Survey & Office Note</strong>
+          <p style="font-size:0.8rem; color:#475569; margin-top:5px;">খতিয়ান: ২৪৫ • দাগ: ১০৮৯ • জমি: ৪৫ শতাংশ</p>
         </div>
-        <div class="stagger" style="display:flex; flex-direction:column; gap:12px;">
-          <div class="white-card">
-            <div class="doc-frame">
-              <span class="corner tl"></span><span class="corner tr"></span>
-              <span class="corner bl"></span><span class="corner br"></span>
-              <div class="scan-beam"></div>
-              <strong style="font-size:0.95rem;">📄 Land Survey & Office Note</strong>
-              <p style="font-size:0.86rem; color:#475569; margin-top:6px;">খতিয়ান নম্বর: ২৪৫ • দাগ নম্বর: ১০৮৯ • মোট জমি: ৪৫ শতাংশ</p>
-            </div>
-          </div>
-          <div class="dark-popup">
-            <span>📐 Auto Edge & Clarity Detected</span>
-            <strong style="color:#34d399;">HD Clean</strong>
-          </div>
-        </div>
+      </div>
+
+      <div class="dark-popup">
+        <span>📐 Auto Edge & Clarity Detected</span>
+        <strong style="color:#34d399;">HD Clean</strong>
       </div>
     </section>
 
     <!-- সিন ০৩ -->
     <section class="scene" data-scene="2">
-      <div class="grid-2">
-        <div>
-          <span class="badge stagger">03 • Instant OCR Extraction</span>
-          <h1 class="hero-title stagger">ছবির লেখা মুহূর্তেই <span class="hl">এডিটেবল টেক্সট</span> হয়ে যায়</h1>
-          <p class="sub-copy stagger">নতুন করে টাইপ করার ঝামেলা নেই; বাংলা ও ইংরেজি লেখা সরাসরি কপি ও এডিট করা যায়।</p>
+      <span class="badge stagger">03 • Instant OCR Extraction</span>
+      <h1 class="hero-title stagger">ছবির লেখা মুহূর্তেই <span class="hl">এডিটেবল টেক্সট</span> হয়ে যায়</h1>
+      <p class="sub-copy stagger">নতুন করে টাইপ করার ঝামেলা নেই; বাংলা ও ইংরেজি লেখা সরাসরি কপি ও এডিট করা যায়।</p>
+
+      <div class="white-card stagger">
+        <div class="scan-beam"></div>
+        <div class="ocr-box">
+          <div class="ocr-pill">🖼️ স্ক্যান করা ছবি: <span style="color:#64748b;">"ডিজিটাল বাংলাদেশ"</span></div>
+          <div class="ocr-pill" style="background:#e6f7f2; color:#0f172a;">✍️ কপিযোগ্য টেক্সট: <strong style="color:#0f9d76;">"ডিজিটাল বাংলাদেশ"</strong></div>
         </div>
-        <div class="stagger" style="display:flex; flex-direction:column; gap:12px;">
-          <div class="white-card">
-            <div class="scan-beam"></div>
-            <div class="ocr-box">
-              <div class="ocr-pill">🖼️ স্ক্যান করা ছবি<br><span style="font-size:0.8rem; color:#64748b;">"ডিজিটাল বাংলাদেশ"</span></div>
-              <div style="font-size:1.3rem; font-weight:800; color:#0f9d76;">➔</div>
-              <div class="ocr-pill" style="background:#e6f7f2; color:#0f172a;">✍️ কপিযোগ্য টেক্সট<br><span style="font-size:0.8rem; color:#0f9d76;">"ডিজিটাল বাংলাদেশ"</span></div>
-            </div>
-          </div>
-          <div class="dark-popup">
-            <span>🔤 Bangla & English OCR Active</span>
-            <strong style="color:#ffd24c;">99.4% Match</strong>
-          </div>
-        </div>
+      </div>
+
+      <div class="dark-popup">
+        <span>🔤 Bangla & English OCR Active</span>
+        <strong style="color:#ffd24c;">99.4% Match</strong>
       </div>
     </section>
 
     <!-- সিন ০৪ -->
     <section class="scene" data-scene="3">
-      <div class="grid-2">
-        <div>
-          <span class="badge stagger">04 • Live Translate & Summary</span>
-          <h1 class="hero-title stagger">বিদেশি ভাষা স্ক্যান করে <span class="hl">বাংলায় বুঝে</span> নাও</h1>
-          <p class="sub-copy stagger">সাইনবোর্ড, মেনু বা বড় রিপোর্ট স্ক্যান করলেই এআই মূল সারমর্ম বাংলায় গুছিয়ে দেয়।</p>
-          <div class="chip-list stagger">
-            <span class="chip">🌐 ১০০+ ভাষা</span>
-            <span class="chip">📝 ৩ লাইনে সারসংক্ষেপ</span>
-            <span class="chip">⚡ রিয়েল-টাইম</span>
-          </div>
+      <span class="badge stagger">04 • Live Translate & Summary</span>
+      <h1 class="hero-title stagger">বিদেশি ভাষা স্ক্যান করে <span class="hl">বাংলায় বুঝে</span> নাও</h1>
+      <p class="sub-copy stagger">সাইনবোর্ড, মেনু বা বড় রিপোর্ট স্ক্যান করলেই এআই মূল সারমর্ম বাংলায় গুছিয়ে দেয়।</p>
+      <div class="chip-list stagger">
+        <span class="chip">🌐 ১০০+ ভাষা</span>
+        <span class="chip">📝 সারসংক্ষেপ</span>
+        <span class="chip">⚡ রিয়েল-টাইম</span>
+      </div>
+
+      <div class="white-card stagger">
+        <div class="scan-beam"></div>
+        <p style="font-size:0.78rem; color:#64748b;">Scanned English Text:</p>
+        <p style="font-weight:700; font-size:0.86rem; margin:3px 0 8px;">"AI vision extracts meaning in milliseconds."</p>
+        <div style="background:#fef9c3; padding:8px 10px; border-radius:9px; font-weight:700; font-size:0.82rem;">
+          বাংলা অর্থ: "এআই ভিশন মুহূর্তেই মূল অর্থ বের করে আনে।"
         </div>
-        <div class="stagger" style="display:flex; flex-direction:column; gap:12px;">
-          <div class="white-card">
-            <div class="scan-beam"></div>
-            <p style="font-size:0.85rem; color:#64748b;">Scanned English Paragraph:</p>
-            <p style="font-weight:700; margin:4px 0 10px;">"AI vision extracts meaning in milliseconds."</p>
-            <div style="background:#fef9c3; padding:10px 12px; border-radius:10px; font-weight:700; font-size:0.9rem;">
-              বাংলা অর্থ: "এআই ভিশন কয়েক মিলিসেকেন্ডেই মূল অর্থ বের করে আনে।"
-            </div>
-          </div>
-          <div class="dark-popup">
-            <span>🌍 Instant Translation & Summary</span>
-            <strong style="color:#34d399;">Done</strong>
-          </div>
-        </div>
+      </div>
+
+      <div class="dark-popup">
+        <span>🌍 Instant Translation & Summary</span>
+        <strong style="color:#34d399;">Done</strong>
       </div>
     </section>
 
     <!-- সিন ০৫ -->
     <section class="scene" data-scene="4">
-      <div class="grid-2">
-        <div>
-          <span class="badge stagger">05 • Multi-AI Vision Hub</span>
-          <h1 class="hero-title stagger">এক স্ক্যানেই যুক্ত হয় <span class="hl">সেরা এআই</span> মডেলগুলো</h1>
-          <p class="sub-copy stagger">ছবি বিশ্লেষণ, যুক্তি ও রেফারেন্সের জন্য একাধিক এআই ইঞ্জিন একসাথে কাজ করে।</p>
-        </div>
-        <div class="stagger" style="display:flex; flex-direction:column; gap:12px;">
-          <div class="white-card" style="padding:12px;">
-            <svg class="hub-svg" viewBox="0 0 360 200">
-              <line class="hub-line" x1="180" y1="100" x2="65" y2="40" stroke="#0f9d76" stroke-width="3" />
-              <line class="hub-line" x1="180" y1="100" x2="295" y2="40" stroke="#0f9d76" stroke-width="3" />
-              <line class="hub-line" x1="180" y1="100" x2="65" y2="160" stroke="#0f9d76" stroke-width="3" />
-              <line class="hub-line" x1="180" y1="100" x2="295" y2="160" stroke="#0f9d76" stroke-width="3" />
+      <span class="badge stagger">05 • Multi-AI Vision Hub</span>
+      <h1 class="hero-title stagger">এক স্ক্যানেই যুক্ত হয় <span class="hl">সেরা এআই</span> মডেলগুলো</h1>
+      <p class="sub-copy stagger">ছবি বিশ্লেষণ, যুক্তি ও রেফারেন্সের জন্য একাধিক এআই ইঞ্জিন একসাথে কাজ করে।</p>
 
-              <rect x="20" y="22" width="90" height="34" rx="10" fill="#0f172a" />
-              <text x="65" y="44" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">Gemini</text>
+      <div class="white-card stagger" style="padding:10px;">
+        <svg class="hub-svg" viewBox="0 0 320 170">
+          <line class="hub-line" x1="160" y1="85" x2="58" y2="34" stroke="#0f9d76" stroke-width="3" />
+          <line class="hub-line" x1="160" y1="85" x2="262" y2="34" stroke="#0f9d76" stroke-width="3" />
+          <line class="hub-line" x1="160" y1="85" x2="58" y2="136" stroke="#0f9d76" stroke-width="3" />
+          <line class="hub-line" x1="160" y1="85" x2="262" y2="136" stroke="#0f9d76" stroke-width="3" />
 
-              <rect x="250" y="22" width="90" height="34" rx="10" fill="#0f172a" />
-              <text x="295" y="44" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">ChatGPT</text>
+          <rect x="18" y="18" width="80" height="30" rx="9" fill="#0f172a" />
+          <text x="58" y="37" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">Gemini</text>
 
-              <rect x="20" y="142" width="90" height="34" rx="10" fill="#0f172a" />
-              <text x="65" y="164" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">Claude</text>
+          <rect x="222" y="18" width="80" height="30" rx="9" fill="#0f172a" />
+          <text x="262" y="37" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">ChatGPT</text>
 
-              <rect x="250" y="142" width="90" height="34" rx="10" fill="#0f172a" />
-              <text x="295" y="164" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">OCR Engine</text>
+          <rect x="18" y="122" width="80" height="30" rx="9" fill="#0f172a" />
+          <text x="58" y="141" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">Claude</text>
 
-              <circle cx="180" cy="100" r="36" fill="#0f9d76" />
-              <text x="180" y="104" fill="#fff" font-size="13" font-weight="800" text-anchor="middle">AI SCAN</text>
-            </svg>
-          </div>
-          <div class="dark-popup">
-            <span>🔗 4 Vision Engines Connected</span>
-            <strong style="color:#ffd24c;">Synced</strong>
-          </div>
-        </div>
+          <rect x="222" y="122" width="80" height="30" rx="9" fill="#0f172a" />
+          <text x="262" y="141" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">OCR Engine</text>
+
+          <circle cx="160" cy="85" r="32" fill="#0f9d76" />
+          <text x="160" y="89" fill="#fff" font-size="12" font-weight="800" text-anchor="middle">AI SCAN</text>
+        </svg>
+      </div>
+
+      <div class="dark-popup">
+        <span>🔗 4 Vision Engines Connected</span>
+        <strong style="color:#ffd24c;">Synced</strong>
       </div>
     </section>
 
     <!-- সিন ০৬ -->
     <section class="scene" data-scene="5">
-      <div class="grid-2">
-        <div>
-          <span class="badge stagger">06 • Smart Receipt & Data</span>
-          <h1 class="hero-title stagger">বিল, রিসিট ও টেবিল <span class="hl">অটো হিসাব</span> করে নেয়</h1>
-          <p class="sub-copy stagger">কাগজের ভাউচার বা লম্বা হিসাবের ছবি তুললেই এআই সারি ও যোগফল আলাদা করে টেবিলে সাজায়।</p>
-        </div>
-        <div class="stagger" style="display:flex; flex-direction:column; gap:12px;">
-          <div class="white-card">
-            <div class="scan-beam"></div>
-            <table class="mini-table">
-              <tr><td><strong>আইটেম ০১:</strong> গ্রাফিক্স ডিজাইন</td><td style="text-align:right; font-weight:700;">৳ ২,৫০০</td></tr>
-              <tr><td><strong>আইটেম ০২:</strong> মোশন ভিডিও</td><td style="text-align:right; font-weight:700;">৳ ৩,৫০০</td></tr>
-              <tr style="background:#e6f7f2;"><td><strong>মোট অটো-হিসাব:</strong></td><td style="text-align:right; font-weight:800; color:#0f9d76;">৳ ৬,০০০</td></tr>
-            </table>
-          </div>
-          <div class="dark-popup">
-            <span>📊 Export Ready to Excel / Sheet</span>
-            <strong style="color:#34d399;">Auto Sum</strong>
-          </div>
-        </div>
+      <span class="badge stagger">06 • Smart Receipt & Data</span>
+      <h1 class="hero-title stagger">বিল, রিসিট ও টেবিল <span class="hl">অটো হিসাব</span> করে নেয়</h1>
+      <p class="sub-copy stagger">ভাউচার বা লম্বা হিসাবের ছবি তুললেই এআই সারি ও যোগফল আলাদা করে টেবিলে সাজায়।</p>
+
+      <div class="white-card stagger">
+        <div class="scan-beam"></div>
+        <table class="mini-table">
+          <tr><td><strong>০১.</strong> গ্রাফিক্স ডিজাইন</td><td style="text-align:right; font-weight:700;">৳ ২,৫০০</td></tr>
+          <tr><td><strong>০২.</strong> মোশন ভিডিও</td><td style="text-align:right; font-weight:700;">৳ ৩,৫০০</td></tr>
+          <tr style="background:#e6f7f2;"><td><strong>মোট অটো-হিসাব:</strong></td><td style="text-align:right; font-weight:800; color:#0f9d76;">৳ ৬,০০০</td></tr>
+        </table>
+      </div>
+
+      <div class="dark-popup">
+        <span>📊 Export Ready to Excel / Sheet</span>
+        <strong style="color:#34d399;">Auto Sum</strong>
       </div>
     </section>
 
     <!-- সিন ০৭ -->
     <section class="scene" data-scene="6">
-      <div class="grid-2">
-        <div>
-          <span class="badge stagger">07 • Code & Chart Vision</span>
-          <h1 class="hero-title stagger">স্ক্রিনশট থেকেই <span class="hl">কোড ও চার্ট</span> ব্যাখ্যা করে</h1>
-          <p class="sub-copy stagger">যেকোনো এরর স্ক্রিনশট বা জটিল গ্রাফ স্ক্যান করলে এআই সমাধান ও কোড লিখে দেয়।</p>
+      <span class="badge stagger">07 • Code & Chart Vision</span>
+      <h1 class="hero-title stagger">স্ক্রিনশট থেকেই <span class="hl">কোড ও চার্ট</span> ব্যাখ্যা করে</h1>
+      <p class="sub-copy stagger">যেকোনো এরর স্ক্রিনশট বা জটিল গ্রাফ স্ক্যান করলে এআই সমাধান ও কোড লিখে দেয়।</p>
+
+      <div class="white-card stagger">
+        <div class="scan-beam"></div>
+        <div class="code-box">
+          // AI Detected Fix:<br>
+          const scanResult = await ai.scan(img);<br>
+          console.log("Solved:", scanResult.ok);
         </div>
-        <div class="stagger" style="display:flex; flex-direction:column; gap:12px;">
-          <div class="white-card">
-            <div class="scan-beam"></div>
-            <div class="code-box">
-              // AI Detected Fix:<br>
-              const scanResult = await ai.scan(image);<br>
-              console.log("Error Solved:", scanResult.ok);
-            </div>
-          </div>
-          <div class="dark-popup">
-            <span>💻 Bug Fixed & Chart Analyzed</span>
-            <strong style="color:#ffd24c;">Instant Code</strong>
-          </div>
-        </div>
+      </div>
+
+      <div class="dark-popup">
+        <span>💻 Bug Fixed & Chart Analyzed</span>
+        <strong style="color:#ffd24c;">Instant Code</strong>
       </div>
     </section>
 
     <!-- সিন ০৮ -->
     <section class="scene" data-scene="7">
-      <div class="grid-2">
-        <div>
-          <span class="badge stagger">08 • Source & Fact Check</span>
-          <h1 class="hero-title stagger">প্রতিটি তথ্যের সাথে <span class="hl">সোর্স ও প্রমাণ</span> যাচাই</h1>
-          <p class="sub-copy stagger">স্ক্যান করা পণ্য, খবর বা তথ্য আসল কি না—এআই সোর্স মিলিয়ে নির্ভরযোগ্য উত্তর দেয়।</p>
-        </div>
-        <div class="stagger" style="display:flex; flex-direction:column; gap:12px;">
-          <div class="white-card">
-            <div class="check-item">✅ <span style="flex:1;">সোর্স রেফারেন্স যাচাইকৃত</span><strong style="color:#0f9d76;">Verified</strong></div>
-            <div class="check-item">✅ <span style="flex:1;">ডুপ্লিকেট ও ভুল তথ্য ফিল্টার</span><strong style="color:#0f9d76;">Clean</strong></div>
-            <div class="check-item" style="margin-bottom:0;">✅ <span style="flex:1;">সরাসরি রেফারেন্স লিংক যুক্ত</span><strong style="color:#0f9d76;">Ready</strong></div>
-          </div>
-          <div class="dark-popup">
-            <span>🛡️ Trusted Reference Check</span>
-            <strong style="color:#34d399;">100% Clear</strong>
-          </div>
-        </div>
+      <span class="badge stagger">08 • Source & Fact Check</span>
+      <h1 class="hero-title stagger">প্রতিটি তথ্যের সাথে <span class="hl">সোর্স ও প্রমাণ</span> যাচাই</h1>
+      <p class="sub-copy stagger">স্ক্যান করা পণ্য, খবর বা তথ্য আসল কি না—এআই সোর্স মিলিয়ে নির্ভরযোগ্য উত্তর দেয়।</p>
+
+      <div class="white-card stagger">
+        <div class="check-item">✅ <span style="flex:1;">সোর্স রেফারেন্স যাচাইকৃত</span><strong style="color:#0f9d76;">Verified</strong></div>
+        <div class="check-item">✅ <span style="flex:1;">ভুল তথ্য অটো ফিল্টার</span><strong style="color:#0f9d76;">Clean</strong></div>
+        <div class="check-item" style="margin-bottom:0;">✅ <span style="flex:1;">সরাসরি রেফারেন্স লিংক</span><strong style="color:#0f9d76;">Ready</strong></div>
+      </div>
+
+      <div class="dark-popup">
+        <span>🛡️ Trusted Reference Check</span>
+        <strong style="color:#34d399;">100% Clear</strong>
       </div>
     </section>
 
     <!-- সিন ০৯ -->
     <section class="scene" data-scene="8">
-      <div class="grid-2">
-        <div>
-          <span class="badge stagger">09 • Encrypted AI Security</span>
-          <h1 class="hero-title stagger">আপনার স্ক্যান করা তথ্য <span class="hl">সম্পূর্ণ নিরাপদ</span> থাকে</h1>
-          <p class="sub-copy stagger">এনক্রিপ্টেড প্রসেসিংয়ের মাধ্যমে ব্যক্তিগত নথি সুরক্ষিত রেখে দ্রুত ফলাফল তৈরি হয়।</p>
+      <span class="badge stagger">09 • Encrypted AI Security</span>
+      <h1 class="hero-title stagger">আপনার স্ক্যান করা তথ্য <span class="hl">সম্পূর্ণ নিরাপদ</span> থাকে</h1>
+      <p class="sub-copy stagger">এনক্রিপ্টেড প্রসেসিংয়ের মাধ্যমে ব্যক্তিগত নথি সুরক্ষিত রেখে দ্রুত ফলাফল তৈরি হয়।</p>
+
+      <div class="white-card stagger">
+        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.86rem;">
+          <span>🔒 End-to-End Encryption</span>
+          <span style="color:#0f9d76;">Active</span>
         </div>
-        <div class="stagger" style="display:flex; flex-direction:column; gap:12px;">
-          <div class="white-card">
-            <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.95rem;">
-              <span>🔒 End-to-End Encryption</span>
-              <span style="color:#0f9d76;">Active</span>
-            </div>
-            <div class="shield-bar"><div class="shield-fill"></div></div>
-            <p style="font-size:0.85rem; color:#64748b; margin-top:10px;">কাজ শেষে অস্থায়ী ফাইল স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়।</p>
-          </div>
-          <div class="dark-popup">
-            <span>🔐 Privacy Protection Enabled</span>
-            <strong style="color:#ffd24c;">Secure</strong>
-          </div>
-        </div>
+        <div class="shield-bar"><div class="shield-fill"></div></div>
+        <p style="font-size:0.78rem; color:#64748b; margin-top:8px;">কাজ শেষে অস্থায়ী ফাইল স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়।</p>
+      </div>
+
+      <div class="dark-popup">
+        <span>🔐 Privacy Protection Enabled</span>
+        <strong style="color:#ffd24c;">Secure</strong>
       </div>
     </section>
 
     <!-- সিন ১০ -->
-    <section class="scene" data-scene="9">
-      <div style="width:100%; text-align:center;">
-        <span class="badge stagger">10 • Future of AI Scanning</span>
-        <h1 class="hero-title stagger">এআই স্ক্যানিং দিয়ে <span class="hl">কাজের গতি</span> বাড়ান আজই</h1>
-        <p class="sub-copy stagger" style="max-width:640px; margin:0 auto 14px;">সময় বাঁচান, নির্ভুল তথ্য পান এবং স্মার্ট প্রযুক্তির সাথে নিজেকে এগিয়ে রাখুন।</p>
-        <div class="summary-grid stagger">
-          <div class="sum-tile"><strong style="font-size:1.3rem; color:#ffd24c;">১০x</strong><div style="font-size:0.88rem; color:#cbd5e1; margin-top:4px;">দ্রুত ডাটা স্ক্যান</div></div>
-          <div class="sum-tile"><strong style="font-size:1.3rem; color:#34d399;">৯৯%</strong><div style="font-size:0.88rem; color:#cbd5e1; margin-top:4px;">সঠিক টেক্সট ও তথ্য</div></div>
-          <div class="sum-tile"><strong style="font-size:1.3rem; color:#22d3ee;">১ ক্লিক</strong><div style="font-size:0.88rem; color:#cbd5e1; margin-top:4px;">স্মার্ট সমাধান</div></div>
-        </div>
+    <section class="scene" data-scene="9" style="text-align:center;">
+      <span class="badge stagger" style="align-self:center;">10 • Future of AI Scanning</span>
+      <h1 class="hero-title stagger">এআই স্ক্যানিং দিয়ে <span class="hl">কাজের গতি</span> বাড়ান আজই</h1>
+      <p class="sub-copy stagger">সময় বাঁচান, নির্ভুল তথ্য পান এবং স্মার্ট প্রযুক্তির সাথে নিজেকে এগিয়ে রাখুন।</p>
+
+      <div class="summary-grid stagger">
+        <div class="sum-tile"><strong style="font-size:1.15rem; color:#ffd24c;">১০x</strong><div style="font-size:0.76rem; color:#cbd5e1; margin-top:3px;">দ্রুত স্ক্যান</div></div>
+        <div class="sum-tile"><strong style="font-size:1.15rem; color:#34d399;">৯৯%</strong><div style="font-size:0.76rem; color:#cbd5e1; margin-top:3px;">সঠিক তথ্য</div></div>
+        <div class="sum-tile"><strong style="font-size:1.15rem; color:#22d3ee;">১ ক্লিক</strong><div style="font-size:0.76rem; color:#cbd5e1; margin-top:3px;">স্মার্ট সমাধান</div></div>
       </div>
     </section>
 
+    <!-- নিচ থেকে প্রায় ১ ইঞ্চি ওপরে কারাওকে ক্যাপশন -->
     <div id="bottom-caption" aria-live="polite"></div>
   </div>
 
+  <!-- প্রোগ্রেস বার ও কন্ট্রোল বাটন -->
   <div class="hud-bar">
     <div class="progress-wrap">
       <div class="progress-bar" id="progressBar"></div>
@@ -884,9 +861,10 @@
       <span class="counter-badge" id="counter">01 / 10</span>
 
       <div class="btn-group">
+        <button class="btn active-toggle" id="soundBtn" type="button">🔊 সাউন্ড: চালু</button>
         <button class="btn active-toggle" id="autoPlayBtn" type="button">▶ অটো: চালু</button>
         <button class="btn active-toggle" id="highlightBtn" type="button">✨ হাইলাইট: চালু</button>
-        <button class="btn" id="dropperBtn" type="button">💧 ড্রপার রঙ</button>
+        <button class="btn" id="dropperBtn" type="button">💧 রঙ</button>
         <input type="color" id="colorPicker" class="dropper-input" value="#ffd24c" />
         <button class="btn primary" id="replayBtn" type="button">↻ Replay</button>
       </div>
@@ -917,11 +895,71 @@
       return Math.max(1500, words.length * basePerWord + punctuationPause);
     }
 
+    // Web Audio API সাউন্ড ইঞ্জিন (কোনো এক্সটারনাল অডিও ফাইল ছাড়াই নিখুঁত SFX)
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function ensureAudioCtx() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+    }
+
+    function playSfx(type) {
+      if (!soundEnabled) return;
+      ensureAudioCtx();
+      if (!audioCtx || audioCtx.state !== 'running') return;
+
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'whoosh') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(190, now);
+        osc.frequency.exponentialRampToValueAtTime(520, now + 0.16);
+        gain.gain.setValueAtTime(0.055, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.start(now);
+        osc.stop(now + 0.19);
+      } else if (type === 'scan') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(640, now);
+        osc.frequency.exponentialRampToValueAtTime(1180, now + 0.35);
+        gain.gain.setValueAtTime(0.032, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+        osc.start(now);
+        osc.stop(now + 0.39);
+      } else if (type === 'pop') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(520, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.11);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+        osc.start(now);
+        osc.stop(now + 0.14);
+      } else if (type === 'tick') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(760, now);
+        gain.gain.setValueAtTime(0.018, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        osc.start(now);
+        osc.stop(now + 0.045);
+      }
+    }
+
     const stageEl = document.getElementById('stage');
     const tapIndicator = document.getElementById('tapIndicator');
     const bottomCaption = document.getElementById('bottom-caption');
     const counterEl = document.getElementById('counter');
     const progressBar = document.getElementById('progressBar');
+    const soundBtn = document.getElementById('soundBtn');
     const autoPlayBtn = document.getElementById('autoPlayBtn');
     const replayBtn = document.getElementById('replayBtn');
     const highlightBtn = document.getElementById('highlightBtn');
@@ -940,7 +978,7 @@
     let nextSceneTimer = null;
     let typingTimer = null;
     let indicatorTimer = null;
-    let dotTimers = [];
+    let sceneTimers = [];
 
     const totalDots = 24;
     for (let i = 0; i < totalDots; i++) {
@@ -954,8 +992,8 @@
       clearTimeout(wordTimer);
       clearTimeout(nextSceneTimer);
       clearInterval(typingTimer);
-      dotTimers.forEach(t => clearTimeout(t));
-      dotTimers = [];
+      sceneTimers.forEach(t => clearTimeout(t));
+      sceneTimers = [];
     }
 
     function showTapStatus(text) {
@@ -976,6 +1014,7 @@
     }
 
     function toggleAutoPlay(notifyScreen = true) {
+      ensureAudioCtx();
       isAutoPlaying = !isAutoPlaying;
       syncAutoPlayUI(notifyScreen);
       if (isAutoPlaying) {
@@ -1011,7 +1050,7 @@
           if (idx >= text.length) clearInterval(typingTimer);
         }, charInterval);
       }, delayMs);
-      dotTimers.push(t);
+      sceneTimers.push(t);
     }
 
     function updateProgress(stepIdx, wordRatio = 0) {
@@ -1054,6 +1093,7 @@
 
         if (wIdx < wordSpans.length) {
           wordSpans[wIdx].classList.add('active-word');
+          playSfx('tick');
           updateProgress(stepIdx, (wIdx + 1) / wordSpans.length);
           wIdx++;
           wordTimer = setTimeout(stepWord, intervalMs);
@@ -1082,7 +1122,7 @@
         const t = setTimeout(() => {
           dot.classList.add('on');
         }, dotStartMs + i * dotStepMs);
-        dotTimers.push(t);
+        sceneTimers.push(t);
       });
     }
 
@@ -1093,6 +1133,11 @@
       const syncMs = estimateVoiceDurationMs(line);
 
       document.documentElement.style.setProperty('--sync-duration', `${(syncMs / 1000).toFixed(2)}s`);
+
+      // সিন ট্রানজিশন, স্ক্যান লেজার ও পপ-আপের সাউন্ড সিঙ্কিং
+      playSfx('whoosh');
+      sceneTimers.push(setTimeout(() => playSfx('scan'), Math.round(syncMs * 0.15)));
+      sceneTimers.push(setTimeout(() => playSfx('pop'), Math.round(syncMs * 0.72)));
 
       scenes.forEach((sc, i) => {
         sc.classList.remove('active');
@@ -1108,9 +1153,23 @@
       renderKaraokeSynced(line, currentStep, syncMs);
     }
 
-    // স্ক্রিন (#stage)-এ টাচ বা ক্লিক করলে অটো চালু/বন্ধ হবে
+    // প্রথম ইউজার ইন্টারঅ্যাকশনে ব্রাউজার অডিও আনলক
+    ['pointerdown', 'keydown'].forEach(evt => {
+      window.addEventListener(evt, ensureAudioCtx, { once: true });
+    });
+
+    // রিল স্ক্রিনে টাচ বা ক্লিক করলে অটো চালু/বন্ধ হবে
     stageEl.addEventListener('click', () => {
       toggleAutoPlay(true);
+    });
+
+    soundBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      ensureAudioCtx();
+      soundEnabled = !soundEnabled;
+      soundBtn.classList.toggle('active-toggle', soundEnabled);
+      soundBtn.textContent = soundEnabled ? '🔊 সাউন্ড: চালু' : '🔇 সাউন্ড: বন্ধ';
+      if (soundEnabled) playSfx('pop');
     });
 
     autoPlayBtn.addEventListener('click', (e) => {
@@ -1120,6 +1179,7 @@
 
     replayBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      ensureAudioCtx();
       isAutoPlaying = true;
       syncAutoPlayUI(false);
       goToScene(0);
