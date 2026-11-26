@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Borderless 9:16 Reel (Animation SFX Only)</title>
+  <title>index.html - Borderless 9:16 Reel (0.5s Slide/Wipe Cut)</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -18,6 +18,8 @@
       --text-dark: #0f172a;
       --caption-bg-alpha: 0.24;
       --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      --wipe-ease: cubic-bezier(0.77, 0, 0.175, 1);
+      --wipe-duration: 0.5s;
       --sync-duration: 2.2s;
     }
 
@@ -95,6 +97,7 @@
       transform: translateY(0);
     }
 
+    /* ০.৫ সেকেন্ডের স্লাইড / ওয়াইপ কাট (Slide / Wipe Cut) */
     .scene {
       position: absolute;
       inset: 0;
@@ -104,16 +107,82 @@
       justify-content: center;
       gap: 14px;
       opacity: 0;
-      transform: scale(0.96);
-      transition: opacity calc(var(--sync-duration) * 0.22) var(--ease-out),
-                  transform calc(var(--sync-duration) * 0.28) var(--ease-out);
+      z-index: 1;
+      transform: translateX(100%);
+      clip-path: inset(0 0 0 100%);
+      pointer-events: none;
+      will-change: transform, clip-path;
+    }
+
+    /* প্রথম লোডে কোনো ওয়াইপ ছাড়াই দেখানোর জন্য */
+    .scene.instant-active {
+      opacity: 1;
+      z-index: 3;
+      transform: translateX(0);
+      clip-path: inset(0 0 0 0);
+      pointer-events: auto;
+    }
+
+    /* পরের শট ০.৫ সেকেন্ডে স্লাইড ও ওয়াইপ হয়ে ঢুকবে */
+    .scene.active {
+      opacity: 1;
+      z-index: 4;
+      pointer-events: auto;
+      animation: slideWipeIn var(--wipe-duration) var(--wipe-ease) forwards;
+    }
+
+    /* আগের শট ০.৫ সেকেন্ডে বাম দিকে স্লাইড ও ওয়াইপ হয়ে বের হবে */
+    .scene.exit-wipe {
+      opacity: 1;
+      z-index: 2;
+      pointer-events: none;
+      animation: slideWipeOut var(--wipe-duration) var(--wipe-ease) forwards;
+    }
+
+    @keyframes slideWipeIn {
+      0% {
+        transform: translateX(100%);
+        clip-path: inset(0 0 0 100%);
+      }
+      100% {
+        transform: translateX(0);
+        clip-path: inset(0 0 0 0);
+      }
+    }
+
+    @keyframes slideWipeOut {
+      0% {
+        transform: translateX(0);
+        clip-path: inset(0 0 0 0);
+      }
+      100% {
+        transform: translateX(-38%);
+        clip-path: inset(0 100% 0 0);
+      }
+    }
+
+    /* ওয়াইপ কাটের সাথে সায়ান-গ্রিন হালকা এজ ফ্ল্যাশ */
+    .wipe-edge {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 4px;
+      background: linear-gradient(180deg, transparent, #22d3ee, #0f9d76, transparent);
+      box-shadow: 0 0 18px rgba(34, 211, 238, 0.95);
+      z-index: 15;
+      opacity: 0;
       pointer-events: none;
     }
 
-    .scene.active {
-      opacity: 1;
-      transform: scale(1);
-      pointer-events: auto;
+    .wipe-edge.flash {
+      animation: wipeEdgeSweep var(--wipe-duration) var(--wipe-ease) forwards;
+    }
+
+    @keyframes wipeEdgeSweep {
+      0% { right: 0%; opacity: 0.95; }
+      85% { opacity: 0.95; }
+      100% { right: 100%; opacity: 0; }
     }
 
     .stagger {
@@ -123,7 +192,8 @@
                   transform calc(var(--sync-duration) * 0.30) var(--ease-out);
     }
 
-    .scene.active .stagger {
+    .scene.active .stagger,
+    .scene.instant-active .stagger {
       opacity: 1;
       transform: translateY(0);
     }
@@ -139,7 +209,7 @@
       padding: 4px 12px;
       border-radius: 999px;
       font-size: 0.8rem;
-      transition-delay: calc(var(--sync-duration) * 0.03);
+      transition-delay: calc(var(--sync-duration) * 0.05);
     }
 
     .hero-title {
@@ -147,7 +217,7 @@
       line-height: 1.26;
       font-weight: 700;
       color: var(--text-light);
-      transition-delay: calc(var(--sync-duration) * 0.08);
+      transition-delay: calc(var(--sync-duration) * 0.10);
     }
 
     .hl {
@@ -170,10 +240,11 @@
       border-radius: 6px;
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform calc(var(--sync-duration) * 0.28) var(--ease-out) calc(var(--sync-duration) * 0.16);
+      transition: transform calc(var(--sync-duration) * 0.28) var(--ease-out) calc(var(--sync-duration) * 0.18);
     }
 
-    .scene.active .hl::after {
+    .scene.active .hl::after,
+    .scene.instant-active .hl::after {
       transform: scaleX(1);
     }
 
@@ -181,7 +252,7 @@
       font-size: 0.88rem;
       color: var(--text-muted-light);
       line-height: 1.45;
-      transition-delay: calc(var(--sync-duration) * 0.12);
+      transition-delay: calc(var(--sync-duration) * 0.14);
     }
 
     .white-card {
@@ -192,7 +263,7 @@
       padding: 14px 15px;
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
       overflow: hidden;
-      transition-delay: calc(var(--sync-duration) * 0.15);
+      transition-delay: calc(var(--sync-duration) * 0.17);
     }
 
     .dark-popup {
@@ -211,7 +282,8 @@
                   transform calc(var(--sync-duration) * 0.28) var(--ease-out) calc(var(--sync-duration) * 0.72);
     }
 
-    .scene.active .dark-popup {
+    .scene.active .dark-popup,
+    .scene.instant-active .dark-popup {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
@@ -227,8 +299,9 @@
       opacity: 0;
     }
 
-    .scene.active .scan-beam {
-      animation: laserScan calc(var(--sync-duration) * 0.85) var(--ease-out) calc(var(--sync-duration) * 0.12) forwards;
+    .scene.active .scan-beam,
+    .scene.instant-active .scan-beam {
+      animation: laserScan calc(var(--sync-duration) * 0.82) var(--ease-out) calc(var(--sync-duration) * 0.14) forwards;
     }
 
     @keyframes laserScan {
@@ -242,7 +315,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      transition-delay: calc(var(--sync-duration) * 0.18);
+      transition-delay: calc(var(--sync-duration) * 0.20);
     }
 
     .metric-card {
@@ -273,10 +346,11 @@
       width: 0%;
       border-radius: 99px;
       background: linear-gradient(90deg, #0f9d76, #10b981);
-      transition: width calc(var(--sync-duration) * 0.80) var(--ease-out) calc(var(--sync-duration) * 0.18);
+      transition: width calc(var(--sync-duration) * 0.78) var(--ease-out) calc(var(--sync-duration) * 0.20);
     }
 
-    .scene.active .progress-fill {
+    .scene.active .progress-fill,
+    .scene.instant-active .progress-fill {
       width: 99%;
     }
 
@@ -310,7 +384,8 @@
       transition: transform calc(var(--sync-duration) * 0.22) var(--ease-out);
     }
 
-    .scene.active .skeleton-line {
+    .scene.active .skeleton-line,
+    .scene.instant-active .skeleton-line {
       transform: scaleX(1);
     }
 
@@ -328,7 +403,8 @@
       transition: stroke-dashoffset calc(var(--sync-duration) * 0.35) var(--ease-out) calc(var(--sync-duration) * 0.36);
     }
 
-    .scene.active .cross-line {
+    .scene.active .cross-line,
+    .scene.instant-active .cross-line {
       stroke-dashoffset: 0;
     }
 
@@ -391,7 +467,8 @@
       transition: stroke-dashoffset calc(var(--sync-duration) * 0.55) var(--ease-out) calc(var(--sync-duration) * 0.20);
     }
 
-    .scene.active .hub-line {
+    .scene.active .hub-line,
+    .scene.instant-active .hub-line {
       stroke-dashoffset: 0;
     }
 
@@ -439,10 +516,11 @@
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #0f9d76, #22d3ee);
-      transition: width calc(var(--sync-duration) * 0.78) var(--ease-out) calc(var(--sync-duration) * 0.18);
+      transition: width calc(var(--sync-duration) * 0.78) var(--ease-out) calc(var(--sync-duration) * 0.20);
     }
 
-    .scene.active .shield-fill {
+    .scene.active .shield-fill,
+    .scene.instant-active .shield-fill {
       width: 100%;
     }
 
@@ -592,8 +670,9 @@
 
   <div class="reel-stage" id="stage" title="টাচ/ক্লিক করলে অটো চালু বা বন্ধ হবে">
     <div class="tap-indicator" id="tapIndicator">▶ অটো চালু</div>
+    <div class="wipe-edge" id="wipeEdge"></div>
 
-    <section class="scene active" data-scene="0">
+    <section class="scene instant-active" data-scene="0">
       <span class="badge stagger">01 • AI Scan Revolution</span>
       <h1 class="hero-title stagger">তুমি এখনো হাতে লিখে <span class="hl">১০টা লিংক</span> ঘাঁটো?</h1>
       <p class="sub-copy stagger">এআই স্ক্যানিং প্রযুক্তিতে জটিল তথ্য ও ছবি এখন এক পলকেই পড়া ও বোঝা যায়।</p>
@@ -863,7 +942,7 @@
       return Math.max(1500, words.length * basePerWord + punctuationPause);
     }
 
-    // শুধু সিন ও অ্যানিমেশনের জন্য সাউন্ড ইফেক্ট (ক্যাপশন কার্ডে কোনো সাউন্ড নেই)
+    // শুধু স্লাইড/ওয়াইপ ও অ্যানিমেশনের জন্য সাউন্ড ইফেক্ট (ক্যাপশন কার্ডে কোনো সাউন্ড নেই)
     let audioCtx = null;
     let soundEnabled = true;
 
@@ -888,14 +967,15 @@
       osc.connect(gain);
       gain.connect(audioCtx.destination);
 
-      if (type === 'whoosh') {
+      if (type === 'wipe') {
+        // ০.৫ সেকেন্ডের স্লাইড/ওয়াইপ কাট সাউন্ড
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(190, now);
-        osc.frequency.exponentialRampToValueAtTime(520, now + 0.16);
-        gain.gain.setValueAtTime(0.055, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(580, now + 0.24);
+        gain.gain.setValueAtTime(0.065, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
         osc.start(now);
-        osc.stop(now + 0.19);
+        osc.stop(now + 0.29);
       } else if (type === 'card') {
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(340, now);
@@ -924,6 +1004,7 @@
     }
 
     const stageEl = document.getElementById('stage');
+    const wipeEdge = document.getElementById('wipeEdge');
     const tapIndicator = document.getElementById('tapIndicator');
     const bottomCaption = document.getElementById('bottom-caption');
     const counterEl = document.getElementById('counter');
@@ -941,6 +1022,7 @@
     const s1Typed = document.getElementById('s1Typed');
 
     let currentStep = 0;
+    let isFirstLoad = true;
     let isAutoPlaying = true;
     let highlightEnabled = true;
     let wordTimer = null;
@@ -1007,7 +1089,7 @@
 
     function typeQuerySynced(text, totalDurationMs) {
       s1Typed.textContent = '';
-      const delayMs = Math.round(totalDurationMs * 0.10);
+      const delayMs = Math.round(totalDurationMs * 0.12);
       const availableMs = Math.max(250, totalDurationMs - delayMs);
       const charInterval = availableMs / text.length;
       let idx = 0;
@@ -1034,7 +1116,7 @@
       if (!isAutoPlaying) return;
       nextSceneTimer = setTimeout(() => {
         goToScene((stepIdx + 1) % totalSteps);
-      }, 450);
+      }, 350);
     }
 
     // ক্যাপশন কার্ডে কোনো সাউন্ড নেই — শুধুমাত্র ভিজ্যুয়াল হাইলাইট
@@ -1085,7 +1167,7 @@
       animateCounter(s1Matrix, 1, 10, syncMs, 'x');
       typeQuerySynced('AI Smart Document Scan...', syncMs);
 
-      const dotStartMs = Math.round(syncMs * 0.14);
+      const dotStartMs = Math.round(syncMs * 0.16);
       const dotStepMs = (syncMs - dotStartMs) / totalDots;
       dots.forEach((dot, i) => {
         const t = setTimeout(() => {
@@ -1095,25 +1177,55 @@
       });
     }
 
+    function triggerWipeEdge() {
+      wipeEdge.classList.remove('flash');
+      void wipeEdge.offsetWidth;
+      wipeEdge.classList.add('flash');
+    }
+
     function goToScene(stepIdx) {
       clearAllTimers();
+      const prevStep = currentStep;
       currentStep = ((stepIdx % totalSteps) + totalSteps) % totalSteps;
       const line = voiceoverLines[currentStep];
       const syncMs = estimateVoiceDurationMs(line);
 
       document.documentElement.style.setProperty('--sync-duration', `${(syncMs / 1000).toFixed(2)}s`);
 
-      // শুধুমাত্র অ্যানিমেশনগুলোর সাথে সাউন্ড সিঙ্ক করা হয়েছে
-      playAnimSfx('whoosh');
-      sceneTimers.push(setTimeout(() => playAnimSfx('card'), Math.round(syncMs * 0.14)));
-      sceneTimers.push(setTimeout(() => playAnimSfx('scan'), Math.round(syncMs * 0.22)));
-      sceneTimers.push(setTimeout(() => playAnimSfx('pop'), Math.round(syncMs * 0.72)));
+      if (isFirstLoad) {
+        scenes.forEach((sc, i) => {
+          sc.classList.remove('active', 'exit-wipe', 'instant-active');
+          if (i === currentStep) sc.classList.add('instant-active');
+        });
+        isFirstLoad = false;
+      } else {
+        // ০.৫ সেকেন্ডের স্লাইড/ওয়াইপ কাট ট্রানজিশন
+        playAnimSfx('wipe');
+        triggerWipeEdge();
 
-      scenes.forEach((sc, i) => {
-        sc.classList.remove('active');
-        void sc.offsetWidth;
-        if (i === currentStep) sc.classList.add('active');
-      });
+        scenes.forEach((sc, i) => {
+          sc.classList.remove('active', 'exit-wipe', 'instant-active');
+          void sc.offsetWidth;
+          if (i === prevStep && prevStep !== currentStep) {
+            sc.classList.add('exit-wipe');
+          }
+          if (i === currentStep) {
+            sc.classList.add('active');
+          }
+        });
+
+        // ০.৫ সেকেন্ড পর আগের শটের exit ক্লাস পরিষ্কার করা
+        sceneTimers.push(setTimeout(() => {
+          if (scenes[prevStep] && prevStep !== currentStep) {
+            scenes[prevStep].classList.remove('exit-wipe');
+          }
+        }, 520));
+      }
+
+      // অ্যানিমেশনগুলোর সাউন্ড
+      sceneTimers.push(setTimeout(() => playAnimSfx('card'), Math.round(syncMs * 0.16)));
+      sceneTimers.push(setTimeout(() => playAnimSfx('scan'), Math.round(syncMs * 0.24)));
+      sceneTimers.push(setTimeout(() => playAnimSfx('pop'), Math.round(syncMs * 0.72)));
 
       if (currentStep === 0) {
         runScene1Dynamics(syncMs);
