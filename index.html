@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Borderless 9:16 Reel (Camera Click Transition)</title>
+  <title>index.html - Borderless 9:16 Reel (Warm Chord Swell + Ambience Pad)</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -916,6 +916,7 @@
 
     let audioCtx = null;
     let soundEnabled = true;
+    let ambienceNodes = null;
 
     function ensureAudioCtx() {
       if (!audioCtx) {
@@ -923,11 +924,63 @@
         if (AudioContextClass) audioCtx = new AudioContextClass();
       }
       if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume().catch(() => {});
+        audioCtx.resume().then(() => {
+          if (soundEnabled) startSoftAmbience();
+        }).catch(() => {});
+      }
+      if (audioCtx && audioCtx.state === 'running' && soundEnabled) {
+        startSoftAmbience();
       }
     }
 
-    // ডুয়াল-পালস ক্যামেরা শাটার ক্লিক সিন্থেসিস
+    // সকল সিন শেষ পর্যন্ত বহাল থাকার মতো শান্ত ও লো-ভলিউম Soft Ambience / Pad
+    function startSoftAmbience() {
+      if (!audioCtx || audioCtx.state !== 'running' || ambienceNodes) return;
+
+      const now = audioCtx.currentTime;
+      const masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(0.0001, now);
+      masterGain.gain.linearRampToValueAtTime(0.015, now + 1.2);
+
+      const lpFilter = audioCtx.createBiquadFilter();
+      lpFilter.type = 'lowpass';
+      lpFilter.frequency.setValueAtTime(420, now);
+      lpFilter.Q.setValueAtTime(0.7, now);
+
+      const freqs = [146.83, 220.0, 369.99];
+      const oscs = freqs.map((f, idx) => {
+        const osc = audioCtx.createOscillator();
+        const subGain = audioCtx.createGain();
+        osc.type = idx === 0 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(f, now);
+        subGain.gain.setValueAtTime(idx === 0 ? 0.55 : 0.25, now);
+        osc.connect(subGain);
+        subGain.connect(lpFilter);
+        osc.start(now);
+        return osc;
+      });
+
+      lpFilter.connect(masterGain);
+      masterGain.connect(audioCtx.destination);
+      ambienceNodes = { oscs, masterGain };
+    }
+
+    function stopSoftAmbience() {
+      if (!ambienceNodes || !audioCtx) return;
+      const { oscs, masterGain } = ambienceNodes;
+      const now = audioCtx.currentTime;
+      try {
+        masterGain.gain.cancelScheduledValues(now);
+        masterGain.gain.setValueAtTime(Math.max(0.0001, masterGain.gain.value), now);
+        masterGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+        oscs.forEach(osc => {
+          try { osc.stop(now + 0.28); } catch (_) {}
+        });
+      } catch (_) {}
+      ambienceNodes = null;
+    }
+
+    // আলাদা ট্রানজিশন সাউন্ড: ক্যামেরা শাটার ক্লিক
     function triggerCameraShutterPulse(ctx, startTime, startFreq, endFreq, peakGain) {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -945,6 +998,69 @@
       osc.stop(startTime + 0.036);
     }
 
+    function playTransitionSound(ctx, now) {
+      triggerCameraShutterPulse(ctx, now, 1950, 420, 0.14);
+      triggerCameraShutterPulse(ctx, now + 0.048, 1580, 310, 0.11);
+
+      const bufferSize = Math.floor(ctx.sampleRate * 0.06);
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.014));
+      }
+
+      const whiteNoise = ctx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(2400, now);
+      filter.Q.setValueAtTime(1.8, now);
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.08, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.058);
+
+      whiteNoise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      whiteNoise.start(now);
+      whiteNoise.stop(now + 0.06);
+    }
+
+    // ৬. Warm Chord Swell — প্রতিটি কার্ড অ্যানিমেশনের জন্য নরম ও উষ্ণ কর্ড সোয়েল
+    function triggerWarmChordSwell(ctx, now) {
+      const duration = 0.44;
+      const chordFreqs = [261.63, 392.00]; // C4 + G4 নরম উষ্ণ কম্বিনেশন
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(520, now);
+      filter.frequency.exponentialRampToValueAtTime(1180, now + duration * 0.45);
+      filter.frequency.exponentialRampToValueAtTime(580, now + duration);
+      filter.Q.setValueAtTime(0.8, now);
+
+      const swellGain = ctx.createGain();
+      swellGain.gain.setValueAtTime(0.0001, now);
+      swellGain.gain.linearRampToValueAtTime(0.048, now + duration * 0.42);
+      swellGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      chordFreqs.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const voiceGain = ctx.createGain();
+        osc.type = idx === 0 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+        voiceGain.gain.setValueAtTime(idx === 0 ? 0.6 : 0.35, now);
+        osc.connect(voiceGain);
+        voiceGain.connect(filter);
+        osc.start(now);
+        osc.stop(now + duration + 0.02);
+      });
+
+      filter.connect(swellGain);
+      swellGain.connect(ctx.destination);
+    }
+
     function playAnimSfx(type) {
       if (!soundEnabled) return;
       ensureAudioCtx();
@@ -952,35 +1068,13 @@
 
       const now = audioCtx.currentTime;
 
-      if (type === 'flash') {
-        // ক্যামেরা শাটার ক্লিকিং (শাটার ওপেন + ক্লোজ ডাবল ক্লিক + হালকা মেকানিক্যাল রিলিজ)
-        triggerCameraShutterPulse(audioCtx, now, 1950, 420, 0.14);
-        triggerCameraShutterPulse(audioCtx, now + 0.048, 1580, 310, 0.11);
+      if (type === 'transition') {
+        playTransitionSound(audioCtx, now);
+        return;
+      }
 
-        const bufferSize = Math.floor(audioCtx.sampleRate * 0.06);
-        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const output = noiseBuffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.014));
-        }
-
-        const whiteNoise = audioCtx.createBufferSource();
-        whiteNoise.buffer = noiseBuffer;
-
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(2400, now);
-        filter.Q.setValueAtTime(1.8, now);
-
-        const noiseGain = audioCtx.createGain();
-        noiseGain.gain.setValueAtTime(0.08, now);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.058);
-
-        whiteNoise.connect(filter);
-        filter.connect(noiseGain);
-        noiseGain.connect(audioCtx.destination);
-        whiteNoise.start(now);
-        whiteNoise.stop(now + 0.06);
+      if (type === 'card') {
+        triggerWarmChordSwell(audioCtx, now);
         return;
       }
 
@@ -989,15 +1083,7 @@
       osc.connect(gain);
       gain.connect(audioCtx.destination);
 
-      if (type === 'card') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(340, now);
-        osc.frequency.exponentialRampToValueAtTime(620, now + 0.14);
-        gain.gain.setValueAtTime(0.045, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
-        osc.start(now);
-        osc.stop(now + 0.17);
-      } else if (type === 'scan') {
+      if (type === 'scan') {
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(640, now);
         osc.frequency.exponentialRampToValueAtTime(1180, now + 0.35);
@@ -1205,11 +1291,14 @@
 
       document.documentElement.style.setProperty('--sync-duration', `${(syncMs / 1000).toFixed(2)}s`);
 
+      if (soundEnabled) {
+        ensureAudioCtx();
+      }
+
       if (isFirstLoad) {
         isFirstLoad = false;
       } else {
-        // ক্যামেরা ক্লিকিং সাউন্ড + ০.৫ সেকেন্ডের বাতাসে দোলা সফট হোয়াইট ফ্লাশ
-        playAnimSfx('flash');
+        playAnimSfx('transition');
         triggerSoftWhiteFlash();
       }
 
@@ -1219,7 +1308,7 @@
         if (i === currentStep) sc.classList.add('active');
       });
 
-      // শুরু ০.১৫ সেকেন্ড থেকে অ্যানিমেশন সাউন্ড
+      // শুরু ০.১৫ সেকেন্ড থেকে Warm Chord Swell কার্ড অ্যানিমেশন সাউন্ড
       sceneTimers.push(setTimeout(() => playAnimSfx('card'), 150));
       sceneTimers.push(setTimeout(() => playAnimSfx('scan'), Math.round(syncMs * 0.22)));
       sceneTimers.push(setTimeout(() => playAnimSfx('pop'), Math.round(syncMs * 0.72)));
@@ -1242,11 +1331,15 @@
 
     soundBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      ensureAudioCtx();
       soundEnabled = !soundEnabled;
       soundBtn.classList.toggle('active-toggle', soundEnabled);
       soundBtn.textContent = soundEnabled ? '🔊 সাউন্ড: চালু' : '🔇 সাউন্ড: বন্ধ';
-      if (soundEnabled) playAnimSfx('pop');
+      if (soundEnabled) {
+        ensureAudioCtx();
+        playAnimSfx('pop');
+      } else {
+        stopSoftAmbience();
+      }
     });
 
     autoPlayBtn.addEventListener('click', (e) => {
