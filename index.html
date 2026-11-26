@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Fullscreen Blue Sunburst</title>
+  <title>index.html - Center Sunburst 50% Opacity</title>
   <style>
     * {
       box-sizing: border-box;
@@ -18,16 +18,28 @@
     }
 
     body {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
+      background-color: #06123a; /* বেস ডার্ক ব্যাকগ্রাউন্ড */
       font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    /* সেন্টার থেকে চারদিকে ছড়ানো ৫০% অপাসিটির সানবার্স্ট লেয়ার */
+    .sunburst-bg {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      opacity: 0.5;
+      pointer-events: none;
       background:
-        radial-gradient(circle at 50% 25%, transparent 35%, rgba(6, 18, 58, 0.65) 100%),
+        radial-gradient(circle at 50% 50%, transparent 25%, rgba(6, 18, 58, 0.7) 100%),
         repeating-conic-gradient(
-          from 0deg at 50% 0%,
-          #1D5FD6 0deg 5deg,
-          #0E3596 5deg 10deg
+          from 0deg at 50% 50%,
+          #1D5FD6 0deg 6deg,
+          #0E3596 6deg 12deg
         );
     }
 
@@ -39,6 +51,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 1;
     }
 
     .scene {
@@ -52,9 +65,11 @@
 </head>
 <body>
 
+  <div class="sunburst-bg"></div>
+
   <div class="stage" id="stage">
     <section class="scene active" data-scene="0">
-      <!-- আপনার সিন ১-এর কন্টেন্ট এখানে যুক্ত হবে -->
+      <!-- আপনার সিন ১-এর কন্টেন্ট এখানে যুক্ত হবে (পূর্ণ ১০০% অপাসিটিতে থাকবে) -->
     </section>
   </div>
 
