@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Borderless 9:16 Reel (Camera Click Only)</title>
+  <title>index.html - Borderless 9:16 Reel (SFX-TR-08 + Scene Card Soft Sound)</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -97,50 +97,53 @@
       transform: translateY(0);
     }
 
-    /* ০.৫ সেকেন্ডের সফট দুধেল সাদা ফ্লাশ — বাতাসের মতো দুলে দুলে */
+    /* ০.৫ সেকেন্ডের লিক লাইট ট্রানজিশন — বিভিন্ন কালার কম্বিনেশন মিক্স করে হালকা বাতাসে ঝাপটা দিয়ে */
     .white-flash {
       position: absolute;
-      inset: -12%;
+      inset: -18%;
       z-index: 18;
       pointer-events: none;
       opacity: 0;
       transform-origin: center center;
-      will-change: transform, opacity;
+      filter: blur(10px);
+      will-change: transform, opacity, filter;
       background:
-        radial-gradient(
-          ellipse at 46% 42%,
-          rgba(255, 255, 255, 0.66) 0%,
-          rgba(248, 250, 252, 0.52) 58%,
-          rgba(241, 245, 249, 0.36) 82%,
-          transparent 100%
-        );
+        radial-gradient(ellipse at 24% 28%, rgba(255, 210, 76, 0.62) 0%, rgba(251, 146, 60, 0.34) 38%, transparent 66%),
+        radial-gradient(ellipse at 76% 32%, rgba(34, 211, 238, 0.56) 0%, rgba(56, 189, 248, 0.28) 42%, transparent 68%),
+        radial-gradient(ellipse at 52% 68%, rgba(52, 211, 153, 0.48) 0%, rgba(255, 255, 255, 0.42) 45%, transparent 74%),
+        linear-gradient(125deg, rgba(255, 244, 214, 0.36) 0%, rgba(255, 210, 76, 0.22) 34%, rgba(34, 211, 238, 0.24) 68%, rgba(255, 255, 255, 0.14) 100%);
       mix-blend-mode: screen;
     }
 
     .white-flash.burst {
-      animation: breezeFloatFlash var(--flash-duration) ease-in-out forwards;
+      animation: leakLightGust var(--flash-duration) cubic-bezier(0.18, 0.85, 0.32, 1) forwards;
     }
 
-    @keyframes breezeFloatFlash {
+    @keyframes leakLightGust {
       0% {
         opacity: 0;
-        transform: translateX(-18px) translateY(4px) skewX(-3deg) scale(1.02);
+        filter: blur(14px);
+        transform: translateX(-34px) translateY(8px) skewX(-9deg) rotate(-2deg) scale(1.04);
       }
-      22% {
-        opacity: 0.58;
-        transform: translateX(12px) translateY(-3px) skewX(2.5deg) scale(1.05);
+      18% {
+        opacity: 0.78;
+        filter: blur(9px);
+        transform: translateX(24px) translateY(-6px) skewX(7deg) rotate(1.8deg) scale(1.09);
       }
-      52% {
-        opacity: 0.44;
-        transform: translateX(-10px) translateY(3px) skewX(-2deg) scale(1.07);
+      44% {
+        opacity: 0.64;
+        filter: blur(11px);
+        transform: translateX(-18px) translateY(5px) skewX(-5deg) rotate(-1.2deg) scale(1.12);
       }
-      78% {
-        opacity: 0.20;
-        transform: translateX(7px) translateY(-2px) skewX(1.2deg) scale(1.08);
+      72% {
+        opacity: 0.32;
+        filter: blur(13px);
+        transform: translateX(12px) translateY(-3px) skewX(3deg) rotate(0.8deg) scale(1.08);
       }
       100% {
         opacity: 0;
-        transform: translateX(0px) translateY(0px) skewX(0deg) scale(1.04);
+        filter: blur(16px);
+        transform: translateX(6px) translateY(0px) skewX(0deg) rotate(0deg) scale(1.03);
       }
     }
 
@@ -916,6 +919,7 @@
 
     let audioCtx = null;
     let soundEnabled = true;
+    let activeCardSound = null;
 
     function ensureAudioCtx() {
       if (!audioCtx) {
@@ -927,57 +931,113 @@
       }
     }
 
-    // ক্যামেরা ক্লিকিং সাউন্ড (SFX-TR-04)
-    function triggerCameraShutterPulse(ctx, startTime, startFreq, endFreq, peakGain) {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(startFreq, startTime);
-      osc.frequency.exponentialRampToValueAtTime(endFreq, startTime + 0.024);
-
-      gain.gain.setValueAtTime(0.0001, startTime);
-      gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.003);
-      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.032);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(startTime);
-      osc.stop(startTime + 0.036);
+    function stopCardSoftSound(fadeSec = 0.14) {
+      if (!activeCardSound || !audioCtx) return;
+      const { oscs, gainNode } = activeCardSound;
+      const now = audioCtx.currentTime;
+      try {
+        gainNode.gain.cancelScheduledValues(now);
+        gainNode.gain.setValueAtTime(Math.max(0.0001, gainNode.gain.value), now);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, now + fadeSec);
+        oscs.forEach(osc => {
+          try { osc.stop(now + fadeSec + 0.02); } catch (_) {}
+        });
+      } catch (_) {}
+      activeCardSound = null;
     }
 
-    function playCameraClickOnly() {
+    // সিনের কার্ডগুলোর জন্য নরম সাউন্ড যা সিন শেষ না হওয়া পর্যন্ত চলবে
+    function startCardSoftSoundUntilSceneEnd(durationMs) {
+      stopCardSoftSound(0.06);
       if (!soundEnabled) return;
       ensureAudioCtx();
       if (!audioCtx || audioCtx.state !== 'running') return;
 
       const now = audioCtx.currentTime;
-      triggerCameraShutterPulse(audioCtx, now, 1950, 420, 0.14);
-      triggerCameraShutterPulse(audioCtx, now + 0.048, 1580, 310, 0.11);
+      const totalSec = Math.max(1.2, durationMs / 1000);
+      const fadeOutSec = Math.min(0.28, totalSec * 0.12);
+      const sustainEnd = Math.max(0.2, now + totalSec - fadeOutSec);
 
-      const bufferSize = Math.floor(audioCtx.sampleRate * 0.06);
-      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const output = noiseBuffer.getChannelData(0);
+      const lpFilter = audioCtx.createBiquadFilter();
+      lpFilter.type = 'lowpass';
+      lpFilter.frequency.setValueAtTime(560, now);
+      lpFilter.frequency.linearRampToValueAtTime(780, now + Math.min(0.6, totalSec * 0.25));
+      lpFilter.frequency.linearRampToValueAtTime(520, now + totalSec);
+      lpFilter.Q.setValueAtTime(0.75, now);
+
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.0001, now);
+      gainNode.gain.linearRampToValueAtTime(0.024, now + 0.22);
+      gainNode.gain.setValueAtTime(0.024, sustainEnd);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, now + totalSec);
+
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      osc1.type = 'sine';
+      osc2.type = 'triangle';
+      osc1.frequency.setValueAtTime(196.0, now);
+      osc2.frequency.setValueAtTime(293.66, now);
+
+      const g1 = audioCtx.createGain();
+      const g2 = audioCtx.createGain();
+      g1.gain.setValueAtTime(0.65, now);
+      g2.gain.setValueAtTime(0.35, now);
+
+      osc1.connect(g1);
+      osc2.connect(g2);
+      g1.connect(lpFilter);
+      g2.connect(lpFilter);
+      lpFilter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + totalSec + 0.03);
+      osc2.stop(now + totalSec + 0.03);
+
+      activeCardSound = { oscs: [osc1, osc2], gainNode };
+    }
+
+    // বাতাসের SFX-TR-08 (Crisp Air Flick — ক্যামেরা শাটার ক্লিক ছাড়া)
+    function playSFX_TR_08() {
+      if (!soundEnabled) return;
+      ensureAudioCtx();
+      if (!audioCtx || audioCtx.state !== 'running') return;
+
+      const now = audioCtx.currentTime;
+      const duration = 0.14;
+      const bufferSize = Math.floor(audioCtx.sampleRate * duration);
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+
       for (let i = 0; i < bufferSize; i++) {
-        output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.014));
+        const t = i / bufferSize;
+        const env = t < 0.25
+          ? Math.pow(t / 0.25, 1.3)
+          : Math.pow(1 - (t - 0.25) / 0.75, 2.2);
+        data[i] = (Math.random() * 2 - 1) * env;
       }
 
-      const whiteNoise = audioCtx.createBufferSource();
-      whiteNoise.buffer = noiseBuffer;
+      const noiseSource = audioCtx.createBufferSource();
+      noiseSource.buffer = buffer;
 
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(2400, now);
-      filter.Q.setValueAtTime(1.8, now);
+      const bandpass = audioCtx.createBiquadFilter();
+      bandpass.type = 'bandpass';
+      bandpass.Q.setValueAtTime(1.9, now);
+      bandpass.frequency.setValueAtTime(420, now);
+      bandpass.frequency.exponentialRampToValueAtTime(1950, now + duration * 0.45);
+      bandpass.frequency.exponentialRampToValueAtTime(620, now + duration);
 
-      const noiseGain = audioCtx.createGain();
-      noiseGain.gain.setValueAtTime(0.08, now);
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.058);
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(0.095, now + duration * 0.25);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
-      whiteNoise.connect(filter);
-      filter.connect(noiseGain);
-      noiseGain.connect(audioCtx.destination);
-      whiteNoise.start(now);
-      whiteNoise.stop(now + 0.06);
+      noiseSource.connect(bandpass);
+      bandpass.connect(gain);
+      gain.connect(audioCtx.destination);
+      noiseSource.start(now);
+      noiseSource.stop(now + duration + 0.01);
     }
 
     const stageEl = document.getElementById('stage');
@@ -1048,6 +1108,7 @@
       if (isAutoPlaying) {
         goToScene(currentStep);
       } else {
+        stopCardSoftSound(0.15);
         clearTimeout(nextSceneTimer);
       }
     }
@@ -1128,6 +1189,7 @@
           wordTimer = setTimeout(stepWord, intervalMs);
         } else {
           updateProgress(stepIdx, 1);
+          stopCardSoftSound(0.14);
           scheduleNextScene(stepIdx);
         }
       }
@@ -1155,7 +1217,7 @@
       });
     }
 
-    function triggerSoftWhiteFlash() {
+    function triggerLeakLightTransition() {
       whiteFlash.classList.remove('burst');
       void whiteFlash.offsetWidth;
       whiteFlash.classList.add('burst');
@@ -1163,17 +1225,23 @@
 
     function goToScene(stepIdx) {
       clearAllTimers();
+      stopCardSoftSound(0.06);
+
       currentStep = ((stepIdx % totalSteps) + totalSteps) % totalSteps;
       const line = voiceoverLines[currentStep];
       const syncMs = estimateVoiceDurationMs(line);
 
       document.documentElement.style.setProperty('--sync-duration', `${(syncMs / 1000).toFixed(2)}s`);
 
+      if (soundEnabled) {
+        ensureAudioCtx();
+      }
+
       if (isFirstLoad) {
         isFirstLoad = false;
       } else {
-        playCameraClickOnly();
-        triggerSoftWhiteFlash();
+        playSFX_TR_08();
+        triggerLeakLightTransition();
       }
 
       scenes.forEach((sc, i) => {
@@ -1181,6 +1249,12 @@
         void sc.offsetWidth;
         if (i === currentStep) sc.classList.add('active');
       });
+
+      // শুরু ০.১৫ সেকেন্ড থেকে কার্ডের নরম সাউন্ড শুরু হয়ে সিন শেষ না হওয়া পর্যন্ত চলবে
+      const cardSoundTimer = setTimeout(() => {
+        startCardSoftSoundUntilSceneEnd(Math.max(800, syncMs - 150));
+      }, 150);
+      sceneTimers.push(cardSoundTimer);
 
       if (currentStep === 0) {
         runScene1Dynamics(syncMs);
@@ -1191,7 +1265,14 @@
     }
 
     ['pointerdown', 'keydown'].forEach(evt => {
-      window.addEventListener(evt, ensureAudioCtx, { once: true });
+      window.addEventListener(evt, () => {
+        ensureAudioCtx();
+        if (soundEnabled && !activeCardSound) {
+          const line = voiceoverLines[currentStep];
+          const syncMs = estimateVoiceDurationMs(line);
+          startCardSoftSoundUntilSceneEnd(syncMs);
+        }
+      }, { once: true });
     });
 
     stageEl.addEventListener('click', () => {
@@ -1205,7 +1286,12 @@
       soundBtn.textContent = soundEnabled ? '🔊 সাউন্ড: চালু' : '🔇 সাউন্ড: বন্ধ';
       if (soundEnabled) {
         ensureAudioCtx();
-        playCameraClickOnly();
+        playSFX_TR_08();
+        const line = voiceoverLines[currentStep];
+        const syncMs = estimateVoiceDurationMs(line);
+        startCardSoftSoundUntilSceneEnd(syncMs);
+      } else {
+        stopCardSoftSound(0.12);
       }
     });
 
