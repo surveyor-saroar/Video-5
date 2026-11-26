@@ -3,23 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Borderless 9:16 Reel (Bounce + Camera Lens Blur)</title>
+  <title>index.html - 9:16 Digital Growth Reel</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --outer-bg: #050a14;
-      --stage-bg: #0f172a;
-      --card-bg: #ffffff;
-      --accent-green: #0f9d76;
-      --accent-cyan: #22d3ee;
+      --bg-deep: #04122b;
+      --bg-mid: #082759;
+      --glow-cyan: #22e6ff;
+      --glow-blue: #258cff;
+      --card-glass: rgba(8, 35, 78, 0.58);
+      --text-light: #f8fafc;
+      --text-muted: #cbd5e1;
       --accent-yellow: #ffd24c;
-      --text-light: #f9fafb;
-      --text-muted-light: #cbd5e1;
-      --text-dark: #0f172a;
-      --caption-bg-alpha: 0.24;
       --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-      --start-delay: 0.15s;
-      --sync-duration: 3.0s;
+      --sync-duration: 3.4s;
     }
 
     * {
@@ -35,7 +32,6 @@
       overflow: hidden;
     }
 
-    /* পুরো স্ক্রিন জুড়ে কালার কম্বিনেশন ব্যাকগ্রাউন্ড ও ফ্লেক্সবক্স সেন্টারিং */
     body {
       position: relative;
       display: flex;
@@ -44,16 +40,14 @@
       justify-content: center;
       gap: 10px;
       background:
-        radial-gradient(circle at 18% 16%, rgba(15, 157, 118, 0.28), transparent 46%),
-        radial-gradient(circle at 84% 22%, rgba(34, 211, 238, 0.20), transparent 44%),
-        radial-gradient(circle at 50% 88%, rgba(255, 210, 76, 0.12), transparent 48%),
-        linear-gradient(145deg, #040811 0%, #0a1426 52%, #06131c 100%);
+        radial-gradient(circle at 22% 18%, rgba(34, 230, 255, 0.20), transparent 45%),
+        radial-gradient(circle at 80% 78%, rgba(37, 140, 255, 0.24), transparent 50%),
+        linear-gradient(155deg, #020817 0%, #071b3d 55%, #031024 100%);
       font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
       color: var(--text-light);
       padding: 12px;
     }
 
-    /* বর্ডার ছাড়া মাঝখানে ৯:১৬ রিল স্টেজ */
     .reel-stage {
       position: relative;
       height: min(83vh, 780px);
@@ -61,16 +55,47 @@
       max-width: 94vw;
       border-radius: 26px;
       overflow: hidden;
-      border: none;
-      outline: none;
       background:
-        radial-gradient(circle at 50% 10%, rgba(15, 157, 118, 0.24), transparent 50%),
-        radial-gradient(circle at 85% 85%, rgba(34, 211, 238, 0.14), transparent 48%),
-        linear-gradient(170deg, #111c30 0%, #0b1322 100%);
-      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.78);
+        radial-gradient(circle at 50% 22%, rgba(34, 230, 255, 0.22), transparent 52%),
+        linear-gradient(180deg, #07224d 0%, #051636 52%, #030e24 100%);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8);
       cursor: pointer;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    /* সূক্ষ্ম গ্রিড ও ভাসমান কণা */
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(125, 211, 252, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(125, 211, 252, 0.06) 1px, transparent 1px);
+      background-size: 38px 38px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(186, 230, 253, 0.75);
+      box-shadow: 0 0 8px rgba(34, 230, 255, 0.7);
+      animation: floatDot linear infinite;
+    }
+
+    @keyframes floatDot {
+      0% { transform: translateY(18px) scale(0.8); opacity: 0.25; }
+      50% { opacity: 0.85; }
+      100% { transform: translateY(-24px) scale(1.1); opacity: 0.25; }
     }
 
     .tap-indicator {
@@ -78,9 +103,9 @@
       top: 14px;
       right: 14px;
       z-index: 30;
-      background: rgba(15, 23, 42, 0.78);
+      background: rgba(3, 14, 36, 0.82);
       backdrop-filter: blur(8px);
-      color: #f9fafb;
+      color: #f8fafc;
       padding: 4px 11px;
       border-radius: 999px;
       font-size: 0.78rem;
@@ -96,253 +121,222 @@
       transform: translateY(0);
     }
 
-    /* বাউন্স ট্রানজিশন + ক্যামেরা লেন্স ব্লার */
+    /* ক্লিন শট + সফট গ্লো/ফেড ট্রানজিশন */
     .scene {
       position: absolute;
       inset: 0;
-      padding: 26px 20px 132px;
+      padding: 28px 20px 132px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       gap: 14px;
       opacity: 0;
-      z-index: 1;
+      z-index: 3;
       pointer-events: none;
-      will-change: transform, opacity, filter;
+      transition: opacity 0.35s var(--ease-out);
     }
 
     .scene.active {
       opacity: 1;
-      z-index: 3;
+      z-index: 5;
       pointer-events: auto;
     }
 
-    .scene.bounce-lens {
-      animation: bounceCameraLens 0.48s cubic-bezier(0.25, 1.25, 0.5, 1) forwards;
-    }
-
-    @keyframes bounceCameraLens {
-      0% {
-        opacity: 0.35;
-        filter: blur(9px);
-        transform: scale(1.06) translateY(16px);
-      }
-      45% {
-        opacity: 1;
-        filter: blur(2.5px);
-        transform: scale(0.985) translateY(-7px);
-      }
-      72% {
-        opacity: 1;
-        filter: blur(0.6px);
-        transform: scale(1.012) translateY(3px);
-      }
-      100% {
-        opacity: 1;
-        filter: blur(0px);
-        transform: scale(1) translateY(0px);
-      }
-    }
-
-    .stagger {
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity calc(var(--sync-duration) * 0.20) var(--ease-out),
-                  transform calc(var(--sync-duration) * 0.24) var(--ease-out);
-    }
-
-    .scene.active .stagger {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .badge {
-      align-self: flex-start;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(15, 157, 118, 0.24);
-      color: #34d399;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      transition-delay: var(--start-delay);
-    }
-
-    .hero-title {
-      font-size: clamp(1.38rem, 3.1vh, 1.85rem);
-      line-height: 1.26;
-      font-weight: 700;
-      color: var(--text-light);
-      transition-delay: calc(var(--start-delay) + 0.05s);
-    }
-
-    .hl {
-      position: relative;
+    .pill-title {
+      align-self: center;
       display: inline-block;
-      color: var(--text-dark);
-      z-index: 1;
-      padding: 0 5px;
-    }
-
-    .hl::after {
-      content: "";
-      position: absolute;
-      left: -2px;
-      right: -2px;
-      bottom: 2px;
-      height: 82%;
-      background: var(--accent-yellow);
-      z-index: -1;
-      border-radius: 6px;
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform calc(var(--sync-duration) * 0.24) var(--ease-out) calc(var(--start-delay) + 0.10s);
-    }
-
-    .scene.active .hl::after {
-      transform: scaleX(1);
-    }
-
-    .sub-copy {
-      font-size: 0.88rem;
-      color: var(--text-muted-light);
-      line-height: 1.45;
-      transition-delay: calc(var(--start-delay) + 0.08s);
-    }
-
-    .white-card {
-      position: relative;
-      background: var(--card-bg);
-      color: var(--text-dark);
-      border-radius: 16px;
-      padding: 14px 15px;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
-      overflow: hidden;
-      transition-delay: calc(var(--start-delay) + 0.12s);
-    }
-
-    .dark-popup {
-      background: rgba(30, 41, 59, 0.92);
-      color: #f8fafc;
-      border-radius: 13px;
-      padding: 9px 13px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.84rem;
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.42);
+      padding: 6px 20px;
+      border-radius: 999px;
+      background: rgba(6, 36, 82, 0.72);
+      border: 1.5px solid rgba(34, 230, 255, 0.75);
+      box-shadow: 0 0 18px rgba(34, 230, 255, 0.35), inset 0 0 12px rgba(34, 230, 255, 0.22);
+      font-size: clamp(1rem, 2.3vh, 1.28rem);
+      font-weight: 700;
+      color: #ffffff;
       opacity: 0;
-      transform: translateY(12px) scale(0.95);
-      transition: opacity calc(var(--sync-duration) * 0.20) var(--ease-out) calc(var(--sync-duration) * 0.72),
-                  transform calc(var(--sync-duration) * 0.24) var(--ease-out) calc(var(--sync-duration) * 0.72);
+      transform: translateY(10px) scale(0.96);
+      transition: opacity 0.35s var(--ease-out), transform 0.4s var(--ease-out);
     }
 
-    .scene.active .dark-popup {
+    .scene.active .pill-title {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
 
-    .scan-beam {
+    .service-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .service-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: var(--card-glass);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.35s var(--ease-out), transform 0.4s var(--ease-out), border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .scene.active .service-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .service-card.lit {
+      border-color: rgba(34, 230, 255, 0.95);
+      box-shadow: 0 0 22px rgba(34, 230, 255, 0.42), inset 0 0 14px rgba(34, 230, 255, 0.16);
+      background: rgba(10, 48, 106, 0.78);
+    }
+
+    .icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: rgba(34, 230, 255, 0.14);
+      color: #67e8f9;
+      font-size: 1.05rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .service-label {
+      font-size: clamp(1rem, 2.2vh, 1.22rem);
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(34, 230, 255, 0.25);
+    }
+
+    .result-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .result-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 10px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s var(--ease-out), transform 0.4s var(--ease-out);
+    }
+
+    .scene.active .result-item.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .ring-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid #22e6ff;
+      box-shadow: 0 0 14px rgba(34, 230, 255, 0.55);
+      display: grid;
+      place-items: center;
+      color: #67e8f9;
+      font-size: 0.9rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .result-text {
+      font-size: clamp(1.22rem, 2.7vh, 1.58rem);
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 0 18px rgba(34, 230, 255, 0.72), 0 0 6px rgba(34, 230, 255, 0.45);
+    }
+
+    .wave-svg {
       position: absolute;
       left: 0;
       right: 0;
-      top: 4%;
-      height: 3.5px;
-      background: linear-gradient(90deg, transparent, #0f9d76, #22d3ee, #0f9d76, transparent);
-      box-shadow: 0 0 14px rgba(34, 211, 238, 0.9);
-      opacity: 0;
-    }
-
-    .scene.active .scan-beam {
-      animation: laserScan calc(var(--sync-duration) * 0.78) var(--ease-out) var(--start-delay) forwards;
-    }
-
-    @keyframes laserScan {
-      0% { top: 4%; opacity: 0; }
-      15% { opacity: 1; }
-      85% { opacity: 1; }
-      100% { top: 94%; opacity: 0; }
-    }
-
-    .metrics-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      transition-delay: calc(var(--start-delay) + 0.15s);
-    }
-
-    .metric-card {
-      background: var(--card-bg);
-      color: var(--text-dark);
-      border-radius: 13px;
-      padding: 9px 11px;
-    }
-
-    .metric-top {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .progress-track {
+      bottom: 118px;
       width: 100%;
-      height: 7px;
-      border-radius: 99px;
-      background: #e2e8f0;
-      overflow: hidden;
+      height: 110px;
+      pointer-events: none;
+      z-index: 4;
     }
 
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      border-radius: 99px;
-      background: linear-gradient(90deg, #0f9d76, #10b981);
-      transition: width calc(var(--sync-duration) * 0.75) var(--ease-out) var(--start-delay);
+    .wave-path {
+      fill: none;
+      stroke: #22e6ff;
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 10px rgba(34, 230, 255, 0.8));
+      stroke-dasharray: 520;
+      stroke-dashoffset: 520;
+      transition: stroke-dashoffset calc(var(--sync-duration) * 0.75) var(--ease-out);
     }
 
-    .scene.active .progress-fill {
-      width: 99%;
+    .scene.active .wave-path {
+      stroke-dashoffset: 0;
     }
 
-    .matrix-grid {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 4px;
+    .pillar-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
     }
 
-    .matrix-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 2px;
-      background: #cbd5e1;
-      transform: scale(0.6);
-      transition: background-color 0.2s ease, transform 0.2s var(--ease-out);
+    .pillar-line {
+      font-size: clamp(1.42rem, 3.2vh, 1.95rem);
+      font-weight: 800;
+      color: #ffffff;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s var(--ease-out), transform 0.4s var(--ease-out);
     }
 
-    .matrix-dot.on {
-      background: #0f9d76;
-      transform: scale(1);
+    .pillar-line.show {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .skeleton-line {
-      height: 8px;
-      border-radius: 99px;
-      background: #e2e8f0;
-      margin-bottom: 8px;
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform calc(var(--sync-duration) * 0.20) var(--ease-out) var(--start-delay);
+    .pillar-line.glow-cyan {
+      color: #7df9ff;
+      text-shadow: 0 0 18px rgba(34, 230, 255, 0.75);
     }
 
-    .scene.active .skeleton-line {
-      transform: scaleX(1);
+    .bar-chart-wrap {
+      position: relative;
+      height: 135px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      gap: 10px;
+      padding: 12px 10px 4px;
+      margin-top: 8px;
     }
 
-    .cross-svg {
+    .bar-col {
+      flex: 1;
+      height: var(--h);
+      border-radius: 8px 8px 0 0;
+      background: linear-gradient(180deg, #38bdf8 0%, #1d4ed8 100%);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.55s var(--ease-out);
+    }
+
+    .scene.active .bar-col.grow {
+      transform: scaleY(1);
+    }
+
+    .trend-svg {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -350,141 +344,60 @@
       pointer-events: none;
     }
 
-    .cross-line {
-      stroke-dasharray: 420;
-      stroke-dashoffset: 420;
-      transition: stroke-dashoffset calc(var(--sync-duration) * 0.30) var(--ease-out) calc(var(--start-delay) + 0.22s);
+    .trend-line {
+      stroke-dasharray: 460;
+      stroke-dashoffset: 460;
+      transition: stroke-dashoffset 0.75s var(--ease-out) 0.35s;
     }
 
-    .scene.active .cross-line {
+    .scene.active .trend-line.draw {
       stroke-dashoffset: 0;
     }
 
-    .doc-frame {
-      position: relative;
-      border-radius: 12px;
-      padding: 13px;
-      background: #f8fafc;
-    }
-
-    .corner {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      border-color: #0f9d76;
-      border-style: solid;
-    }
-    .corner.tl { top: 0; left: 0; border-width: 3px 0 0 3px; border-radius: 5px 0 0 0; }
-    .corner.tr { top: 0; right: 0; border-width: 3px 3px 0 0; border-radius: 0 5px 0 0; }
-    .corner.bl { bottom: 0; left: 0; border-width: 0 0 3px 3px; border-radius: 0 0 0 5px; }
-    .corner.br { bottom: 0; right: 0; border-width: 0 3px 3px 0; border-radius: 0 0 5px 0; }
-
-    .ocr-box {
+    .outro-box {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-    }
-
-    .ocr-pill {
-      background: #f1f5f9;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-size: 0.84rem;
-      font-weight: 600;
-    }
-
-    .chip-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .chip {
-      background: rgba(15, 157, 118, 0.24);
-      color: #6ee7b7;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-    }
-
-    .hub-svg {
-      width: 100%;
-      height: 175px;
-    }
-
-    .hub-line {
-      stroke-dasharray: 150;
-      stroke-dashoffset: 150;
-      transition: stroke-dashoffset calc(var(--sync-duration) * 0.45) var(--ease-out) calc(var(--start-delay) + 0.12s);
-    }
-
-    .scene.active .hub-line {
-      stroke-dashoffset: 0;
-    }
-
-    .mini-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.84rem;
-    }
-
-    .mini-table td {
-      padding: 7px 4px;
-    }
-
-    .code-box {
-      background: #0f172a;
-      color: #38bdf8;
-      font-family: monospace;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 0.78rem;
-      line-height: 1.48;
-    }
-
-    .check-item {
-      display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 7px 10px;
-      background: #f1f5f9;
-      border-radius: 9px;
-      margin-bottom: 7px;
-      font-weight: 600;
-      font-size: 0.82rem;
-    }
-
-    .shield-bar {
-      height: 9px;
-      border-radius: 999px;
-      background: #e2e8f0;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-
-    .shield-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #0f9d76, #22d3ee);
-      transition: width calc(var(--sync-duration) * 0.75) var(--ease-out) var(--start-delay);
-    }
-
-    .scene.active .shield-fill {
-      width: 100%;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .sum-tile {
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 10px 6px;
+      justify-content: center;
       text-align: center;
+      gap: 14px;
+    }
+
+    .brand-badge {
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #e0f2fe 72%, #38bdf8 100%);
+      border: 4px solid #ffffff;
+      box-shadow: 0 0 28px rgba(34, 230, 255, 0.65), 0 14px 30px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #07224d;
+      transform: scale(0.84);
+      opacity: 0;
+      transition: transform 0.5s var(--ease-out), opacity 0.4s var(--ease-out);
+    }
+
+    .scene.active .brand-badge {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .brand-mark {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -1px;
+      color: #0b3b8c;
+    }
+
+    .brand-sub {
+      font-size: 0.66rem;
+      font-weight: 800;
+      color: #0369a1;
+      margin-top: 3px;
     }
 
     /* কারাওকে ক্যাপশন কার্ড (সম্পূর্ণ নিঃশব্দ, কোনো সাউন্ড নেই) */
@@ -496,7 +409,7 @@
       width: 90%;
       padding: 8px 12px;
       border-radius: 13px;
-      background: rgba(15, 23, 42, var(--caption-bg-alpha));
+      background: rgba(3, 14, 36, 0.34);
       backdrop-filter: blur(8px);
       display: flex;
       flex-wrap: wrap;
@@ -504,7 +417,7 @@
       justify-content: center;
       gap: 4px 6px;
       z-index: 22;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
     }
 
     .cap-word {
@@ -514,13 +427,13 @@
       font-size: clamp(0.86rem, 1.65vh, 1.04rem);
       font-weight: 700;
       color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
       transition: background-color 0.15s ease, color 0.15s ease, transform 0.18s var(--ease-out);
     }
 
     .cap-word.spoken {
-      color: #f8fafc;
-      opacity: 0.92;
+      color: #e2e8f0;
+      opacity: 0.9;
     }
 
     .cap-word.active-word {
@@ -533,7 +446,7 @@
     #bottom-caption.no-highlight .cap-word.active-word {
       background-color: transparent;
       color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
       transform: none;
     }
 
@@ -556,7 +469,7 @@
     .progress-bar {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #0f9d76, #22d3ee, #ffd24c);
+      background: linear-gradient(90deg, #22e6ff, #38bdf8, #ffd24c);
       border-radius: 999px;
       transition: width 0.20s linear;
     }
@@ -571,7 +484,7 @@
 
     .counter-badge {
       background: rgba(255, 255, 255, 0.1);
-      color: #f9fafb;
+      color: #f8fafc;
       padding: 5px 11px;
       border-radius: 8px;
       font-weight: 700;
@@ -596,15 +509,15 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      background: rgba(31, 41, 55, 0.88);
-      color: #f9fafb;
+      background: rgba(15, 23, 42, 0.88);
+      color: #f8fafc;
       transition: background-color 0.2s ease, transform 0.15s ease;
     }
 
-    .btn:hover { background: #374151; }
+    .btn:hover { background: #1e293b; }
     .btn:active { transform: scale(0.97); }
-    .btn.primary { background: #0f9d76; color: #ffffff; }
-    .btn.primary:hover { background: #0c8262; }
+    .btn.primary { background: #0284c7; color: #ffffff; }
+    .btn.primary:hover { background: #0369a1; }
     .btn.active-toggle { background: #ffd24c; color: #0f172a; }
 
     .dropper-input {
@@ -619,229 +532,90 @@
 <body>
 
   <div class="reel-stage" id="stage" title="টাচ/ক্লিক করলে অটো চালু বা বন্ধ হবে">
+    <div class="grid-overlay"></div>
+    <div class="particles" id="particles"></div>
     <div class="tap-indicator" id="tapIndicator">▶ অটো চালু</div>
 
+    <!-- Scene 01: আমাদের সার্ভিস -->
     <section class="scene active" data-scene="0">
-      <span class="badge stagger">01 • AI Scan Revolution</span>
-      <h1 class="hero-title stagger">তুমি এখনো হাতে লিখে <span class="hl">১০টা লিংক</span> ঘাঁটো?</h1>
-      <p class="sub-copy stagger">এআই স্ক্যানিং প্রযুক্তিতে জটিল তথ্য ও ছবি এখন এক পলকেই পড়া ও বোঝা যায়।</p>
-
-      <div class="white-card stagger">
-        <div style="background:#f1f5f9; padding:7px 10px; border-radius:9px; font-weight:600; font-size:0.84rem; margin-bottom:10px;">
-          🔍 <span id="s1Typed"></span>
+      <div class="pill-title">আমাদের সার্ভিস</div>
+      <div class="service-list">
+        <div class="service-card" data-idx="0">
+          <div class="icon-box">❖</div>
+          <div class="service-label">সোশ্যাল মিডিয়া মার্কেটিং</div>
         </div>
-        <div class="skeleton-line" style="width:92%;"></div>
-        <div class="skeleton-line" style="width:76%;"></div>
-        <div class="skeleton-line" style="width:84%; margin-bottom:0;"></div>
-        <svg class="cross-svg" viewBox="0 0 320 130">
-          <line class="cross-line" x1="40" y1="16" x2="280" y2="114" stroke="#0f9d76" stroke-width="8" stroke-linecap="round" />
-          <line class="cross-line" x1="280" y1="16" x2="40" y2="114" stroke="#0f172a" stroke-width="8" stroke-linecap="round" />
-        </svg>
-      </div>
-
-      <div class="metrics-row stagger">
-        <div class="metric-card">
-          <div class="metric-top"><span>Scan Speed</span><span id="s1Speed">25%</span></div>
-          <div class="progress-track"><div class="progress-fill"></div></div>
+        <div class="service-card" data-idx="1">
+          <div class="icon-box">◎</div>
+          <div class="service-label">পেইড অ্যাড ক্যাম্পেইন</div>
         </div>
-        <div class="metric-card">
-          <div class="metric-top"><span>AI Accuracy</span><span id="s1Matrix">1x</span></div>
-          <div class="matrix-grid" id="matrixGrid"></div>
+        <div class="service-card" data-idx="2">
+          <div class="icon-box">✎</div>
+          <div class="service-label">কনটেন্ট ও গ্রাফিক ডিজাইন</div>
         </div>
-      </div>
-
-      <div class="dark-popup">
-        <span>⚡ Smart AI Scan Ready</span>
-        <strong style="color:#ffd24c;">10x Faster</strong>
+        <div class="service-card" data-idx="3">
+          <div class="icon-box">⚑</div>
+          <div class="service-label">ব্র্যান্ডিং ও স্ট্র্যাটেজি</div>
+        </div>
       </div>
     </section>
 
+    <!-- Scene 02: ফলাফল -->
     <section class="scene" data-scene="1">
-      <span class="badge stagger">02 • Smart Document Scan</span>
-      <h1 class="hero-title stagger">যেকোনো কাগজ বা ছবি <span class="hl">স্ক্যান করো</span> এক ক্লিকে</h1>
-      <p class="sub-copy stagger">অস্পষ্ট নোট, বইয়ের পাতা কিংবা ফর্ম—এআই অটোমেটিক বর্ডার ধরে পরিষ্কার করে নেয়।</p>
-
-      <div class="white-card stagger">
-        <div class="doc-frame">
-          <span class="corner tl"></span><span class="corner tr"></span>
-          <span class="corner bl"></span><span class="corner br"></span>
-          <div class="scan-beam"></div>
-          <strong style="font-size:0.88rem;">📄 Land Survey & Office Note</strong>
-          <p style="font-size:0.8rem; color:#475569; margin-top:5px;">খতিয়ান: ২৪৫ • দাগ: ১০৮৯ • জমি: ৪৫ শতাংশ</p>
+      <div class="pill-title">ফলাফল</div>
+      <div class="result-rows">
+        <div class="result-item" data-r="0">
+          <div class="ring-icon">↗</div>
+          <div class="result-text">রিয়েল রিচ</div>
+        </div>
+        <div class="result-item" data-r="1">
+          <div class="ring-icon">↗</div>
+          <div class="result-text">রিয়েল লিড</div>
+        </div>
+        <div class="result-item" data-r="2">
+          <div class="ring-icon">↗</div>
+          <div class="result-text">রিয়েল রেজাল্ট</div>
         </div>
       </div>
-
-      <div class="dark-popup">
-        <span>📐 Auto Edge & Clarity Detected</span>
-        <strong style="color:#34d399;">HD Clean</strong>
-      </div>
+      <svg class="wave-svg" viewBox="0 0 360 110">
+        <path class="wave-path" d="M 10 92 Q 95 72, 165 82 T 350 28" />
+      </svg>
     </section>
 
+    <!-- Scene 03: স্ট্র্যাটেজি + ক্রিয়েটিভিটি + রেজাল্ট -->
     <section class="scene" data-scene="2">
-      <span class="badge stagger">03 • Instant OCR Extraction</span>
-      <h1 class="hero-title stagger">ছবির লেখা মুহূর্তেই <span class="hl">এডিটেবল টেক্সট</span> হয়ে যায়</h1>
-      <p class="sub-copy stagger">নতুন করে টাইপ করার ঝামেলা নেই; বাংলা ও ইংরেজি লেখা সরাসরি কপি ও এডিট করা যায়।</p>
-
-      <div class="white-card stagger">
-        <div class="scan-beam"></div>
-        <div class="ocr-box">
-          <div class="ocr-pill">🖼️ স্ক্যান করা ছবি: <span style="color:#64748b;">"ডিজিটাল বাংলাদেশ"</span></div>
-          <div class="ocr-pill" style="background:#e6f7f2; color:#0f172a;">✍️ কপিযোগ্য টেক্সট: <strong style="color:#0f9d76;">"ডিজিটাল বাংলাদেশ"</strong></div>
-        </div>
+      <div class="pillar-stack">
+        <div class="pillar-line" data-p="0">স্ট্র্যাটেজি</div>
+        <div class="pillar-line" data-p="1"><span style="color:#38bdf8;">+</span> ক্রিয়েটিভিটি</div>
+        <div class="pillar-line glow-cyan" data-p="2"><span style="color:#38bdf8;">+</span> রেজাল্ট</div>
       </div>
 
-      <div class="dark-popup">
-        <span>🔤 Bangla & English OCR Active</span>
-        <strong style="color:#ffd24c;">99.4% Match</strong>
-      </div>
-    </section>
-
-    <section class="scene" data-scene="3">
-      <span class="badge stagger">04 • Live Translate & Summary</span>
-      <h1 class="hero-title stagger">বিদেশি ভাষা স্ক্যান করে <span class="hl">বাংলায় বুঝে</span> নাও</h1>
-      <p class="sub-copy stagger">সাইনবোর্ড, মেনু বা বড় রিপোর্ট স্ক্যান করলেই এআই মূল সারমর্ম বাংলায় গুছিয়ে দেয়।</p>
-      <div class="chip-list stagger">
-        <span class="chip">🌐 ১০০+ ভাষা</span>
-        <span class="chip">📝 সারসংক্ষেপ</span>
-        <span class="chip">⚡ রিয়েল-টাইম</span>
-      </div>
-
-      <div class="white-card stagger">
-        <div class="scan-beam"></div>
-        <p style="font-size:0.78rem; color:#64748b;">Scanned English Text:</p>
-        <p style="font-weight:700; font-size:0.86rem; margin:3px 0 8px;">"AI vision extracts meaning in milliseconds."</p>
-        <div style="background:#fef9c3; padding:8px 10px; border-radius:9px; font-weight:700; font-size:0.82rem;">
-          বাংলা অর্থ: "এআই ভিশন মুহূর্তেই মূল অর্থ বের করে আনে।"
-        </div>
-      </div>
-
-      <div class="dark-popup">
-        <span>🌍 Instant Translation & Summary</span>
-        <strong style="color:#34d399;">Done</strong>
-      </div>
-    </section>
-
-    <section class="scene" data-scene="4">
-      <span class="badge stagger">05 • Multi-AI Vision Hub</span>
-      <h1 class="hero-title stagger">এক স্ক্যানেই যুক্ত হয় <span class="hl">সেরা এআই</span> মডেলগুলো</h1>
-      <p class="sub-copy stagger">ছবি বিশ্লেষণ, যুক্তি ও রেফারেন্সের জন্য একাধিক এআই ইঞ্জিন একসাথে কাজ করে।</p>
-
-      <div class="white-card stagger" style="padding:10px;">
-        <svg class="hub-svg" viewBox="0 0 320 170">
-          <line class="hub-line" x1="160" y1="85" x2="58" y2="34" stroke="#0f9d76" stroke-width="3" />
-          <line class="hub-line" x1="160" y1="85" x2="262" y2="34" stroke="#0f9d76" stroke-width="3" />
-          <line class="hub-line" x1="160" y1="85" x2="58" y2="136" stroke="#0f9d76" stroke-width="3" />
-          <line class="hub-line" x1="160" y1="85" x2="262" y2="136" stroke="#0f9d76" stroke-width="3" />
-
-          <rect x="18" y="18" width="80" height="30" rx="9" fill="#0f172a" />
-          <text x="58" y="37" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">Gemini</text>
-
-          <rect x="222" y="18" width="80" height="30" rx="9" fill="#0f172a" />
-          <text x="262" y="37" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">ChatGPT</text>
-
-          <rect x="18" y="122" width="80" height="30" rx="9" fill="#0f172a" />
-          <text x="58" y="141" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">Claude</text>
-
-          <rect x="222" y="122" width="80" height="30" rx="9" fill="#0f172a" />
-          <text x="262" y="141" fill="#fff" font-size="11" font-weight="700" text-anchor="middle">OCR Engine</text>
-
-          <circle cx="160" cy="85" r="32" fill="#0f9d76" />
-          <text x="160" y="89" fill="#fff" font-size="12" font-weight="800" text-anchor="middle">AI SCAN</text>
+      <div class="bar-chart-wrap" id="barChart">
+        <div class="bar-col" style="--h: 22%;"></div>
+        <div class="bar-col" style="--h: 40%;"></div>
+        <div class="bar-col" style="--h: 58%;"></div>
+        <div class="bar-col" style="--h: 76%;"></div>
+        <div class="bar-col" style="--h: 96%;"></div>
+        <svg class="trend-svg" viewBox="0 0 320 135">
+          <polyline class="trend-line" points="28,112 92,92 156,70 220,46 286,18"
+            fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="286" cy="18" r="5" fill="#ffffff" />
         </svg>
       </div>
-
-      <div class="dark-popup">
-        <span>🔗 4 Vision Engines Connected</span>
-        <strong style="color:#ffd24c;">Synced</strong>
-      </div>
     </section>
 
-    <section class="scene" data-scene="5">
-      <span class="badge stagger">06 • Smart Receipt & Data</span>
-      <h1 class="hero-title stagger">বিল, রিসিট ও টেবিল <span class="hl">অটো হিসাব</span> করে নেয়</h1>
-      <p class="sub-copy stagger">ভাউচার বা লম্বা হিসাবের ছবি তুললেই এআই সারি ও যোগফল আলাদা করে টেবিলে সাজায়।</p>
-
-      <div class="white-card stagger">
-        <div class="scan-beam"></div>
-        <table class="mini-table">
-          <tr><td><strong>০১.</strong> গ্রাফিক্স ডিজাইন</td><td style="text-align:right; font-weight:700;">৳ ২,৫০০</td></tr>
-          <tr><td><strong>০২.</strong> মোশন ভিডিও</td><td style="text-align:right; font-weight:700;">৳ ৩,৫০০</td></tr>
-          <tr style="background:#e6f7f2;"><td><strong>মোট অটো-হিসাব:</strong></td><td style="text-align:right; font-weight:800; color:#0f9d76;">৳ ৬,০০০</td></tr>
-        </table>
-      </div>
-
-      <div class="dark-popup">
-        <span>📊 Export Ready to Excel / Sheet</span>
-        <strong style="color:#34d399;">Auto Sum</strong>
-      </div>
-    </section>
-
-    <section class="scene" data-scene="6">
-      <span class="badge stagger">07 • Code & Chart Vision</span>
-      <h1 class="hero-title stagger">স্ক্রিনশট থেকেই <span class="hl">কোড ও চার্ট</span> ব্যাখ্যা করে</h1>
-      <p class="sub-copy stagger">যেকোনো এরর স্ক্রিনশট বা জটিল গ্রাফ স্ক্যান করলে এআই সমাধান ও কোড লিখে দেয়।</p>
-
-      <div class="white-card stagger">
-        <div class="scan-beam"></div>
-        <div class="code-box">
-          // AI Detected Fix:<br>
-          const scanResult = await ai.scan(img);<br>
-          console.log("Solved:", scanResult.ok);
+    <!-- Scene 04: ফলো করুন / আউটরো -->
+    <section class="scene" data-scene="3">
+      <div class="outro-box">
+        <div class="brand-badge">
+          <div class="brand-mark">SN</div>
+          <div class="brand-sub">Digital Growth</div>
         </div>
-      </div>
-
-      <div class="dark-popup">
-        <span>💻 Bug Fixed & Chart Analyzed</span>
-        <strong style="color:#ffd24c;">Instant Code</strong>
-      </div>
-    </section>
-
-    <section class="scene" data-scene="7">
-      <span class="badge stagger">08 • Source & Fact Check</span>
-      <h1 class="hero-title stagger">প্রতিটি তথ্যের সাথে <span class="hl">সোর্স ও প্রমাণ</span> যাচাই</h1>
-      <p class="sub-copy stagger">স্ক্যান করা পণ্য, খবর বা তথ্য আসল কি না—এআই সোর্স মিলিয়ে নির্ভরযোগ্য উত্তর দেয়।</p>
-
-      <div class="white-card stagger">
-        <div class="check-item">✅ <span style="flex:1;">সোর্স রেফারেন্স যাচাইকৃত</span><strong style="color:#0f9d76;">Verified</strong></div>
-        <div class="check-item">✅ <span style="flex:1;">ভুল তথ্য অটো ফিল্টার</span><strong style="color:#0f9d76;">Clean</strong></div>
-        <div class="check-item" style="margin-bottom:0;">✅ <span style="flex:1;">সরাসরি রেফারেন্স লিংক</span><strong style="color:#0f9d76;">Ready</strong></div>
-      </div>
-
-      <div class="dark-popup">
-        <span>🛡️ Trusted Reference Check</span>
-        <strong style="color:#34d399;">100% Clear</strong>
-      </div>
-    </section>
-
-    <section class="scene" data-scene="8">
-      <span class="badge stagger">09 • Encrypted AI Security</span>
-      <h1 class="hero-title stagger">আপনার স্ক্যান করা তথ্য <span class="hl">সম্পূর্ণ নিরাপদ</span> থাকে</h1>
-      <p class="sub-copy stagger">এনক্রিপ্টেড প্রসেসিংয়ের মাধ্যমে ব্যক্তিগত নথি সুরক্ষিত রেখে দ্রুত ফলাফল তৈরি হয়।</p>
-
-      <div class="white-card stagger">
-        <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.86rem;">
-          <span>🔒 End-to-End Encryption</span>
-          <span style="color:#0f9d76;">Active</span>
+        <div style="font-size: clamp(1.35rem, 2.9vh, 1.75rem); font-weight: 800; text-shadow: 0 2px 14px rgba(0,0,0,0.45);">
+          ফেসবুকে ফলো করুন
         </div>
-        <div class="shield-bar"><div class="shield-fill"></div></div>
-        <p style="font-size:0.78rem; color:#64748b; margin-top:8px;">কাজ শেষে অস্থায়ী ফাইল স্বয়ংক্রিয়ভাবে মুছে ফেলা হয়।</p>
-      </div>
-
-      <div class="dark-popup">
-        <span>🔐 Privacy Protection Enabled</span>
-        <strong style="color:#ffd24c;">Secure</strong>
-      </div>
-    </section>
-
-    <section class="scene" data-scene="9" style="text-align:center;">
-      <span class="badge stagger" style="align-self:center;">10 • Future of AI Scanning</span>
-      <h1 class="hero-title stagger">এআই স্ক্যানিং দিয়ে <span class="hl">কাজের গতি</span> বাড়ান আজই</h1>
-      <p class="sub-copy stagger">সময় বাঁচান, নির্ভুল তথ্য পান এবং স্মার্ট প্রযুক্তির সাথে নিজেকে এগিয়ে রাখুন।</p>
-
-      <div class="summary-grid stagger">
-        <div class="sum-tile"><strong style="font-size:1.15rem; color:#ffd24c;">১০x</strong><div style="font-size:0.76rem; color:#cbd5e1; margin-top:3px;">দ্রুত স্ক্যান</div></div>
-        <div class="sum-tile"><strong style="font-size:1.15rem; color:#34d399;">৯৯%</strong><div style="font-size:0.76rem; color:#cbd5e1; margin-top:3px;">সঠিক তথ্য</div></div>
-        <div class="sum-tile"><strong style="font-size:1.15rem; color:#22d3ee;">১ ক্লিক</strong><div style="font-size:0.76rem; color:#cbd5e1; margin-top:3px;">স্মার্ট সমাধান</div></div>
+        <div style="font-size: clamp(1.15rem, 2.5vh, 1.45rem); font-weight: 800; color: #e0f2fe;">
+          SN Digital <span style="color: #7df9ff;">Growth</span>
+        </div>
       </div>
     </section>
 
@@ -854,7 +628,7 @@
     </div>
 
     <div class="controls-row">
-      <span class="counter-badge" id="counter">01 / 10</span>
+      <span class="counter-badge" id="counter">01 / 04</span>
 
       <div class="btn-group">
         <button class="btn active-toggle" id="soundBtn" type="button">🔊 সাউন্ড: চালু</button>
@@ -872,24 +646,30 @@
     const totalSteps = scenes.length;
 
     const voiceoverLines = [
-      "তুমি এখনো হাতে লিখে দশটা লিংক ঘাঁটো?",
-      "যেকোনো কাগজ বা ছবি স্ক্যান করো এক ক্লিকে।",
-      "ছবির লেখা মুহূর্তেই এডিটেবল টেক্সট হয়ে যায়।",
-      "বিদেশি ভাষা স্ক্যান করে বাংলায় বুঝে নাও।",
-      "এক স্ক্যানেই যুক্ত হয় সেরা এআই মডেলগুলো।",
-      "বিল, রিসিট ও টেবিল অটো হিসাব করে নেয়।",
-      "স্ক্রিনশট থেকেই কোড ও চার্ট ব্যাখ্যা করে।",
-      "প্রতিটি তথ্যের সাথে সোর্স ও প্রমাণ যাচাই।",
-      "আপনার স্ক্যান করা তথ্য সম্পূর্ণ নিরাপদ থাকে।",
-      "এআই স্ক্যানিং দিয়ে কাজের গতি বাড়ান আজই।"
+      "সঠিক পরিকল্পনায় আপনার ব্যবসাকে এগিয়ে নিন।",
+      "ফলাফল, বাড়ছে রিচ, বাড়ছে লিড, বাড়ছে সেলস।",
+      "পরিকল্পনা, সৃজনশীলতা আর ডেটার সমন্বয়ে ধাপে ধাপে এগিয়ে যাই।",
+      "ফেসবুকে ফলো করুন, এসএন ডিজিটাল গ্রোথ।"
     ];
 
-    // ন্যূনতম ৩ সেকেন্ড (3000ms) সিন সময়
     function estimateVoiceDurationMs(text) {
       const words = text.trim().split(/\s+/).filter(Boolean);
-      const basePerWord = 300;
-      const punctuationPause = /[?.।!]$/.test(text.trim()) ? 120 : 0;
-      return Math.max(3000, words.length * basePerWord + punctuationPause);
+      return Math.max(3200, words.length * 340);
+    }
+
+    // ব্যাকগ্রাউন্ডে ভাসমান কণা তৈরি
+    const particlesEl = document.getElementById('particles');
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('span');
+      p.className = 'particle';
+      const sz = 2 + (i % 3);
+      p.style.width = `${sz}px`;
+      p.style.height = `${sz}px`;
+      p.style.left = `${(i * 19) % 96}%`;
+      p.style.top = `${(i * 23) % 90}%`;
+      p.style.animationDuration = `${4.5 + (i % 4)}s`;
+      p.style.animationDelay = `${(i % 5) * 0.4}s`;
+      particlesEl.appendChild(p);
     }
 
     let audioCtx = null;
@@ -905,62 +685,27 @@
       }
     }
 
-    // আমার সাজানো ট্রানজিশন সাউন্ড: বাউন্স ও ক্যামেরা লেন্স ফোকাসের সাথে মানানসই নরম সুইপ+বাউন্স ড্রপ
-    function playBounceLensTransitionSound() {
+    // সফট ট্রানজিশন ও সূক্ষ্ম পপ অ্যাকসেন্ট (ভয়েসওভার বা ক্যাপশন ছাড়া)
+    function playSoftTransitionAccent(freqStart = 280, freqEnd = 520, duration = 0.16, peak = 0.04) {
       if (!soundEnabled) return;
       ensureAudioCtx();
       if (!audioCtx || audioCtx.state !== 'running') return;
 
       const now = audioCtx.currentTime;
-
-      // ১. নরম লেন্স ফোকাস সুইপ (ব্যান্ডপাস ফিল্টার্ড বাতাসের নরম টান)
-      const sweepDuration = 0.22;
-      const bufSize = Math.floor(audioCtx.sampleRate * sweepDuration);
-      const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufSize; i++) {
-        const p = i / bufSize;
-        const env = Math.sin(p * Math.PI) * Math.pow(1 - p, 1.3);
-        data[i] = (Math.random() * 2 - 1) * env;
-      }
-
-      const noise = audioCtx.createBufferSource();
-      noise.buffer = buffer;
-
-      const bp = audioCtx.createBiquadFilter();
-      bp.type = 'bandpass';
-      bp.Q.setValueAtTime(2.2, now);
-      bp.frequency.setValueAtTime(340, now);
-      bp.frequency.exponentialRampToValueAtTime(1120, now + sweepDuration * 0.55);
-      bp.frequency.exponentialRampToValueAtTime(460, now + sweepDuration);
-
-      const noiseGain = audioCtx.createGain();
-      noiseGain.gain.setValueAtTime(0.0001, now);
-      noiseGain.gain.linearRampToValueAtTime(0.055, now + 0.05);
-      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + sweepDuration);
-
-      noise.connect(bp);
-      bp.connect(noiseGain);
-      noiseGain.connect(audioCtx.destination);
-      noise.start(now);
-      noise.stop(now + sweepDuration + 0.01);
-
-      // ২. নরম বাউন্স টোন (হালকা ইনার্শিয়াল বাউন্সের সাথে সামঞ্জস্যপূর্ণ মৃদু পিচ ডিপ ও রিকভারি)
       const osc = audioCtx.createOscillator();
-      const oscGain = audioCtx.createGain();
+      const gain = audioCtx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(320, now + 0.02);
-      osc.frequency.exponentialRampToValueAtTime(165, now + 0.13);
-      osc.frequency.exponentialRampToValueAtTime(220, now + 0.24);
+      osc.frequency.setValueAtTime(freqStart, now);
+      osc.frequency.exponentialRampToValueAtTime(freqEnd, now + duration);
 
-      oscGain.gain.setValueAtTime(0.0001, now + 0.02);
-      oscGain.gain.linearRampToValueAtTime(0.045, now + 0.05);
-      oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.26);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(peak, now + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
-      osc.connect(oscGain);
-      oscGain.connect(audioCtx.destination);
-      osc.start(now + 0.02);
-      osc.stop(now + 0.27);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + duration + 0.01);
     }
 
     const stageEl = document.getElementById('stage');
@@ -975,33 +720,18 @@
     const dropperBtn = document.getElementById('dropperBtn');
     const colorPicker = document.getElementById('colorPicker');
 
-    const matrixGrid = document.getElementById('matrixGrid');
-    const s1Speed = document.getElementById('s1Speed');
-    const s1Matrix = document.getElementById('s1Matrix');
-    const s1Typed = document.getElementById('s1Typed');
-
     let currentStep = 0;
     let isFirstLoad = true;
     let isAutoPlaying = true;
     let highlightEnabled = true;
     let wordTimer = null;
     let nextSceneTimer = null;
-    let typingTimer = null;
     let indicatorTimer = null;
     let sceneTimers = [];
-
-    const totalDots = 24;
-    for (let i = 0; i < totalDots; i++) {
-      const dot = document.createElement('div');
-      dot.className = 'matrix-dot';
-      matrixGrid.appendChild(dot);
-    }
-    const dots = Array.from(document.querySelectorAll('.matrix-dot'));
 
     function clearAllTimers() {
       clearTimeout(wordTimer);
       clearTimeout(nextSceneTimer);
-      clearInterval(typingTimer);
       sceneTimers.forEach(t => clearTimeout(t));
       sceneTimers = [];
     }
@@ -1034,35 +764,6 @@
       }
     }
 
-    function animateCounter(el, start, end, totalDurationMs, suffix = '') {
-      const startTime = performance.now();
-      function step(now) {
-        const p = Math.min((now - startTime) / totalDurationMs, 1);
-        const eased = 1 - Math.pow(1 - p, 3);
-        const current = start + (end - start) * eased;
-        el.textContent = Math.round(current) + suffix;
-        if (p < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-
-    function typeQuerySynced(text, totalDurationMs) {
-      s1Typed.textContent = '';
-      const delayMs = 150;
-      const availableMs = Math.max(300, totalDurationMs - delayMs);
-      const charInterval = availableMs / text.length;
-      let idx = 0;
-
-      const t = setTimeout(() => {
-        typingTimer = setInterval(() => {
-          s1Typed.textContent += text[idx];
-          idx++;
-          if (idx >= text.length) clearInterval(typingTimer);
-        }, charInterval);
-      }, delayMs);
-      sceneTimers.push(t);
-    }
-
     function updateProgress(stepIdx, wordRatio = 0) {
       const base = stepIdx / totalSteps;
       const slice = (1 / totalSteps) * wordRatio;
@@ -1070,19 +771,17 @@
       progressBar.style.width = `${pct}%`;
     }
 
-    // সিন শেষ হওয়ার পর পরের সিনে যাওয়ার আগে ০.২ সেকেন্ড (200ms) বিরতি
     function scheduleNextScene(stepIdx) {
       clearTimeout(nextSceneTimer);
       if (!isAutoPlaying) return;
       nextSceneTimer = setTimeout(() => {
         goToScene((stepIdx + 1) % totalSteps);
-      }, 200);
+      }, 220);
     }
 
-    // ক্যাপশন কার্ডে কোনো সাউন্ড নেই — শুধুমাত্র ভিজ্যুয়াল হাইলাইট
+    // ক্যাপশন কার্ড সম্পূর্ণ নিঃশব্দ — শুধুমাত্র শব্দ হাইলাইট
     function renderKaraokeSynced(text, stepIdx, totalDurationMs) {
       bottomCaption.innerHTML = '';
-
       const words = text.split(/\s+/).filter(Boolean);
       const wordSpans = words.map((w) => {
         const span = document.createElement('span');
@@ -1093,7 +792,6 @@
       });
 
       if (!wordSpans.length) return;
-
       const intervalMs = totalDurationMs / wordSpans.length;
       let wIdx = 0;
 
@@ -1117,24 +815,58 @@
       stepWord();
     }
 
-    function runScene1Dynamics(syncMs) {
-      dots.forEach(d => d.classList.remove('on'));
-      s1Speed.textContent = '25%';
-      s1Matrix.textContent = '1x';
-      s1Typed.textContent = '';
+    function animateSceneDetails(stepIdx, syncMs) {
+      if (stepIdx === 0) {
+        const cards = Array.from(document.querySelectorAll('.service-card'));
+        cards.forEach(c => c.classList.remove('lit'));
+        const stepGap = Math.max(450, (syncMs - 500) / cards.length);
+        cards.forEach((card, i) => {
+          const t = setTimeout(() => {
+            cards.forEach(x => x.classList.remove('lit'));
+            card.classList.add('lit');
+            playSoftTransitionAccent(320 + i * 55, 480 + i * 55, 0.11, 0.025);
+          }, 250 + i * stepGap);
+          sceneTimers.push(t);
+        });
+      } else if (stepIdx === 1) {
+        const items = Array.from(document.querySelectorAll('.result-item'));
+        items.forEach(el => el.classList.remove('show'));
+        const gap = Math.max(550, (syncMs - 600) / items.length);
+        items.forEach((item, i) => {
+          const t = setTimeout(() => {
+            item.classList.add('show');
+            playSoftTransitionAccent(360 + i * 70, 560 + i * 70, 0.12, 0.028);
+          }, 220 + i * gap);
+          sceneTimers.push(t);
+        });
+      } else if (stepIdx === 2) {
+        const lines = Array.from(document.querySelectorAll('.pillar-line'));
+        const bars = Array.from(document.querySelectorAll('.bar-col'));
+        const trend = document.querySelector('.trend-line');
+        lines.forEach(el => el.classList.remove('show'));
+        bars.forEach(b => b.classList.remove('grow'));
+        if (trend) trend.classList.remove('draw');
 
-      animateCounter(s1Speed, 25, 99, syncMs, '%');
-      animateCounter(s1Matrix, 1, 10, syncMs, 'x');
-      typeQuerySynced('AI Smart Document Scan...', syncMs);
+        lines.forEach((line, i) => {
+          const t = setTimeout(() => {
+            line.classList.add('show');
+            playSoftTransitionAccent(300 + i * 80, 520 + i * 80, 0.12, 0.028);
+          }, 180 + i * 420);
+          sceneTimers.push(t);
+        });
 
-      const dotStartMs = 150;
-      const dotStepMs = (syncMs - dotStartMs) / totalDots;
-      dots.forEach((dot, i) => {
-        const t = setTimeout(() => {
-          dot.classList.add('on');
-        }, dotStartMs + i * dotStepMs);
-        sceneTimers.push(t);
-      });
+        bars.forEach((bar, i) => {
+          const t = setTimeout(() => {
+            bar.classList.add('grow');
+          }, 900 + i * 160);
+          sceneTimers.push(t);
+        });
+
+        const tLine = setTimeout(() => {
+          if (trend) trend.classList.add('draw');
+        }, 1650);
+        sceneTimers.push(tLine);
+      }
     }
 
     function goToScene(stepIdx) {
@@ -1145,31 +877,19 @@
 
       document.documentElement.style.setProperty('--sync-duration', `${(syncMs / 1000).toFixed(2)}s`);
 
-      if (soundEnabled) {
-        ensureAudioCtx();
-      }
-
       if (isFirstLoad) {
         isFirstLoad = false;
       } else {
-        playBounceLensTransitionSound();
+        playSoftTransitionAccent(220, 420, 0.18, 0.038);
       }
 
       scenes.forEach((sc, i) => {
-        sc.classList.remove('active', 'bounce-lens');
+        sc.classList.remove('active');
         void sc.offsetWidth;
-        if (i === currentStep) {
-          sc.classList.add('active');
-          if (stepIdx > 0 || currentStep === 0) {
-            sc.classList.add('bounce-lens');
-          }
-        }
+        if (i === currentStep) sc.classList.add('active');
       });
 
-      if (currentStep === 0) {
-        runScene1Dynamics(syncMs);
-      }
-
+      animateSceneDetails(currentStep, syncMs);
       counterEl.textContent = `${String(currentStep + 1).padStart(2, '0')} / ${String(totalSteps).padStart(2, '0')}`;
       renderKaraokeSynced(line, currentStep, syncMs);
     }
@@ -1189,7 +909,7 @@
       soundBtn.textContent = soundEnabled ? '🔊 সাউন্ড: চালু' : '🔇 সাউন্ড: বন্ধ';
       if (soundEnabled) {
         ensureAudioCtx();
-        playBounceLensTransitionSound();
+        playSoftTransitionAccent(260, 480, 0.15, 0.035);
       }
     });
 
