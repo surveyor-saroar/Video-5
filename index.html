@@ -3,8 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Dark Wood Plank Background</title>
+  <title>index.html - Scene 1 Motion Graphics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --outer-bg: #111827;
+      --bg-top: #eef8f5;
+      --bg-warm: #faf5e4;
+      --bg-bottom: #cfd6d6;
+      --card-bg: #ffffff;
+      --accent-green: #0f9d76;
+      --accent-yellow: #ffd24c;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --shadow: 0 20px 45px rgba(15, 23, 42, 0.14);
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -18,80 +33,428 @@
     }
 
     body {
-      position: relative;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background-color: #0e0e0e;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-
-    /* ডার্ক কাঠের তক্তা ও ভিননেট ব্যাকগ্রাউন্ড লেয়ার */
-    .wood-bg {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.72) 85%),
-        repeating-linear-gradient(
-          90deg,
-          #191919 0px,
-          #222222 18px,
-          #161616 36px,
-          #252525 54px,
-          #1c1c1c 70px,
-          #0c0c0c 72px
-        );
-    }
-
-    /* সূক্ষ্ম উড-গ্রেইন টেক্সচার ওভারলে */
-    .wood-bg::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0.025) 0px 2px,
-        transparent 2px 9px,
-        rgba(0, 0, 0, 0.25) 9px 11px
-      );
-      opacity: 0.75;
+      gap: 14px;
+      background-color: var(--outer-bg);
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-dark);
+      padding: 18px;
     }
 
     .stage {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1;
+      position: relative;
+      width: 100%;
+      max-width: 1040px;
+      aspect-ratio: 16 / 9;
+      border-radius: 20px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.16), transparent 42%),
+        radial-gradient(circle at 85% 22%, rgba(250, 204, 21, 0.2), transparent 45%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-warm) 55%, var(--bg-bottom) 100%);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
     }
 
     .scene {
       position: absolute;
       inset: 0;
+      padding: 36px 46px;
       display: flex;
       align-items: center;
       justify-content: center;
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 0.5s var(--ease-out), transform 0.65s var(--ease-out);
+    }
+
+    .scene.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .grid-2 {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    /* Slide & Stagger Entrance */
+    .stagger {
+      opacity: 0;
+      transform: translateY(22px) translateX(-10px);
+      transition: opacity 0.55s var(--ease-out), transform 0.65s var(--ease-out);
+    }
+
+    .scene.active .stagger {
+      opacity: 1;
+      transform: translateY(0) translateX(0);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #e6f7f2;
+      color: var(--accent-green);
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.92rem;
+      margin-bottom: 12px;
+      transition-delay: 0.08s;
+    }
+
+    .hero-title {
+      font-size: clamp(1.85rem, 3.3vw, 2.85rem);
+      line-height: 1.24;
+      font-weight: 700;
+      margin-bottom: 12px;
+      transition-delay: 0.16s;
+    }
+
+    /* Yellow Highlight Accent */
+    .hl {
+      position: relative;
+      display: inline-block;
+      z-index: 1;
+    }
+
+    .hl::after {
+      content: "";
+      position: absolute;
+      left: -4px;
+      right: -4px;
+      bottom: 2px;
+      height: 38%;
+      background: var(--accent-yellow);
+      z-index: -1;
+      border-radius: 5px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.6s var(--ease-out) 0.32s;
+    }
+
+    .scene.active .hl::after {
+      transform: scaleX(1);
+    }
+
+    .sub-copy {
+      font-size: 1.04rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 18px;
+      transition-delay: 0.24s;
+    }
+
+    /* Progress Fill & Matrix Grid */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      transition-delay: 0.32s;
+    }
+
+    .metric-card {
+      background: rgba(255, 255, 255, 0.88);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      transition: transform 0.35s var(--ease-out);
+    }
+
+    .metric-card:hover {
+      transform: scale(1.03);
+    }
+
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 99px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #0f9d76, #10b981);
+      transition: width 1.2s var(--ease-out) 0.4s;
+    }
+
+    .scene.active .progress-fill {
+      width: 99%;
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 5px;
+    }
+
+    .matrix-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: #cbd5e1;
+      transform: scale(0.6);
+      transition: background-color 0.25s ease, transform 0.25s var(--ease-out);
+    }
+
+    .matrix-dot.on {
+      background: #0f9d76;
+      transform: scale(1);
+    }
+
+    /* Right Panel: Search Mock + Cross (X) + Typing Popup */
+    .right-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition-delay: 0.25s;
+    }
+
+    .search-mock {
+      position: relative;
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      transform: scale(0.96);
+      transition: transform 0.55s var(--ease-out) 0.25s;
+    }
+
+    .scene.active .search-mock {
+      transform: scale(1);
+    }
+
+    .search-bar {
+      height: 40px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      color: var(--text-dark);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 18px;
+      background: var(--accent-green);
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .skeleton-line {
+      height: 10px;
+      border-radius: 99px;
+      background: #e2e8f0;
+      margin-bottom: 10px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.45s var(--ease-out);
+    }
+
+    .scene.active .skeleton-line {
+      transform: scaleX(1);
+    }
+
+    .cross-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .cross-line {
+      stroke-dasharray: 460;
+      stroke-dashoffset: 460;
+      transition: stroke-dashoffset 0.7s var(--ease-out) 0.5s;
+    }
+
+    .scene.active .cross-line {
+      stroke-dashoffset: 0;
+    }
+
+    .result-popup {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.25);
+      opacity: 0;
+      transform: translateY(16px) scale(0.95);
+      transition: opacity 0.45s var(--ease-out) 0.85s, transform 0.5s var(--ease-out) 0.85s;
+    }
+
+    .scene.active .result-popup {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .replay-btn {
+      padding: 7px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #0f9d76;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <div class="wood-bg"></div>
-
   <div class="stage" id="stage">
-    <section class="scene active" data-scene="0">
-      <!-- আপনার সিন ১-এর কন্টেন্ট এখানে যুক্ত হবে -->
+    <section class="scene active" id="scene1" data-scene="0">
+      <div class="grid-2">
+        <div>
+          <span class="badge stagger">AI Search Revolution</span>
+          <h1 class="hero-title stagger">তুমি এখনো গুগলে <span class="hl">১০টা লিংক</span> ঘাঁটো?</h1>
+          <p class="sub-copy stagger">সরাসরি উত্তর, দ্রুত বিশ্লেষণ ও স্মার্ট রেজাল্ট—পুরনো সার্চের ধরণ এখন বদলে যাচ্ছে।</p>
+
+          <div class="metrics-row stagger">
+            <div class="metric-card">
+              <div class="metric-top">
+                <span>Speed</span>
+                <span id="speedVal">25%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill"></div>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-top">
+                <span>Matrix Index</span>
+                <span id="matrixVal">1x</span>
+              </div>
+              <div class="matrix-grid" id="matrixGrid"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-stack stagger">
+          <div class="search-mock">
+            <div class="search-bar">
+              <span>🔍</span>
+              <span id="typedText"></span>
+              <span class="cursor"></span>
+            </div>
+            <div class="skeleton-line" style="width: 92%; transition-delay: 0.15s;"></div>
+            <div class="skeleton-line" style="width: 78%; transition-delay: 0.25s;"></div>
+            <div class="skeleton-line" style="width: 86%; transition-delay: 0.35s;"></div>
+            <div class="skeleton-line" style="width: 66%; transition-delay: 0.45s;"></div>
+
+            <svg class="cross-svg" viewBox="0 0 400 210">
+              <line class="cross-line" x1="50" y1="20" x2="350" y2="190" stroke="#0f9d76" stroke-width="10" stroke-linecap="round" />
+              <line class="cross-line" x1="350" y1="20" x2="50" y2="190" stroke="#0f172a" stroke-width="10" stroke-linecap="round" />
+            </svg>
+          </div>
+
+          <div class="result-popup">
+            <span>⚡ Instant Verified Answer Ready</span>
+            <strong style="color: #ffd24c;">10x Faster</strong>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 
+  <button class="replay-btn" id="replayBtn">সিন ১ আবার দেখুন</button>
+
   <script>
-    const stage = document.getElementById('stage');
+    const scene1 = document.getElementById('scene1');
+    const matrixGrid = document.getElementById('matrixGrid');
+    const speedVal = document.getElementById('speedVal');
+    const matrixVal = document.getElementById('matrixVal');
+    const typedText = document.getElementById('typedText');
+    const replayBtn = document.getElementById('replayBtn');
+
+    // ২৪টি ডট নিয়ে ম্যাট্রিক্স তৈরি
+    const totalDots = 24;
+    for (let i = 0; i < totalDots; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'matrix-dot';
+      matrixGrid.appendChild(dot);
+    }
+    const dots = Array.from(document.querySelectorAll('.matrix-dot'));
+
+    function animateCounter(el, start, end, duration, suffix = '', decimals = 0) {
+      const startTime = performance.now();
+      function step(now) {
+        const p = Math.min((now - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const current = start + (end - start) * eased;
+        el.textContent = current.toFixed(decimals) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function typeQuery(text, delayMs = 250) {
+      typedText.textContent = '';
+      let idx = 0;
+      setTimeout(() => {
+        const timer = setInterval(() => {
+          typedText.textContent += text[idx];
+          idx++;
+          if (idx >= text.length) clearInterval(timer);
+        }, 55);
+      }, delayMs);
+    }
+
+    function playScene1() {
+      scene1.classList.remove('active');
+      dots.forEach(d => d.classList.remove('on'));
+      speedVal.textContent = '25%';
+      matrixVal.textContent = '1x';
+      typedText.textContent = '';
+
+      void scene1.offsetWidth;
+      scene1.classList.add('active');
+
+      animateCounter(speedVal, 25, 99, 1200, '%', 0);
+      animateCounter(matrixVal, 1, 10, 1200, 'x', 0);
+      typeQuery('Best AI tools for fast answers...', 300);
+
+      dots.forEach((dot, i) => {
+        setTimeout(() => {
+          dot.classList.add('on');
+        }, 350 + i * 35);
+      });
+    }
+
+    replayBtn.addEventListener('click', playScene1);
+    playScene1();
   </script>
 </body>
 </html>
