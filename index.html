@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Borderless 9:16 Reel (Min 2s Scene + 0.2s Gap)</title>
+  <title>index.html - Borderless 9:16 Reel (0.5s Breeze White Flash)</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -18,10 +18,9 @@
       --text-dark: #0f172a;
       --caption-bg-alpha: 0.24;
       --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-      --wipe-ease: cubic-bezier(0.77, 0, 0.175, 1);
-      --wipe-duration: 0.45s;
-      --flash-duration: 0.25s;
-      --sync-duration: 2.2s;
+      --start-delay: 0.15s;
+      --flash-duration: 0.5s;
+      --sync-duration: 3.0s;
     }
 
     * {
@@ -98,33 +97,54 @@
       transform: translateY(0);
     }
 
-    /* ০.২৫ সেকেন্ডের সফট দুধেল সাদা ফ্লাশ (White Flash Transition) */
+    /* ০.৫ সেকেন্ডের সফট দুধেল সাদা ফ্লাশ — বাতাসের মতো দুলে দুলে */
     .white-flash {
       position: absolute;
-      inset: 0;
+      inset: -12%;
       z-index: 18;
       pointer-events: none;
       opacity: 0;
-      background: radial-gradient(
-        circle at 50% 45%,
-        rgba(255, 255, 255, 0.62) 0%,
-        rgba(248, 250, 252, 0.50) 65%,
-        rgba(241, 245, 249, 0.42) 100%
-      );
+      transform-origin: center center;
+      will-change: transform, opacity;
+      background:
+        radial-gradient(
+          ellipse at 46% 42%,
+          rgba(255, 255, 255, 0.66) 0%,
+          rgba(248, 250, 252, 0.52) 58%,
+          rgba(241, 245, 249, 0.36) 82%,
+          transparent 100%
+        );
       mix-blend-mode: screen;
     }
 
     .white-flash.burst {
-      animation: softWhiteFlash var(--flash-duration) cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+      animation: breezeFloatFlash var(--flash-duration) ease-in-out forwards;
     }
 
-    @keyframes softWhiteFlash {
-      0% { opacity: 0; }
-      28% { opacity: 0.55; }
-      100% { opacity: 0; }
+    @keyframes breezeFloatFlash {
+      0% {
+        opacity: 0;
+        transform: translateX(-18px) translateY(4px) skewX(-3deg) scale(1.02);
+      }
+      22% {
+        opacity: 0.58;
+        transform: translateX(12px) translateY(-3px) skewX(2.5deg) scale(1.05);
+      }
+      52% {
+        opacity: 0.44;
+        transform: translateX(-10px) translateY(3px) skewX(-2deg) scale(1.07);
+      }
+      78% {
+        opacity: 0.20;
+        transform: translateX(7px) translateY(-2px) skewX(1.2deg) scale(1.08);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(0px) translateY(0px) skewX(0deg) scale(1.04);
+      }
     }
 
-    /* স্লাইড / ওয়াইপ কাট (Slide / Wipe Cut) */
+    /* স্লাইড/ওয়াইপ ছাড়া ক্লিন শট */
     .scene {
       position: absolute;
       inset: 0;
@@ -135,65 +155,24 @@
       gap: 14px;
       opacity: 0;
       z-index: 1;
-      transform: translateX(100%);
-      clip-path: inset(0 0 0 100%);
       pointer-events: none;
-      will-change: transform, clip-path;
-    }
-
-    .scene.instant-active {
-      opacity: 1;
-      z-index: 3;
-      transform: translateX(0);
-      clip-path: inset(0 0 0 0);
-      pointer-events: auto;
+      transition: opacity 0.22s var(--ease-out);
     }
 
     .scene.active {
       opacity: 1;
-      z-index: 4;
+      z-index: 3;
       pointer-events: auto;
-      animation: slideWipeIn var(--wipe-duration) var(--wipe-ease) forwards;
-    }
-
-    .scene.exit-wipe {
-      opacity: 1;
-      z-index: 2;
-      pointer-events: none;
-      animation: slideWipeOut var(--wipe-duration) var(--wipe-ease) forwards;
-    }
-
-    @keyframes slideWipeIn {
-      0% {
-        transform: translateX(100%);
-        clip-path: inset(0 0 0 100%);
-      }
-      100% {
-        transform: translateX(0);
-        clip-path: inset(0 0 0 0);
-      }
-    }
-
-    @keyframes slideWipeOut {
-      0% {
-        transform: translateX(0);
-        clip-path: inset(0 0 0 0);
-      }
-      100% {
-        transform: translateX(-38%);
-        clip-path: inset(0 100% 0 0);
-      }
     }
 
     .stagger {
       opacity: 0;
-      transform: translateY(16px);
-      transition: opacity calc(var(--sync-duration) * 0.24) var(--ease-out),
-                  transform calc(var(--sync-duration) * 0.30) var(--ease-out);
+      transform: translateY(14px);
+      transition: opacity calc(var(--sync-duration) * 0.20) var(--ease-out),
+                  transform calc(var(--sync-duration) * 0.24) var(--ease-out);
     }
 
-    .scene.active .stagger,
-    .scene.instant-active .stagger {
+    .scene.active .stagger {
       opacity: 1;
       transform: translateY(0);
     }
@@ -209,7 +188,7 @@
       padding: 4px 12px;
       border-radius: 999px;
       font-size: 0.8rem;
-      transition-delay: calc(var(--sync-duration) * 0.05);
+      transition-delay: var(--start-delay);
     }
 
     .hero-title {
@@ -217,7 +196,7 @@
       line-height: 1.26;
       font-weight: 700;
       color: var(--text-light);
-      transition-delay: calc(var(--sync-duration) * 0.10);
+      transition-delay: calc(var(--start-delay) + 0.05s);
     }
 
     .hl {
@@ -240,11 +219,10 @@
       border-radius: 6px;
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform calc(var(--sync-duration) * 0.28) var(--ease-out) calc(var(--sync-duration) * 0.18);
+      transition: transform calc(var(--sync-duration) * 0.24) var(--ease-out) calc(var(--start-delay) + 0.10s);
     }
 
-    .scene.active .hl::after,
-    .scene.instant-active .hl::after {
+    .scene.active .hl::after {
       transform: scaleX(1);
     }
 
@@ -252,7 +230,7 @@
       font-size: 0.88rem;
       color: var(--text-muted-light);
       line-height: 1.45;
-      transition-delay: calc(var(--sync-duration) * 0.14);
+      transition-delay: calc(var(--start-delay) + 0.08s);
     }
 
     .white-card {
@@ -263,7 +241,7 @@
       padding: 14px 15px;
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
       overflow: hidden;
-      transition-delay: calc(var(--sync-duration) * 0.17);
+      transition-delay: calc(var(--start-delay) + 0.12s);
     }
 
     .dark-popup {
@@ -278,12 +256,11 @@
       box-shadow: 0 12px 26px rgba(0, 0, 0, 0.42);
       opacity: 0;
       transform: translateY(12px) scale(0.95);
-      transition: opacity calc(var(--sync-duration) * 0.24) var(--ease-out) calc(var(--sync-duration) * 0.72),
-                  transform calc(var(--sync-duration) * 0.28) var(--ease-out) calc(var(--sync-duration) * 0.72);
+      transition: opacity calc(var(--sync-duration) * 0.20) var(--ease-out) calc(var(--sync-duration) * 0.72),
+                  transform calc(var(--sync-duration) * 0.24) var(--ease-out) calc(var(--sync-duration) * 0.72);
     }
 
-    .scene.active .dark-popup,
-    .scene.instant-active .dark-popup {
+    .scene.active .dark-popup {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
@@ -299,9 +276,8 @@
       opacity: 0;
     }
 
-    .scene.active .scan-beam,
-    .scene.instant-active .scan-beam {
-      animation: laserScan calc(var(--sync-duration) * 0.82) var(--ease-out) calc(var(--sync-duration) * 0.14) forwards;
+    .scene.active .scan-beam {
+      animation: laserScan calc(var(--sync-duration) * 0.78) var(--ease-out) var(--start-delay) forwards;
     }
 
     @keyframes laserScan {
@@ -315,7 +291,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      transition-delay: calc(var(--sync-duration) * 0.20);
+      transition-delay: calc(var(--start-delay) + 0.15s);
     }
 
     .metric-card {
@@ -346,11 +322,10 @@
       width: 0%;
       border-radius: 99px;
       background: linear-gradient(90deg, #0f9d76, #10b981);
-      transition: width calc(var(--sync-duration) * 0.78) var(--ease-out) calc(var(--sync-duration) * 0.20);
+      transition: width calc(var(--sync-duration) * 0.75) var(--ease-out) var(--start-delay);
     }
 
-    .scene.active .progress-fill,
-    .scene.instant-active .progress-fill {
+    .scene.active .progress-fill {
       width: 99%;
     }
 
@@ -381,11 +356,10 @@
       margin-bottom: 8px;
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform calc(var(--sync-duration) * 0.22) var(--ease-out);
+      transition: transform calc(var(--sync-duration) * 0.20) var(--ease-out) var(--start-delay);
     }
 
-    .scene.active .skeleton-line,
-    .scene.instant-active .skeleton-line {
+    .scene.active .skeleton-line {
       transform: scaleX(1);
     }
 
@@ -400,11 +374,10 @@
     .cross-line {
       stroke-dasharray: 420;
       stroke-dashoffset: 420;
-      transition: stroke-dashoffset calc(var(--sync-duration) * 0.35) var(--ease-out) calc(var(--sync-duration) * 0.36);
+      transition: stroke-dashoffset calc(var(--sync-duration) * 0.30) var(--ease-out) calc(var(--start-delay) + 0.22s);
     }
 
-    .scene.active .cross-line,
-    .scene.instant-active .cross-line {
+    .scene.active .cross-line {
       stroke-dashoffset: 0;
     }
 
@@ -464,11 +437,10 @@
     .hub-line {
       stroke-dasharray: 150;
       stroke-dashoffset: 150;
-      transition: stroke-dashoffset calc(var(--sync-duration) * 0.55) var(--ease-out) calc(var(--sync-duration) * 0.20);
+      transition: stroke-dashoffset calc(var(--sync-duration) * 0.45) var(--ease-out) calc(var(--start-delay) + 0.12s);
     }
 
-    .scene.active .hub-line,
-    .scene.instant-active .hub-line {
+    .scene.active .hub-line {
       stroke-dashoffset: 0;
     }
 
@@ -516,11 +488,10 @@
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #0f9d76, #22d3ee);
-      transition: width calc(var(--sync-duration) * 0.78) var(--ease-out) calc(var(--sync-duration) * 0.20);
+      transition: width calc(var(--sync-duration) * 0.75) var(--ease-out) var(--start-delay);
     }
 
-    .scene.active .shield-fill,
-    .scene.instant-active .shield-fill {
+    .scene.active .shield-fill {
       width: 100%;
     }
 
@@ -672,7 +643,7 @@
     <div class="tap-indicator" id="tapIndicator">▶ অটো চালু</div>
     <div class="white-flash" id="whiteFlash"></div>
 
-    <section class="scene instant-active" data-scene="0">
+    <section class="scene active" data-scene="0">
       <span class="badge stagger">01 • AI Scan Revolution</span>
       <h1 class="hero-title stagger">তুমি এখনো হাতে লিখে <span class="hl">১০টা লিংক</span> ঘাঁটো?</h1>
       <p class="sub-copy stagger">এআই স্ক্যানিং প্রযুক্তিতে জটিল তথ্য ও ছবি এখন এক পলকেই পড়া ও বোঝা যায়।</p>
@@ -935,12 +906,12 @@
       "এআই স্ক্যানিং দিয়ে কাজের গতি বাড়ান আজই।"
     ];
 
-    // ন্যূনতম ২ সেকেন্ড (2000ms) সিন সময়
+    // ন্যূনতম ৩ সেকেন্ড (3000ms) সিন সময়
     function estimateVoiceDurationMs(text) {
       const words = text.trim().split(/\s+/).filter(Boolean);
       const basePerWord = 300;
       const punctuationPause = /[?.।!]$/.test(text.trim()) ? 120 : 0;
-      return Math.max(2000, words.length * basePerWord + punctuationPause);
+      return Math.max(3000, words.length * basePerWord + punctuationPause);
     }
 
     let audioCtx = null;
@@ -968,13 +939,14 @@
       gain.connect(audioCtx.destination);
 
       if (type === 'flash') {
+        // ০.৫ সেকেন্ডের সফট ফ্লাশ সাউন্ড
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(240, now);
-        osc.frequency.exponentialRampToValueAtTime(760, now + 0.18);
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(760, now + 0.34);
         gain.gain.setValueAtTime(0.06, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
         osc.start(now);
-        osc.stop(now + 0.25);
+        osc.stop(now + 0.50);
       } else if (type === 'card') {
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(340, now);
@@ -1088,8 +1060,8 @@
 
     function typeQuerySynced(text, totalDurationMs) {
       s1Typed.textContent = '';
-      const delayMs = Math.round(totalDurationMs * 0.12);
-      const availableMs = Math.max(250, totalDurationMs - delayMs);
+      const delayMs = 150;
+      const availableMs = Math.max(300, totalDurationMs - delayMs);
       const charInterval = availableMs / text.length;
       let idx = 0;
 
@@ -1119,6 +1091,7 @@
       }, 200);
     }
 
+    // ক্যাপশন কার্ডে কোনো সাউন্ড নেই — শুধুমাত্র ভিজ্যুয়াল হাইলাইট
     function renderKaraokeSynced(text, stepIdx, totalDurationMs) {
       bottomCaption.innerHTML = '';
 
@@ -1166,7 +1139,7 @@
       animateCounter(s1Matrix, 1, 10, syncMs, 'x');
       typeQuerySynced('AI Smart Document Scan...', syncMs);
 
-      const dotStartMs = Math.round(syncMs * 0.16);
+      const dotStartMs = 150;
       const dotStepMs = (syncMs - dotStartMs) / totalDots;
       dots.forEach((dot, i) => {
         const t = setTimeout(() => {
@@ -1184,7 +1157,6 @@
 
     function goToScene(stepIdx) {
       clearAllTimers();
-      const prevStep = currentStep;
       currentStep = ((stepIdx % totalSteps) + totalSteps) % totalSteps;
       const line = voiceoverLines[currentStep];
       const syncMs = estimateVoiceDurationMs(line);
@@ -1192,35 +1164,22 @@
       document.documentElement.style.setProperty('--sync-duration', `${(syncMs / 1000).toFixed(2)}s`);
 
       if (isFirstLoad) {
-        scenes.forEach((sc, i) => {
-          sc.classList.remove('active', 'exit-wipe', 'instant-active');
-          if (i === currentStep) sc.classList.add('instant-active');
-        });
         isFirstLoad = false;
       } else {
+        // ০.৫ সেকেন্ডের সফট হোয়াইট ফ্লাশ — বাতাসের মতো দুলে দুলে
         playAnimSfx('flash');
         triggerSoftWhiteFlash();
-
-        scenes.forEach((sc, i) => {
-          sc.classList.remove('active', 'exit-wipe', 'instant-active');
-          void sc.offsetWidth;
-          if (i === prevStep && prevStep !== currentStep) {
-            sc.classList.add('exit-wipe');
-          }
-          if (i === currentStep) {
-            sc.classList.add('active');
-          }
-        });
-
-        sceneTimers.push(setTimeout(() => {
-          if (scenes[prevStep] && prevStep !== currentStep) {
-            scenes[prevStep].classList.remove('exit-wipe');
-          }
-        }, 480));
       }
 
-      sceneTimers.push(setTimeout(() => playAnimSfx('card'), Math.round(syncMs * 0.16)));
-      sceneTimers.push(setTimeout(() => playAnimSfx('scan'), Math.round(syncMs * 0.24)));
+      scenes.forEach((sc, i) => {
+        sc.classList.remove('active');
+        void sc.offsetWidth;
+        if (i === currentStep) sc.classList.add('active');
+      });
+
+      // শুরু ০.১৫ সেকেন্ড থেকে অ্যানিমেশন সাউন্ড
+      sceneTimers.push(setTimeout(() => playAnimSfx('card'), 150));
+      sceneTimers.push(setTimeout(() => playAnimSfx('scan'), Math.round(syncMs * 0.22)));
       sceneTimers.push(setTimeout(() => playAnimSfx('pop'), Math.round(syncMs * 0.72)));
 
       if (currentStep === 0) {
