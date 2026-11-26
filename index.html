@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Center Aligned Signs Background</title>
+  <title>index.html - Dark Wood Plank Background</title>
   <style>
     * {
       box-sizing: border-box;
@@ -22,27 +22,42 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at 50% 50%, #1949a3 0%, #0d2e73 62%, #081e4d 100%);
-      font-family: 'Courier New', monospace, system-ui, sans-serif;
+      background-color: #0e0e0e;
+      font-family: system-ui, -apple-system, sans-serif;
     }
 
-    /* সেন্টার বরাবর সাজানো সাইন ও চার্ট ব্যাকগ্রাউন্ড লেয়ার */
-    .center-signs-bg {
+    /* ডার্ক কাঠের তক্তা ও ভিননেট ব্যাকগ্রাউন্ড লেয়ার */
+    .wood-bg {
       position: fixed;
       inset: 0;
       width: 100vw;
       height: 100vh;
       pointer-events: none;
-      opacity: 0.48;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.72) 85%),
+        repeating-linear-gradient(
+          90deg,
+          #191919 0px,
+          #222222 18px,
+          #161616 36px,
+          #252525 54px,
+          #1c1c1c 70px,
+          #0c0c0c 72px
+        );
     }
 
-    .center-signs-bg svg {
-      width: 100%;
-      height: 100%;
-      display: block;
+    /* সূক্ষ্ম উড-গ্রেইন টেক্সচার ওভারলে */
+    .wood-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.025) 0px 2px,
+        transparent 2px 9px,
+        rgba(0, 0, 0, 0.25) 9px 11px
+      );
+      opacity: 0.75;
     }
 
     .stage {
@@ -67,59 +82,11 @@
 </head>
 <body>
 
-  <!-- ViewBox: 1200 x 675, সেন্টার পয়েন্ট: (600, 337.5) -->
-  <div class="center-signs-bg" aria-hidden="true">
-    <svg viewBox="0 0 1200 675" preserveAspectRatio="xMidYMid slice">
-      <!-- সেন্টার রেফারেন্স রিং -->
-      <circle cx="600" cy="337.5" r="170" fill="none" stroke="rgba(220, 238, 255, 0.22)" stroke-width="1.5" stroke-dasharray="8 8" />
-      <circle cx="600" cy="337.5" r="265" fill="none" stroke="rgba(220, 238, 255, 0.16)" stroke-width="1.5" />
-
-      <!-- সেন্টার ঘিরে বাইনারি (0101) সাইনসমূহ -->
-      <g fill="rgba(220, 238, 255, 0.6)" font-size="15" letter-spacing="3" text-anchor="middle">
-        <text x="600" y="135">101 001 01001 0101 11 010</text>
-        <text x="600" y="545">0101 10 01 11 1001 10 010</text>
-        <text x="260" y="342" transform="rotate(-90 260 342)">101 001 01001 0101</text>
-        <text x="940" y="342" transform="rotate(90 940 342)">01001 0101 11 1001</text>
-      </g>
-
-      <!-- সেন্টার ঘিরে চার্ট, গ্রাফ ও পার্সেন্টেজ সাইন -->
-      <g stroke="rgba(220, 238, 255, 0.5)" fill="none" stroke-width="2">
-        <!-- Top-Left Bar Chart aimed toward center -->
-        <rect x="290" y="120" width="130" height="75" rx="4" />
-        <rect x="308" y="160" width="12" height="35" fill="rgba(220,238,255,0.25)" />
-        <rect x="330" y="145" width="12" height="50" fill="rgba(220,238,255,0.25)" />
-        <rect x="352" y="132" width="12" height="63" fill="rgba(220,238,255,0.25)" />
-        <rect x="374" y="152" width="12" height="43" fill="rgba(220,238,255,0.25)" />
-
-        <!-- Top-Right Pie Chart -->
-        <circle cx="845" cy="160" r="42" />
-        <path d="M845,160 L845,118 A42,42 0 0,1 885,144 Z" fill="rgba(220,238,255,0.32)" />
-
-        <!-- Bottom-Left Line Graph -->
-        <polyline points="295,540 335,495 375,518 420,470" stroke-width="2.5" />
-
-        <!-- Bottom-Right Bar & Axis -->
-        <polyline points="780,475 780,555 910,555" stroke-width="2.5" />
-        <rect x="800" y="515" width="14" height="40" fill="rgba(220,238,255,0.25)" />
-        <rect x="826" y="495" width="14" height="60" fill="rgba(220,238,255,0.25)" />
-        <rect x="852" y="480" width="14" height="75" fill="rgba(220,238,255,0.25)" />
-      </g>
-
-      <!-- সেন্টার-সংলগ্ন $ ও % সাইনসমূহ -->
-      <g fill="rgba(235, 245, 255, 0.62)" font-family="sans-serif" font-weight="700" text-anchor="middle">
-        <text x="475" y="255" font-size="38">$</text>
-        <text x="725" y="255" font-size="34">$</text>
-        <text x="475" y="445" font-size="34">$</text>
-        <text x="725" y="445" font-size="38">$</text>
-        <text x="905" y="135" font-size="16">15%</text>
-        <text x="905" y="195" font-size="16">35%</text>
-      </g>
-    </svg>
-  </div>
+  <div class="wood-bg"></div>
 
   <div class="stage" id="stage">
     <section class="scene active" data-scene="0">
-      <!-- আপনার সিন ১-এর কন্টেন্ট সেন্টারে থাকবে -->
+      <!-- আপনার সিন ১-এর কন্টেন্ট এখানে যুক্ত হবে -->
     </section>
   </div>
 
