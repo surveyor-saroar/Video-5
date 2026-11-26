@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Borderless 9:16 Reel (0.5s Slide/Wipe Cut)</title>
+  <title>index.html - Borderless 9:16 Reel (Min 2s Scene + 0.2s Gap)</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -19,7 +19,8 @@
       --caption-bg-alpha: 0.24;
       --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
       --wipe-ease: cubic-bezier(0.77, 0, 0.175, 1);
-      --wipe-duration: 0.5s;
+      --wipe-duration: 0.45s;
+      --flash-duration: 0.25s;
       --sync-duration: 2.2s;
     }
 
@@ -36,7 +37,7 @@
       overflow: hidden;
     }
 
-    /* পুরো স্ক্রিন জুড়ে কালার কম্বিনেশন ব্যাকগ্রাউন্ড */
+    /* পুরো স্ক্রিন জুড়ে কালার কম্বিনেশন ব্যাকগ্রাউন্ড ও ফ্লেক্সবক্স সেন্টারিং */
     body {
       position: relative;
       display: flex;
@@ -78,7 +79,7 @@
       position: absolute;
       top: 14px;
       right: 14px;
-      z-index: 25;
+      z-index: 30;
       background: rgba(15, 23, 42, 0.78);
       backdrop-filter: blur(8px);
       color: #f9fafb;
@@ -97,7 +98,33 @@
       transform: translateY(0);
     }
 
-    /* ০.৫ সেকেন্ডের স্লাইড / ওয়াইপ কাট (Slide / Wipe Cut) */
+    /* ০.২৫ সেকেন্ডের সফট দুধেল সাদা ফ্লাশ (White Flash Transition) */
+    .white-flash {
+      position: absolute;
+      inset: 0;
+      z-index: 18;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(
+        circle at 50% 45%,
+        rgba(255, 255, 255, 0.62) 0%,
+        rgba(248, 250, 252, 0.50) 65%,
+        rgba(241, 245, 249, 0.42) 100%
+      );
+      mix-blend-mode: screen;
+    }
+
+    .white-flash.burst {
+      animation: softWhiteFlash var(--flash-duration) cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+    }
+
+    @keyframes softWhiteFlash {
+      0% { opacity: 0; }
+      28% { opacity: 0.55; }
+      100% { opacity: 0; }
+    }
+
+    /* স্লাইড / ওয়াইপ কাট (Slide / Wipe Cut) */
     .scene {
       position: absolute;
       inset: 0;
@@ -114,7 +141,6 @@
       will-change: transform, clip-path;
     }
 
-    /* প্রথম লোডে কোনো ওয়াইপ ছাড়াই দেখানোর জন্য */
     .scene.instant-active {
       opacity: 1;
       z-index: 3;
@@ -123,7 +149,6 @@
       pointer-events: auto;
     }
 
-    /* পরের শট ০.৫ সেকেন্ডে স্লাইড ও ওয়াইপ হয়ে ঢুকবে */
     .scene.active {
       opacity: 1;
       z-index: 4;
@@ -131,7 +156,6 @@
       animation: slideWipeIn var(--wipe-duration) var(--wipe-ease) forwards;
     }
 
-    /* আগের শট ০.৫ সেকেন্ডে বাম দিকে স্লাইড ও ওয়াইপ হয়ে বের হবে */
     .scene.exit-wipe {
       opacity: 1;
       z-index: 2;
@@ -159,30 +183,6 @@
         transform: translateX(-38%);
         clip-path: inset(0 100% 0 0);
       }
-    }
-
-    /* ওয়াইপ কাটের সাথে সায়ান-গ্রিন হালকা এজ ফ্ল্যাশ */
-    .wipe-edge {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      width: 4px;
-      background: linear-gradient(180deg, transparent, #22d3ee, #0f9d76, transparent);
-      box-shadow: 0 0 18px rgba(34, 211, 238, 0.95);
-      z-index: 15;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .wipe-edge.flash {
-      animation: wipeEdgeSweep var(--wipe-duration) var(--wipe-ease) forwards;
-    }
-
-    @keyframes wipeEdgeSweep {
-      0% { right: 0%; opacity: 0.95; }
-      85% { opacity: 0.95; }
-      100% { right: 100%; opacity: 0; }
     }
 
     .stagger {
@@ -553,7 +553,7 @@
       align-items: center;
       justify-content: center;
       gap: 4px 6px;
-      z-index: 20;
+      z-index: 22;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
     }
 
@@ -670,7 +670,7 @@
 
   <div class="reel-stage" id="stage" title="টাচ/ক্লিক করলে অটো চালু বা বন্ধ হবে">
     <div class="tap-indicator" id="tapIndicator">▶ অটো চালু</div>
-    <div class="wipe-edge" id="wipeEdge"></div>
+    <div class="white-flash" id="whiteFlash"></div>
 
     <section class="scene instant-active" data-scene="0">
       <span class="badge stagger">01 • AI Scan Revolution</span>
@@ -935,14 +935,14 @@
       "এআই স্ক্যানিং দিয়ে কাজের গতি বাড়ান আজই।"
     ];
 
+    // ন্যূনতম ২ সেকেন্ড (2000ms) সিন সময়
     function estimateVoiceDurationMs(text) {
       const words = text.trim().split(/\s+/).filter(Boolean);
       const basePerWord = 300;
       const punctuationPause = /[?.।!]$/.test(text.trim()) ? 120 : 0;
-      return Math.max(1500, words.length * basePerWord + punctuationPause);
+      return Math.max(2000, words.length * basePerWord + punctuationPause);
     }
 
-    // শুধু স্লাইড/ওয়াইপ ও অ্যানিমেশনের জন্য সাউন্ড ইফেক্ট (ক্যাপশন কার্ডে কোনো সাউন্ড নেই)
     let audioCtx = null;
     let soundEnabled = true;
 
@@ -967,15 +967,14 @@
       osc.connect(gain);
       gain.connect(audioCtx.destination);
 
-      if (type === 'wipe') {
-        // ০.৫ সেকেন্ডের স্লাইড/ওয়াইপ কাট সাউন্ড
+      if (type === 'flash') {
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(160, now);
-        osc.frequency.exponentialRampToValueAtTime(580, now + 0.24);
-        gain.gain.setValueAtTime(0.065, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.frequency.setValueAtTime(240, now);
+        osc.frequency.exponentialRampToValueAtTime(760, now + 0.18);
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
         osc.start(now);
-        osc.stop(now + 0.29);
+        osc.stop(now + 0.25);
       } else if (type === 'card') {
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(340, now);
@@ -1004,7 +1003,7 @@
     }
 
     const stageEl = document.getElementById('stage');
-    const wipeEdge = document.getElementById('wipeEdge');
+    const whiteFlash = document.getElementById('whiteFlash');
     const tapIndicator = document.getElementById('tapIndicator');
     const bottomCaption = document.getElementById('bottom-caption');
     const counterEl = document.getElementById('counter');
@@ -1111,15 +1110,15 @@
       progressBar.style.width = `${pct}%`;
     }
 
+    // সিন শেষ হওয়ার পর পরের সিনে যাওয়ার আগে ০.২ সেকেন্ড (200ms) বিরতি
     function scheduleNextScene(stepIdx) {
       clearTimeout(nextSceneTimer);
       if (!isAutoPlaying) return;
       nextSceneTimer = setTimeout(() => {
         goToScene((stepIdx + 1) % totalSteps);
-      }, 350);
+      }, 200);
     }
 
-    // ক্যাপশন কার্ডে কোনো সাউন্ড নেই — শুধুমাত্র ভিজ্যুয়াল হাইলাইট
     function renderKaraokeSynced(text, stepIdx, totalDurationMs) {
       bottomCaption.innerHTML = '';
 
@@ -1177,10 +1176,10 @@
       });
     }
 
-    function triggerWipeEdge() {
-      wipeEdge.classList.remove('flash');
-      void wipeEdge.offsetWidth;
-      wipeEdge.classList.add('flash');
+    function triggerSoftWhiteFlash() {
+      whiteFlash.classList.remove('burst');
+      void whiteFlash.offsetWidth;
+      whiteFlash.classList.add('burst');
     }
 
     function goToScene(stepIdx) {
@@ -1199,9 +1198,8 @@
         });
         isFirstLoad = false;
       } else {
-        // ০.৫ সেকেন্ডের স্লাইড/ওয়াইপ কাট ট্রানজিশন
-        playAnimSfx('wipe');
-        triggerWipeEdge();
+        playAnimSfx('flash');
+        triggerSoftWhiteFlash();
 
         scenes.forEach((sc, i) => {
           sc.classList.remove('active', 'exit-wipe', 'instant-active');
@@ -1214,15 +1212,13 @@
           }
         });
 
-        // ০.৫ সেকেন্ড পর আগের শটের exit ক্লাস পরিষ্কার করা
         sceneTimers.push(setTimeout(() => {
           if (scenes[prevStep] && prevStep !== currentStep) {
             scenes[prevStep].classList.remove('exit-wipe');
           }
-        }, 520));
+        }, 480));
       }
 
-      // অ্যানিমেশনগুলোর সাউন্ড
       sceneTimers.push(setTimeout(() => playAnimSfx('card'), Math.round(syncMs * 0.16)));
       sceneTimers.push(setTimeout(() => playAnimSfx('scan'), Math.round(syncMs * 0.24)));
       sceneTimers.push(setTimeout(() => playAnimSfx('pop'), Math.round(syncMs * 0.72)));
