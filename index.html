@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Gradient Background Stage</title>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <title>index.html - Blue Sunburst Background</title>
   <style>
     * {
       box-sizing: border-box;
@@ -18,9 +17,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(90deg, #40C9FF, #E81CFF);
-      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
-      color: #ffffff;
+      background-color: #0A2472;
+      font-family: system-ui, -apple-system, sans-serif;
       padding: 20px;
       overflow: hidden;
     }
@@ -31,21 +29,26 @@
       max-width: 960px;
       aspect-ratio: 16 / 9;
       border-radius: 20px;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+      background:
+        radial-gradient(circle at 50% 25%, transparent 35%, rgba(6, 18, 58, 0.65) 100%),
+        repeating-conic-gradient(
+          from 0deg at 50% 0%,
+          #1D5FD6 0deg 5deg,
+          #0E3596 5deg 10deg
+        );
     }
 
     .scene {
       position: absolute;
       inset: 0;
-      padding: 44px 56px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
     }
   </style>
 </head>
