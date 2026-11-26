@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Borderless 9:16 Reel (0.5s Breeze White Flash)</title>
+  <title>index.html - Borderless 9:16 Reel (Camera Click Transition)</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -927,27 +927,69 @@
       }
     }
 
+    // ডুয়াল-পালস ক্যামেরা শাটার ক্লিক সিন্থেসিস
+    function triggerCameraShutterPulse(ctx, startTime, startFreq, endFreq, peakGain) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(startFreq, startTime);
+      osc.frequency.exponentialRampToValueAtTime(endFreq, startTime + 0.024);
+
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.003);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.032);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + 0.036);
+    }
+
     function playAnimSfx(type) {
       if (!soundEnabled) return;
       ensureAudioCtx();
       if (!audioCtx || audioCtx.state !== 'running') return;
 
       const now = audioCtx.currentTime;
+
+      if (type === 'flash') {
+        // ক্যামেরা শাটার ক্লিকিং (শাটার ওপেন + ক্লোজ ডাবল ক্লিক + হালকা মেকানিক্যাল রিলিজ)
+        triggerCameraShutterPulse(audioCtx, now, 1950, 420, 0.14);
+        triggerCameraShutterPulse(audioCtx, now + 0.048, 1580, 310, 0.11);
+
+        const bufferSize = Math.floor(audioCtx.sampleRate * 0.06);
+        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.014));
+        }
+
+        const whiteNoise = audioCtx.createBufferSource();
+        whiteNoise.buffer = noiseBuffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(2400, now);
+        filter.Q.setValueAtTime(1.8, now);
+
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0.08, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.058);
+
+        whiteNoise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(audioCtx.destination);
+        whiteNoise.start(now);
+        whiteNoise.stop(now + 0.06);
+        return;
+      }
+
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.connect(gain);
       gain.connect(audioCtx.destination);
 
-      if (type === 'flash') {
-        // ০.৫ সেকেন্ডের সফট ফ্লাশ সাউন্ড
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(220, now);
-        osc.frequency.exponentialRampToValueAtTime(760, now + 0.34);
-        gain.gain.setValueAtTime(0.06, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
-        osc.start(now);
-        osc.stop(now + 0.50);
-      } else if (type === 'card') {
+      if (type === 'card') {
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(340, now);
         osc.frequency.exponentialRampToValueAtTime(620, now + 0.14);
@@ -1166,7 +1208,7 @@
       if (isFirstLoad) {
         isFirstLoad = false;
       } else {
-        // ০.৫ সেকেন্ডের সফট হোয়াইট ফ্লাশ — বাতাসের মতো দুলে দুলে
+        // ক্যামেরা ক্লিকিং সাউন্ড + ০.৫ সেকেন্ডের বাতাসে দোলা সফট হোয়াইট ফ্লাশ
         playAnimSfx('flash');
         triggerSoftWhiteFlash();
       }
