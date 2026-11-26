@@ -3,957 +3,1173 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - 9:16 Digital Growth Reel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <title>Freelancing Explainer Showcase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-deep: #04122b;
-      --bg-mid: #082759;
-      --glow-cyan: #22e6ff;
-      --glow-blue: #258cff;
-      --card-glass: rgba(8, 35, 78, 0.58);
-      --text-light: #f8fafc;
-      --text-muted: #cbd5e1;
-      --accent-yellow: #ffd24c;
-      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-      --sync-duration: 3.4s;
+      --bg-crimson: #3a070b;
+      --bg-maroon: #1b0306;
+      --bg-black: #070203;
+      --accent-amber: #ff9d1c;
+      --accent-gold: #ffc542;
+      --accent-blue: #1877f2;
+      --card-surface: rgba(34, 13, 12, 0.78);
+      --card-border: rgba(255, 180, 120, 0.14);
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      border: none;
-    }
-
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
     }
 
     body {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background:
-        radial-gradient(circle at 22% 18%, rgba(34, 230, 255, 0.20), transparent 45%),
-        radial-gradient(circle at 80% 78%, rgba(37, 140, 255, 0.24), transparent 50%),
-        linear-gradient(155deg, #020817 0%, #071b3d 55%, #031024 100%);
-      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
-      color: var(--text-light);
-      padding: 12px;
-    }
-
-    .reel-stage {
-      position: relative;
-      height: min(83vh, 780px);
-      aspect-ratio: 9 / 16;
-      max-width: 94vw;
-      border-radius: 26px;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 50% 22%, rgba(34, 230, 255, 0.22), transparent 52%),
-        linear-gradient(180deg, #07224d 0%, #051636 52%, #030e24 100%);
-      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8);
-      cursor: pointer;
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Hind Siliguri', 'Inter', sans-serif;
+      background-color: var(--bg-black);
+      color: #fff6ee;
+      overflow-x: hidden;
       user-select: none;
-      -webkit-tap-highlight-color: transparent;
     }
 
-    /* সূক্ষ্ম গ্রিড ও ভাসমান কণা */
-    .grid-overlay {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(to right, rgba(125, 211, 252, 0.06) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(125, 211, 252, 0.06) 1px, transparent 1px);
-      background-size: 38px 38px;
-      pointer-events: none;
-      z-index: 1;
+    .font-en {
+      font-family: 'Inter', 'Hind Siliguri', sans-serif;
     }
 
-    .particles {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 2;
-      overflow: hidden;
-    }
-
-    .particle {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(186, 230, 253, 0.75);
-      box-shadow: 0 0 8px rgba(34, 230, 255, 0.7);
-      animation: floatDot linear infinite;
-    }
-
-    @keyframes floatDot {
-      0% { transform: translateY(18px) scale(0.8); opacity: 0.25; }
-      50% { opacity: 0.85; }
-      100% { transform: translateY(-24px) scale(1.1); opacity: 0.25; }
-    }
-
-    .tap-indicator {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      z-index: 30;
-      background: rgba(3, 14, 36, 0.82);
-      backdrop-filter: blur(8px);
-      color: #f8fafc;
-      padding: 4px 11px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      opacity: 0;
-      transform: translateY(-6px);
-      transition: opacity 0.22s ease, transform 0.22s var(--ease-out);
-      pointer-events: none;
-    }
-
-    .tap-indicator.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ক্লিন শট + সফট গ্লো/ফেড ট্রানজিশন */
-    .scene {
-      position: absolute;
-      inset: 0;
-      padding: 28px 20px 132px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 14px;
-      opacity: 0;
-      z-index: 3;
-      pointer-events: none;
-      transition: opacity 0.35s var(--ease-out);
-    }
-
-    .scene.active {
-      opacity: 1;
-      z-index: 5;
-      pointer-events: auto;
-    }
-
-    .pill-title {
-      align-self: center;
-      display: inline-block;
-      padding: 6px 20px;
-      border-radius: 999px;
-      background: rgba(6, 36, 82, 0.72);
-      border: 1.5px solid rgba(34, 230, 255, 0.75);
-      box-shadow: 0 0 18px rgba(34, 230, 255, 0.35), inset 0 0 12px rgba(34, 230, 255, 0.22);
-      font-size: clamp(1rem, 2.3vh, 1.28rem);
-      font-weight: 700;
-      color: #ffffff;
-      opacity: 0;
-      transform: translateY(10px) scale(0.96);
-      transition: opacity 0.35s var(--ease-out), transform 0.4s var(--ease-out);
-    }
-
-    .scene.active .pill-title {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    .service-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .service-card {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: var(--card-glass);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-      opacity: 0;
-      transform: translateY(14px);
-      transition: opacity 0.35s var(--ease-out), transform 0.4s var(--ease-out), border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .scene.active .service-card {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .service-card.lit {
-      border-color: rgba(34, 230, 255, 0.95);
-      box-shadow: 0 0 22px rgba(34, 230, 255, 0.42), inset 0 0 14px rgba(34, 230, 255, 0.16);
-      background: rgba(10, 48, 106, 0.78);
-    }
-
-    .icon-box {
-      width: 38px;
-      height: 38px;
-      border-radius: 11px;
-      display: grid;
-      place-items: center;
-      background: rgba(34, 230, 255, 0.14);
-      color: #67e8f9;
-      font-size: 1.05rem;
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-
-    .service-label {
-      font-size: clamp(1rem, 2.2vh, 1.22rem);
-      font-weight: 700;
-      color: #ffffff;
-      text-shadow: 0 0 10px rgba(34, 230, 255, 0.25);
-    }
-
-    .result-rows {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-top: 6px;
-    }
-
-    .result-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 6px 10px;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.35s var(--ease-out), transform 0.4s var(--ease-out);
-    }
-
-    .scene.active .result-item.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .ring-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: 2px solid #22e6ff;
-      box-shadow: 0 0 14px rgba(34, 230, 255, 0.55);
-      display: grid;
-      place-items: center;
-      color: #67e8f9;
-      font-size: 0.9rem;
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-
-    .result-text {
-      font-size: clamp(1.22rem, 2.7vh, 1.58rem);
-      font-weight: 800;
-      color: #ffffff;
-      text-shadow: 0 0 18px rgba(34, 230, 255, 0.72), 0 0 6px rgba(34, 230, 255, 0.45);
-    }
-
-    .wave-svg {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 118px;
-      width: 100%;
-      height: 110px;
-      pointer-events: none;
-      z-index: 4;
-    }
-
-    .wave-path {
-      fill: none;
-      stroke: #22e6ff;
-      stroke-width: 3.5;
-      stroke-linecap: round;
-      filter: drop-shadow(0 0 10px rgba(34, 230, 255, 0.8));
-      stroke-dasharray: 520;
-      stroke-dashoffset: 520;
-      transition: stroke-dashoffset calc(var(--sync-duration) * 0.75) var(--ease-out);
-    }
-
-    .scene.active .wave-path {
-      stroke-dashoffset: 0;
-    }
-
-    .pillar-stack {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      text-align: center;
-    }
-
-    .pillar-line {
-      font-size: clamp(1.42rem, 3.2vh, 1.95rem);
-      font-weight: 800;
-      color: #ffffff;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.35s var(--ease-out), transform 0.4s var(--ease-out);
-    }
-
-    .pillar-line.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .pillar-line.glow-cyan {
-      color: #7df9ff;
-      text-shadow: 0 0 18px rgba(34, 230, 255, 0.75);
-    }
-
-    .bar-chart-wrap {
+    /* Dark maroon/crimson-to-near-black radial background with subtle glow and vignette */
+    .stage-bg {
+      background:
+        radial-gradient(circle at 22% 24%, rgba(135, 14, 24, 0.42) 0%, rgba(58, 7, 11, 0.18) 38%, transparent 65%),
+        radial-gradient(circle at 78% 72%, rgba(92, 10, 22, 0.28) 0%, transparent 55%),
+        radial-gradient(circle at 50% 50%, #240508 0%, #0d0304 65%, #050102 100%);
       position: relative;
-      height: 135px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-around;
-      gap: 10px;
-      padding: 12px 10px 4px;
-      margin-top: 8px;
     }
 
-    .bar-col {
-      flex: 1;
-      height: var(--h);
-      border-radius: 8px 8px 0 0;
-      background: linear-gradient(180deg, #38bdf8 0%, #1d4ed8 100%);
-      box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
-      transform: scaleY(0);
-      transform-origin: bottom;
-      transition: transform 0.55s var(--ease-out);
-    }
-
-    .scene.active .bar-col.grow {
-      transform: scaleY(1);
-    }
-
-    .trend-svg {
+    .stage-vignette {
+      pointer-events: none;
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
+      box-shadow: inset 0 0 130px 45px rgba(0, 0, 0, 0.85);
+      z-index: 5;
+    }
+
+    .ambient-orb {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(70px);
       pointer-events: none;
+      opacity: 0.45;
+      animation: orbFloat 9s ease-in-out infinite alternate;
     }
 
-    .trend-line {
-      stroke-dasharray: 460;
-      stroke-dashoffset: 460;
-      transition: stroke-dashoffset 0.75s var(--ease-out) 0.35s;
+    @keyframes orbFloat {
+      0% { transform: translate(0px, 0px) scale(1); }
+      100% { transform: translate(24px, -18px) scale(1.08); }
     }
 
-    .scene.active .trend-line.draw {
-      stroke-dashoffset: 0;
+    /* Glassmorphic dark motion card */
+    .motion-card {
+      background: linear-gradient(155deg, rgba(52, 18, 16, 0.82) 0%, rgba(20, 7, 8, 0.9) 100%);
+      border: 1px solid var(--card-border);
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 220, 190, 0.12);
+      backdrop-filter: blur(14px);
+      border-radius: 24px;
     }
 
-    .outro-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 14px;
+    .amber-glow {
+      text-shadow: 0 0 28px rgba(255, 157, 28, 0.48), 0 0 60px rgba(255, 120, 10, 0.2);
     }
 
-    .brand-badge {
-      width: 112px;
-      height: 112px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #ffffff 0%, #e0f2fe 72%, #38bdf8 100%);
-      border: 4px solid #ffffff;
-      box-shadow: 0 0 28px rgba(34, 230, 255, 0.65), 0 14px 30px rgba(0, 0, 0, 0.45);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #07224d;
-      transform: scale(0.84);
+    .blue-glow {
+      box-shadow: 0 0 28px rgba(24, 119, 242, 0.55);
+    }
+
+    /* Smooth ease-out scene transition */
+    .scene-panel {
       opacity: 0;
-      transition: transform 0.5s var(--ease-out), opacity 0.4s var(--ease-out);
+      transform: translateY(22px) scale(0.975);
+      transition: opacity 0.52s cubic-bezier(0.16, 1, 0.3, 1), transform 0.58s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
     }
 
-    .scene.active .brand-badge {
-      transform: scale(1);
+    .scene-panel.active {
       opacity: 1;
+      transform: translateY(0px) scale(1);
+      pointer-events: auto;
+      z-index: 10;
     }
 
-    .brand-mark {
-      font-size: 2rem;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: -1px;
-      color: #0b3b8c;
+    .pop-in {
+      animation: popIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
-    .brand-sub {
-      font-size: 0.66rem;
-      font-weight: 800;
-      color: #0369a1;
-      margin-top: 3px;
+    @keyframes popIn {
+      0% { opacity: 0; transform: translateY(16px) scale(0.94); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* কারাওকে ক্যাপশন কার্ড (সম্পূর্ণ নিঃশব্দ, কোনো সাউন্ড নেই) */
-    #bottom-caption {
-      position: absolute;
-      left: 50%;
-      bottom: clamp(46px, 0.85in, 86px);
-      transform: translateX(-50%);
-      width: 90%;
-      padding: 8px 12px;
-      border-radius: 13px;
-      background: rgba(3, 14, 36, 0.34);
-      backdrop-filter: blur(8px);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 4px 6px;
-      z-index: 22;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+    .pulse-ring {
+      animation: ringPulse 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
     }
 
-    .cap-word {
-      display: inline-block;
-      padding: 2px 6px;
-      border-radius: 5px;
-      font-size: clamp(0.86rem, 1.65vh, 1.04rem);
-      font-weight: 700;
-      color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
-      transition: background-color 0.15s ease, color 0.15s ease, transform 0.18s var(--ease-out);
+    @keyframes ringPulse {
+      0% { transform: scale(0.95); opacity: 0.65; }
+      100% { transform: scale(1.38); opacity: 0; }
     }
 
-    .cap-word.spoken {
-      color: #e2e8f0;
-      opacity: 0.9;
+    .typing-dot {
+      animation: typingBounce 1.2s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.18s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.36s; }
+
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+      30% { transform: translateY(-5px); opacity: 1; }
     }
 
-    .cap-word.active-word {
-      background-color: var(--accent-yellow);
-      color: #0f172a;
-      text-shadow: none;
-      transform: translateY(-2px) scale(1.04);
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-
-    #bottom-caption.no-highlight .cap-word.active-word {
-      background-color: transparent;
-      color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
-      transform: none;
-    }
-
-    .hud-bar {
-      width: min(94vw, 560px);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      z-index: 30;
-    }
-
-    .progress-wrap {
-      width: 100%;
-      height: 5px;
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 157, 28, 0.35);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.15);
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #22e6ff, #38bdf8, #ffd24c);
-      border-radius: 999px;
-      transition: width 0.20s linear;
-    }
-
-    .controls-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .counter-badge {
-      background: rgba(255, 255, 255, 0.1);
-      color: #f8fafc;
-      padding: 5px 11px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .btn-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: rgba(15, 23, 42, 0.88);
-      color: #f8fafc;
-      transition: background-color 0.2s ease, transform 0.15s ease;
-    }
-
-    .btn:hover { background: #1e293b; }
-    .btn:active { transform: scale(0.97); }
-    .btn.primary { background: #0284c7; color: #ffffff; }
-    .btn.primary:hover { background: #0369a1; }
-    .btn.active-toggle { background: #ffd24c; color: #0f172a; }
-
-    .dropper-input {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-      pointer-events: none;
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
+  <!-- Main Animated Stage -->
+  <main class="stage-bg relative flex-1 w-full flex flex-col justify-between overflow-hidden">
+    <div class="stage-vignette"></div>
+    <div class="ambient-orb w-80 h-80 bg-red-800 top-6 left-6"></div>
+    <div class="ambient-orb w-96 h-96 bg-amber-600/20 bottom-10 right-8"></div>
 
-  <div class="reel-stage" id="stage" title="টাচ/ক্লিক করলে অটো চালু বা বন্ধ হবে">
-    <div class="grid-overlay"></div>
-    <div class="particles" id="particles"></div>
-    <div class="tap-indicator" id="tapIndicator">▶ অটো চালু</div>
+    <!-- Top Header / Scene Progress Bar -->
+    <header class="relative z-20 w-full max-w-6xl mx-auto px-4 sm:px-6 pt-4 pb-2">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="inline-flex h-3 w-3 rounded-full bg-amber-400 shadow-[0_0_12px_#ff9d1c]"></span>
+          <span class="text-xs sm:text-sm font-semibold tracking-wide text-amber-200/90 font-en">
+            TUTORIAL 4 • 2D MOTION EXPLAINER
+          </span>
+        </div>
 
-    <!-- Scene 01: আমাদের সার্ভিস -->
-    <section class="scene active" data-scene="0">
-      <div class="pill-title">আমাদের সার্ভিস</div>
-      <div class="service-list">
-        <div class="service-card" data-idx="0">
-          <div class="icon-box">❖</div>
-          <div class="service-label">সোশ্যাল মিডিয়া মার্কেটিং</div>
-        </div>
-        <div class="service-card" data-idx="1">
-          <div class="icon-box">◎</div>
-          <div class="service-label">পেইড অ্যাড ক্যাম্পেইন</div>
-        </div>
-        <div class="service-card" data-idx="2">
-          <div class="icon-box">✎</div>
-          <div class="service-label">কনটেন্ট ও গ্রাফিক ডিজাইন</div>
-        </div>
-        <div class="service-card" data-idx="3">
-          <div class="icon-box">⚑</div>
-          <div class="service-label">ব্র্যান্ডিং ও স্ট্র্যাটেজি</div>
+        <div class="flex items-center gap-2 text-xs sm:text-sm">
+          <span id="sceneCounterBadge" class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-amber-200 font-en">
+            Scene 1 / 11
+          </span>
+          <button
+            id="audioToggleBtn"
+            type="button"
+            class="px-3 py-1 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/30 text-amber-200 transition flex items-center gap-1.5 cursor-pointer"
+            aria-label="Toggle Sound Effects"
+          >
+            <span id="audioIcon">🔊</span>
+            <span id="audioLabel" class="font-en text-xs">SFX On</span>
+          </button>
+          <button
+            id="voiceToggleBtn"
+            type="button"
+            class="px-3 py-1 rounded-full bg-blue-500/15 hover:bg-blue-500/25 border border-blue-400/30 text-blue-200 transition flex items-center gap-1.5 cursor-pointer"
+            aria-label="Toggle Voiceover Narration"
+          >
+            <span>🎙️</span>
+            <span id="voiceLabel" class="font-en text-xs">Voice Off</span>
+          </button>
         </div>
       </div>
+
+      <!-- Segmented Scene Timeline -->
+      <div id="sceneTimeline" class="grid grid-cols-11 gap-1.5"></div>
+    </header>
+
+    <!-- Scene Viewport -->
+    <section id="sceneViewport" class="relative z-10 flex-1 w-full max-w-6xl mx-auto min-h-[430px] sm:min-h-[480px] flex items-center justify-center px-3 sm:px-6">
+
+      <!-- SCENE 1: Freelancing শুরু করার পর + প্রথম client -->
+      <div class="scene-panel active" data-scene="0">
+        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          <div class="md:col-span-7 space-y-4 text-center md:text-left">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-amber-950/80 border border-amber-500/30 text-amber-200/95 text-sm sm:text-base font-medium shadow-inner">
+              Freelancing শুরু করার পর
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-bold leading-tight tracking-tight">
+              প্রথম <span class="text-amber-400 amber-glow font-en">client</span>
+            </h1>
+            <p class="text-xl sm:text-2xl text-stone-200/90 font-medium">
+              পেতে খুব বেশি সময় লাগেনি
+            </p>
+          </div>
+
+          <div class="md:col-span-5 flex justify-center">
+            <div class="relative flex items-center justify-center">
+              <div class="absolute w-36 h-36 sm:w-44 sm:h-44 rounded-full border border-amber-400/20 pulse-ring"></div>
+              <div class="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-gradient-to-b from-[#591614] to-[#290909] border border-amber-300/20 flex items-center justify-center shadow-2xl">
+                <!-- Minimalist Client Avatar SVG -->
+                <svg class="w-20 h-20 sm:w-24 sm:h-24 text-[#f5cfa0]" viewBox="0 0 96 96" fill="currentColor">
+                  <circle cx="48" cy="34" r="15" />
+                  <path d="M20 79c2-15 14-24 28-24s26 9 28 24H20z" />
+                </svg>
+                <!-- Blue Checkmark Badge -->
+                <div id="scene1Check" class="opacity-0 scale-50 transition-all duration-500 absolute -bottom-1 -right-1 w-11 h-11 rounded-full bg-[#1877f2] blue-glow border-4 border-[#1b0507] flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 2: প্রথম order ৩,০০০ টাকা -->
+      <div class="scene-panel" data-scene="1">
+        <div class="motion-card w-full max-w-xl p-8 sm:p-12 text-center">
+          <div class="inline-block px-4 py-1.5 rounded-full bg-amber-950/90 border border-amber-400/25 text-amber-200 text-sm sm:text-base mb-6">
+            প্রথম <span class="font-en">order</span>
+          </div>
+          <div class="flex items-baseline justify-center gap-3">
+            <span id="counterScene2" class="text-5xl sm:text-7xl font-bold text-amber-400 amber-glow tabular-nums">০</span>
+            <span class="text-2xl sm:text-4xl font-semibold text-amber-200">টাকা</span>
+          </div>
+          <p class="mt-5 text-sm sm:text-base text-stone-300/80">
+            প্রথম প্রজেক্ট থেকেই শুরু আত্মবিশ্বাসের যাত্রা
+          </p>
+        </div>
+      </div>
+
+      <!-- SCENE 3: Facebook Group Post + Logo & Cover Design -->
+      <div class="scene-panel" data-scene="2">
+        <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Post Card -->
+          <div class="lg:col-span-7 motion-card p-6 sm:p-8 space-y-5">
+            <div class="flex items-center gap-3.5 pb-4 border-b border-white/10">
+              <div class="w-12 h-12 rounded-2xl bg-[#1877f2] blue-glow flex items-center justify-center text-white font-en font-extrabold text-3xl shrink-0">
+                f
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-lg sm:text-xl font-en text-white">Facebook Group</span>
+                  <span class="text-amber-300/80 text-sm">👥</span>
+                </div>
+                <p class="text-xs sm:text-sm text-stone-300/80">একটি <span class="font-en">post</span></p>
+              </div>
+            </div>
+
+            <p class="text-lg sm:text-2xl font-semibold text-stone-100 leading-relaxed">
+              <span class="font-en text-amber-200">clothing brand</span>-এর <span class="font-en text-amber-200">Facebook page</span>-এর জন্য
+            </p>
+
+            <div class="flex flex-wrap items-center gap-3 pt-1">
+              <span class="px-4 py-2 rounded-full bg-amber-500 text-stone-950 font-bold text-sm sm:text-base font-en shadow-lg">
+                Logo
+              </span>
+              <span class="text-stone-300 font-medium">এবং</span>
+              <span class="px-4 py-2 rounded-full bg-amber-400 text-stone-950 font-bold text-sm sm:text-base font-en shadow-lg">
+                Cover Design
+              </span>
+            </div>
+
+            <div class="space-y-2.5 pt-2 opacity-50">
+              <div class="h-2.5 w-5/6 rounded-full bg-white/15"></div>
+              <div class="h-2.5 w-2/3 rounded-full bg-white/10"></div>
+            </div>
+          </div>
+
+          <!-- Clothing Store Logo & Cover Preview -->
+          <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+            <div class="bg-white text-stone-900 rounded-2xl p-4 shadow-xl flex items-center justify-between border border-amber-200/40">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-stone-100 flex items-center justify-center border border-stone-200">
+                  <svg class="w-7 h-7 text-stone-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 5a2.5 2.5 0 10-2.5 2.5c0 1.4 1.2 2.2 2.5 2.8l7.5 4.2a1.5 1.5 0 01-.7 2.8H5.2a1.5 1.5 0 01-.7-2.8L12 10.3" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="font-en font-extrabold tracking-wider text-sm">CLOTHING</div>
+                  <div class="font-en text-[11px] tracking-widest text-stone-500">STORE • LOGO</div>
+                </div>
+              </div>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 font-en font-semibold">1:1</span>
+            </div>
+
+            <div class="rounded-2xl overflow-hidden shadow-xl border border-amber-300/25 bg-gradient-to-r from-stone-900 via-amber-950 to-stone-800 p-4">
+              <div class="flex items-center justify-between text-[11px] font-en text-amber-300/90 uppercase tracking-widest mb-1">
+                <span>SIDRAN SHOP</span>
+                <span>COVER</span>
+              </div>
+              <div class="text-base sm:text-lg font-bold text-white font-en">Autumn Collection</div>
+              <div class="text-xs text-stone-300/80 mt-0.5">Modern Menswear & Apparel</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 4: Messenger + অনেকেই যোগাযোগ করছিল + আমি -->
+      <div class="scene-panel" data-scene="3">
+        <div class="w-full max-w-4xl flex flex-col items-center space-y-6">
+          <div class="px-4 py-1.5 rounded-full bg-amber-950/90 border border-amber-400/25 text-amber-200 text-sm sm:text-base">
+            অনেকেই যোগাযোগ করছিল
+          </div>
+
+          <div class="relative w-full max-w-md h-64 sm:h-72 flex items-center justify-center">
+            <!-- Connecting dashed lines SVG -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 260">
+              <line x1="200" y1="130" x2="72" y2="54" stroke="rgba(255,255,255,0.18)" stroke-dasharray="4 4" stroke-width="2" />
+              <line x1="200" y1="130" x2="72" y2="206" stroke="rgba(255,255,255,0.18)" stroke-dasharray="4 4" stroke-width="2" />
+              <line x1="200" y1="130" x2="328" y2="54" stroke="rgba(255,255,255,0.18)" stroke-dasharray="4 4" stroke-width="2" />
+              <line id="activeClientLine" x1="200" y1="130" x2="328" y2="206" stroke="#ff9d1c" stroke-dasharray="5 5" stroke-width="2.5" opacity="0.35" />
+            </svg>
+
+            <!-- Surrounding Client Avatars -->
+            <div class="absolute top-5 left-10 w-12 h-12 rounded-full bg-[#4a1412] border border-white/15 flex items-center justify-center text-[#f5cfa0]">
+              <svg class="w-7 h-7" viewBox="0 0 96 96" fill="currentColor"><circle cx="48" cy="34" r="15"/><path d="M20 79c2-15 14-24 28-24s26 9 28 24H20z"/></svg>
+            </div>
+            <div class="absolute bottom-5 left-10 w-12 h-12 rounded-full bg-[#4a1412] border border-white/15 flex items-center justify-center text-[#f5cfa0]">
+              <svg class="w-7 h-7" viewBox="0 0 96 96" fill="currentColor"><circle cx="48" cy="34" r="15"/><path d="M20 79c2-15 14-24 28-24s26 9 28 24H20z"/></svg>
+            </div>
+            <div class="absolute top-5 right-10 w-12 h-12 rounded-full bg-[#4a1412] border border-white/15 flex items-center justify-center text-[#f5cfa0]">
+              <svg class="w-7 h-7" viewBox="0 0 96 96" fill="currentColor"><circle cx="48" cy="34" r="15"/><path d="M20 79c2-15 14-24 28-24s26 9 28 24H20z"/></svg>
+            </div>
+
+            <!-- Highlighted "আমি" Avatar -->
+            <div id="meClientNode" class="absolute bottom-3 right-8 flex flex-col items-center transition-transform duration-500">
+              <div class="w-14 h-14 rounded-full bg-gradient-to-b from-amber-500 to-amber-700 border-2 border-amber-300 shadow-[0_0_24px_rgba(255,157,28,0.65)] flex items-center justify-center text-stone-950">
+                <svg class="w-8 h-8" viewBox="0 0 96 96" fill="currentColor"><circle cx="48" cy="34" r="15"/><path d="M20 79c2-15 14-24 28-24s26 9 28 24H20z"/></svg>
+              </div>
+              <span class="mt-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-stone-950 text-xs font-bold shadow">
+                আমি
+              </span>
+            </div>
+
+            <!-- Center Messenger Icon + Typing Dots -->
+            <div class="flex flex-col items-center gap-2.5 z-10">
+              <div class="w-20 h-20 rounded-full bg-[#1877f2] blue-glow flex items-center justify-center text-white shadow-2xl">
+                <svg class="w-11 h-11" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.2 5.42 3.14 7.16.16.15.26.35.27.57l.05 1.78c.02.57.61.94 1.13.7l1.99-.88c.17-.08.36-.1.54-.05.91.25 1.88.39 2.88.39 5.64 0 10-4.13 10-9.7C22 6.13 17.64 2 12 2zm1.01 13.06-2.54-2.71-4.96 2.71 5.46-5.8 2.6 2.71 4.9-2.71-5.46 5.8z" />
+                </svg>
+              </div>
+              <div class="px-3.5 py-1.5 rounded-full bg-[#1877f2] flex items-center gap-1.5 shadow-lg">
+                <span class="w-1.5 h-1.5 rounded-full bg-white typing-dot"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-white typing-dot"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-white typing-dot"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 5: Deal Final + Advance Payment 50% Ring -->
+      <div class="scene-panel" data-scene="4">
+        <div class="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <!-- Deal Final Card -->
+          <div class="motion-card p-7 sm:p-8 flex flex-col items-center text-center justify-center space-y-4">
+            <div class="w-16 h-16 rounded-full bg-[#1877f2] blue-glow flex items-center justify-center text-white">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-bold font-en text-white">Deal Final</h2>
+            <p class="text-base sm:text-lg text-amber-200/90">client আমার সঙ্গেই</p>
+          </div>
+
+          <!-- Advance Payment 50% Circular Progress Ring -->
+          <div class="motion-card p-7 sm:p-8 flex flex-col items-center text-center justify-center space-y-4">
+            <div class="relative w-28 h-28 flex items-center justify-center">
+              <svg class="w-28 h-28 -rotate-90" viewBox="0 0 110 110">
+                <circle cx="55" cy="55" r="44" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="10" />
+                <circle
+                  id="advanceRingCircle"
+                  cx="55"
+                  cy="55"
+                  r="44"
+                  fill="none"
+                  stroke="#ff9d1c"
+                  stroke-width="10"
+                  stroke-linecap="round"
+                  stroke-dasharray="276.46"
+                  stroke-dashoffset="276.46"
+                  style="transition: stroke-dashoffset 1.15s cubic-bezier(0.16, 1, 0.3, 1);"
+                />
+              </svg>
+              <span id="advancePercentText" class="absolute text-2xl font-bold text-amber-400 tabular-nums">০%</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-bold font-en text-white">Advance Payment</h2>
+            <p class="text-base sm:text-lg text-amber-200/90">পঞ্চাশ শতাংশ</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 6: Ai - design-এর কাজ Vector Layout Cards -->
+      <div class="scene-panel" data-scene="5">
+        <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-4 motion-card p-6 flex flex-col items-center text-center space-y-3">
+            <div class="w-20 h-20 rounded-2xl bg-[#331403] border-2 border-amber-400/70 flex items-center justify-center text-amber-400 font-en font-extrabold text-4xl shadow-[0_0_25px_rgba(255,157,28,0.28)]">
+              Ai
+            </div>
+            <div class="text-lg sm:text-xl font-semibold text-amber-100">
+              <span class="font-en">design</span>-এর কাজ
+            </div>
+            <p class="text-xs text-stone-300/75">Adobe Illustrator • Brand Identity</p>
+          </div>
+
+          <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Layout 1 -->
+            <div class="bg-[#fff8ee] text-stone-900 rounded-2xl p-4 shadow-xl space-y-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-[#3a0d0b]"></div>
+                <div class="flex-1 space-y-1.5">
+                  <div class="h-2 rounded-full bg-amber-300/80 w-4/5"></div>
+                  <div class="h-2 rounded-full bg-amber-200 w-3/5"></div>
+                </div>
+              </div>
+              <div class="h-20 rounded-xl bg-[#f5d7a1]"></div>
+              <div class="h-2.5 rounded-full bg-[#2a0908] w-2/3"></div>
+            </div>
+
+            <!-- Layout 2 -->
+            <div class="bg-[#fff8ee] text-stone-900 rounded-2xl p-4 shadow-xl space-y-3">
+              <div class="h-20 rounded-xl bg-[#2a0908] flex items-center justify-center">
+                <div class="w-9 h-9 rounded-full bg-[#f5cfa0]"></div>
+              </div>
+              <div class="h-2.5 rounded-full bg-stone-800 w-3/4 mx-auto"></div>
+              <div class="h-2.5 rounded-full bg-[#1877f2] w-1/2 mx-auto"></div>
+            </div>
+
+            <!-- Layout 3 -->
+            <div class="bg-[#fff8ee] text-stone-900 rounded-2xl p-4 shadow-xl grid grid-cols-12 gap-2.5 items-center">
+              <div class="col-span-5 h-28 rounded-xl bg-[#2a0908]"></div>
+              <div class="col-span-7 space-y-2">
+                <div class="w-6 h-6 rounded-full bg-[#1877f2]"></div>
+                <div class="h-2 rounded-full bg-amber-300 w-full"></div>
+                <div class="h-2 rounded-full bg-amber-200 w-4/5"></div>
+                <div class="h-2 rounded-full bg-stone-700 w-3/5"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 7: Revision (× পছন্দ হচ্ছিল না) + অবশেষে (design পছন্দ হয়) -->
+      <div class="scene-panel" data-scene="6">
+        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Revision Card -->
+          <div class="motion-card p-6 sm:p-7 flex flex-col items-center text-center space-y-5">
+            <span class="px-4 py-1 rounded-full bg-amber-950/90 border border-amber-400/25 text-amber-200 font-en font-semibold">
+              Revision
+            </span>
+
+            <div class="relative w-44 h-32 flex items-center justify-center">
+              <div class="absolute -left-2 top-3 w-24 h-28 rounded-xl bg-amber-200/25 border border-white/15 -rotate-6"></div>
+              <div class="relative w-28 h-28 rounded-xl bg-[#fff8ee] text-stone-900 p-3 shadow-xl border border-stone-200 flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                  <span class="w-4 h-4 rounded-full bg-[#1877f2]"></span>
+                  <span class="h-2 w-10 rounded bg-stone-300"></span>
+                </div>
+                <div class="h-10 rounded bg-[#3a0d0b]"></div>
+                <div class="h-2 w-14 rounded bg-amber-300"></div>
+              </div>
+              <button
+                id="revisionSpinBtn"
+                type="button"
+                title="Replay Revision Spin"
+                class="absolute -right-2 -bottom-1 w-10 h-10 rounded-full bg-stone-950 border border-amber-400/40 text-amber-300 flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition"
+              >
+                <svg id="revisionSpinIcon" class="w-5 h-5 transition-transform duration-700" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-950/80 border border-rose-400/30 text-rose-200 text-sm sm:text-base">
+              <span class="font-bold text-rose-400">×</span>
+              <span>পছন্দ হচ্ছিল না</span>
+            </div>
+          </div>
+
+          <!-- Final Approved Card -->
+          <div class="motion-card p-6 sm:p-7 flex flex-col items-center text-center space-y-5">
+            <span class="px-4 py-1 rounded-full bg-amber-950/90 border border-amber-400/25 text-amber-200 font-semibold">
+              অবশেষে
+            </span>
+
+            <div class="relative w-32 h-32 rounded-2xl bg-[#fff8ee] text-stone-900 p-3.5 shadow-xl flex flex-col justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-6 h-6 rounded-full bg-[#f5cfa0]"></span>
+                <div class="flex-1 space-y-1">
+                  <div class="h-2 rounded bg-[#1877f2] w-4/5"></div>
+                  <div class="h-2 rounded bg-amber-400 w-3/5"></div>
+                </div>
+              </div>
+              <div class="h-12 rounded-lg bg-[#2a0908]"></div>
+              <div class="h-2 w-16 rounded bg-amber-300"></div>
+
+              <div class="absolute -top-2.5 -right-2.5 w-10 h-10 rounded-full bg-amber-400 text-stone-950 flex items-center justify-center shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="text-base sm:text-lg font-semibold text-amber-200">
+              <span class="font-en text-amber-400">design</span> পছন্দ হয়
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 8: বাকি payment 100% Horizontal Progress Bar -->
+      <div class="scene-panel" data-scene="7">
+        <div class="motion-card w-full max-w-3xl p-7 sm:p-10 space-y-6">
+          <div class="flex items-center justify-between">
+            <span class="px-4 py-1.5 rounded-full bg-amber-950/90 border border-amber-400/25 text-amber-200 text-sm sm:text-base font-medium">
+              বাকি <span class="font-en">payment</span>
+            </span>
+            <span id="finalPaymentPercent" class="text-lg sm:text-xl font-bold text-amber-400 font-en tabular-nums">0%</span>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="flex-1 h-6 sm:h-7 rounded-full bg-black/60 border border-white/10 p-1 overflow-hidden">
+              <div
+                id="finalPaymentBar"
+                class="h-full w-0 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 shadow-[0_0_24px_rgba(255,157,28,0.65)] transition-all duration-1000 ease-out"
+              ></div>
+            </div>
+            <div id="finalPaymentCheck" class="w-11 h-11 rounded-full bg-[#1877f2] blue-glow text-white flex items-center justify-center shrink-0 scale-75 opacity-50 transition-all duration-500">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="3.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+          </div>
+
+          <p class="text-sm text-stone-300/80 text-center">
+            কাজ সম্পন্ন হওয়ার পর সম্পূর্ণ পেমেন্ট ক্লিয়ার
+          </p>
+        </div>
+      </div>
+
+      <!-- SCENE 9: Facebook Cover Mockup ('Serenis') + Cosmetics brand & Facebook cover design -->
+      <div class="scene-panel" data-scene="8">
+        <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-8 motion-card p-4 sm:p-6">
+            <div class="text-xs font-en text-amber-200/80 mb-2.5 flex items-center justify-between">
+              <span>Facebook Cover</span>
+              <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300">৳ ১,০০০</span>
+            </div>
+
+            <!-- Cover Banner Mockup -->
+            <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#8b4500] via-[#c66b00] to-[#e69519] p-5 sm:p-7 text-white shadow-2xl border border-amber-200/20">
+              <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="space-y-1.5 text-center sm:text-left">
+                  <div class="inline-flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-full border-2 border-amber-100/90 inline-flex items-center justify-center font-en font-bold text-xs">S</span>
+                    <span class="font-en text-2xl sm:text-3xl font-bold tracking-wide">Serenis</span>
+                  </div>
+                  <p class="text-xs sm:text-sm text-amber-50/90 font-en">
+                    Unveiling The Secret Of Eternal Beauty
+                  </p>
+                </div>
+
+                <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-amber-100/30 to-amber-950/50 border border-white/30 flex flex-col items-center justify-center text-center p-2 shadow-lg">
+                  <span class="text-2xl">✨</span>
+                  <span class="text-[11px] font-en font-semibold mt-1 leading-tight">Skincare & Glow</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Avatar Overlap + Action Pill -->
+            <div class="flex items-center justify-between px-3 sm:px-5 -mt-4 relative z-10">
+              <div class="flex items-center gap-3">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-amber-600 to-amber-900 border-4 border-[#220c0b] flex items-center justify-center text-white font-en font-bold text-xl shadow-xl">
+                  S
+                </div>
+                <div class="pt-4">
+                  <div class="font-en font-bold text-sm sm:text-base text-white">Serenis</div>
+                  <div class="text-[11px] text-stone-300/75 font-en">Cosmetics & Beauty</div>
+                </div>
+              </div>
+              <span class="mt-4 px-3.5 py-1.5 rounded-lg bg-[#1877f2] text-white text-xs font-en font-semibold shadow">
+                Like Page
+              </span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4 flex flex-col gap-4">
+            <div class="motion-card p-5 flex items-center gap-3.5">
+              <span class="w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-xl">✨</span>
+              <div>
+                <div class="font-en font-bold text-base sm:text-lg text-amber-200">Cosmetics brand</div>
+                <div class="text-xs text-stone-300/75">একই গ্রুপ থেকে দ্বিতীয় অর্ডার</div>
+              </div>
+            </div>
+
+            <div class="motion-card p-5 flex items-center gap-3.5">
+              <span class="w-11 h-11 rounded-xl bg-[#1877f2] blue-glow flex items-center justify-center text-white font-en font-extrabold text-xl">f</span>
+              <div>
+                <div class="font-en font-bold text-base sm:text-lg text-white">Facebook cover design</div>
+                <div class="text-xs text-amber-300 font-semibold">মূল্য ১,০০০ টাকা</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 10: ৩,০০০ + ১,০০০ = ৪,০০০ টাকা Income Counter -->
+      <div class="scene-panel" data-scene="9">
+        <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-11 gap-4 sm:gap-6 items-center">
+          <div class="md:col-span-3 motion-card p-5 sm:p-6 text-center space-y-2">
+            <div class="text-xs sm:text-sm text-amber-200/85">প্রথম <span class="font-en">order</span></div>
+            <div class="text-2xl sm:text-3xl font-bold text-amber-300">৩,০০০ <span class="text-lg">টাকা</span></div>
+          </div>
+
+          <div class="md:col-span-1 text-center text-3xl sm:text-4xl font-bold text-amber-400">+</div>
+
+          <div class="md:col-span-3 motion-card p-5 sm:p-6 text-center space-y-2">
+            <div class="text-xs sm:text-sm text-amber-200/85">আরেকটি <span class="font-en">order</span></div>
+            <div class="text-2xl sm:text-3xl font-bold text-amber-300">১,০০০ <span class="text-lg">টাকা</span></div>
+          </div>
+
+          <div class="md:col-span-1 text-center text-3xl sm:text-4xl font-bold text-amber-400">=</div>
+
+          <div class="md:col-span-3 motion-card p-6 text-center space-y-2 border-amber-400/40">
+            <div class="text-xs sm:text-sm text-amber-200">আমার <span class="font-en">Income</span></div>
+            <div id="totalIncomeCounter" class="text-3xl sm:text-5xl font-extrabold text-amber-400 amber-glow tabular-nums">০</div>
+            <div class="text-sm font-semibold text-amber-200">টাকা</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 11: Outro Question -->
+      <div class="scene-panel" data-scene="10">
+        <div class="motion-card w-full max-w-4xl p-7 sm:p-11 text-center space-y-7">
+          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-bold leading-snug text-white">
+            আপনার প্রথম <span class="font-en text-amber-400 amber-glow">freelancing order</span> কত টাকার ছিল এবং কতদিন পর পেয়েছিলেন?
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto pt-2">
+            <div class="rounded-2xl bg-black/40 border border-amber-400/25 p-5 flex items-center gap-4 text-left hover:border-amber-400/60 transition">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center font-bold text-xl shrink-0">
+                ৳
+              </div>
+              <div>
+                <div class="font-bold text-base sm:text-lg text-amber-100">কত টাকার ছিল?</div>
+                <div class="text-xs text-stone-300/75">আপনার প্রথম প্রজেক্টের বাজেট</div>
+              </div>
+            </div>
+
+            <div class="rounded-2xl bg-black/40 border border-amber-400/25 p-5 flex items-center gap-4 text-left hover:border-amber-400/60 transition">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-xl shrink-0">
+                📅
+              </div>
+              <div>
+                <div class="font-bold text-base sm:text-lg text-amber-100">কতদিন পর পেয়েছিলেন?</div>
+                <div class="text-xs text-stone-300/75">শুরুর পর প্রথম ক্লায়েন্টের সময়কাল</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </section>
 
-    <!-- Scene 02: ফলাফল -->
-    <section class="scene" data-scene="1">
-      <div class="pill-title">ফলাফল</div>
-      <div class="result-rows">
-        <div class="result-item" data-r="0">
-          <div class="ring-icon">↗</div>
-          <div class="result-text">রিয়েল রিচ</div>
+    <!-- Bottom Playback & Scene Controls -->
+    <footer class="relative z-20 w-full max-w-6xl mx-auto px-4 sm:px-6 pb-5 pt-2">
+      <div class="motion-card px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <button
+            id="prevBtn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium transition cursor-pointer"
+          >
+            ← Prev
+          </button>
+          <button
+            id="playPauseBtn"
+            type="button"
+            class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-sm transition shadow-lg cursor-pointer"
+          >
+            ⏸ Pause
+          </button>
+          <button
+            id="nextBtn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium transition cursor-pointer"
+          >
+            Next →
+          </button>
+          <button
+            id="replayBtn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm font-medium transition cursor-pointer"
+          >
+            ↻ Replay
+          </button>
         </div>
-        <div class="result-item" data-r="1">
-          <div class="ring-icon">↗</div>
-          <div class="result-text">রিয়েল লিড</div>
-        </div>
-        <div class="result-item" data-r="2">
-          <div class="ring-icon">↗</div>
-          <div class="result-text">রিয়েল রেজাল্ট</div>
-        </div>
-      </div>
-      <svg class="wave-svg" viewBox="0 0 360 110">
-        <path class="wave-path" d="M 10 92 Q 95 72, 165 82 T 350 28" />
-      </svg>
-    </section>
 
-    <!-- Scene 03: স্ট্র্যাটেজি + ক্রিয়েটিভিটি + রেজাল্ট -->
-    <section class="scene" data-scene="2">
-      <div class="pillar-stack">
-        <div class="pillar-line" data-p="0">স্ট্র্যাটেজি</div>
-        <div class="pillar-line" data-p="1"><span style="color:#38bdf8;">+</span> ক্রিয়েটিভিটি</div>
-        <div class="pillar-line glow-cyan" data-p="2"><span style="color:#38bdf8;">+</span> রেজাল্ট</div>
-      </div>
-
-      <div class="bar-chart-wrap" id="barChart">
-        <div class="bar-col" style="--h: 22%;"></div>
-        <div class="bar-col" style="--h: 40%;"></div>
-        <div class="bar-col" style="--h: 58%;"></div>
-        <div class="bar-col" style="--h: 76%;"></div>
-        <div class="bar-col" style="--h: 96%;"></div>
-        <svg class="trend-svg" viewBox="0 0 320 135">
-          <polyline class="trend-line" points="28,112 92,92 156,70 220,46 286,18"
-            fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
-          <circle cx="286" cy="18" r="5" fill="#ffffff" />
-        </svg>
-      </div>
-    </section>
-
-    <!-- Scene 04: ফলো করুন / আউটরো -->
-    <section class="scene" data-scene="3">
-      <div class="outro-box">
-        <div class="brand-badge">
-          <div class="brand-mark">SN</div>
-          <div class="brand-sub">Digital Growth</div>
-        </div>
-        <div style="font-size: clamp(1.35rem, 2.9vh, 1.75rem); font-weight: 800; text-shadow: 0 2px 14px rgba(0,0,0,0.45);">
-          ফেসবুকে ফলো করুন
-        </div>
-        <div style="font-size: clamp(1.15rem, 2.5vh, 1.45rem); font-weight: 800; color: #e0f2fe;">
-          SN Digital <span style="color: #7df9ff;">Growth</span>
+        <div id="sceneCaptionLabel" class="text-xs sm:text-sm text-amber-200/90 font-medium truncate">
+          ১. প্রথম ক্লায়েন্ট প্রাপ্তি
         </div>
       </div>
-    </section>
-
-    <div id="bottom-caption" aria-live="polite"></div>
-  </div>
-
-  <div class="hud-bar">
-    <div class="progress-wrap">
-      <div class="progress-bar" id="progressBar"></div>
-    </div>
-
-    <div class="controls-row">
-      <span class="counter-badge" id="counter">01 / 04</span>
-
-      <div class="btn-group">
-        <button class="btn active-toggle" id="soundBtn" type="button">🔊 সাউন্ড: চালু</button>
-        <button class="btn active-toggle" id="autoPlayBtn" type="button">▶ অটো: চালু</button>
-        <button class="btn active-toggle" id="highlightBtn" type="button">✨ হাইলাইট: চালু</button>
-        <button class="btn" id="dropperBtn" type="button">💧 রঙ</button>
-        <input type="color" id="colorPicker" class="dropper-input" value="#ffd24c" />
-        <button class="btn primary" id="replayBtn" type="button">↻ Replay</button>
-      </div>
-    </div>
-  </div>
+    </footer>
+  </main>
 
   <script>
-    const scenes = Array.from(document.querySelectorAll('.scene'));
-    const totalSteps = scenes.length;
-
-    const voiceoverLines = [
-      "সঠিক পরিকল্পনায় আপনার ব্যবসাকে এগিয়ে নিন।",
-      "ফলাফল, বাড়ছে রিচ, বাড়ছে লিড, বাড়ছে সেলস।",
-      "পরিকল্পনা, সৃজনশীলতা আর ডেটার সমন্বয়ে ধাপে ধাপে এগিয়ে যাই।",
-      "ফেসবুকে ফলো করুন, এসএন ডিজিটাল গ্রোথ।"
+    // Scene definitions matching Tutorial 4.mp4
+    const SCENES = [
+      {
+        title: "১. প্রথম ক্লায়েন্ট প্রাপ্তি",
+        duration: 4600,
+        narration: "ফ্রিল্যান্সিং শুরু করার পর আমার প্রথম ক্লায়েন্ট পেতে খুব বেশি সময় লাগেনি।"
+      },
+      {
+        title: "২. প্রথম অর্ডার ৩,০০০ টাকা",
+        duration: 4600,
+        narration: "আর প্রথম অর্ডারটি ছিল ৩,০০০ টাকার।"
+      },
+      {
+        title: "৩. ফেসবুক গ্রুপ পোস্ট — লোগো ও কভার ডিজাইন",
+        duration: 5400,
+        narration: "আমি প্রথম ক্লায়েন্ট পেয়েছিলাম ফেসবুকের একটি গ্রুপ থেকে। সেখানে একটি ক্লোদিং ব্র্যান্ডের ফেসবুক পেজের জন্য লোগো এবং কভার ডিজাইন চাওয়া হয়েছিল।"
+      },
+      {
+        title: "৪. মেসেঞ্জারে যোগাযোগ ও ডিলের সম্ভাবনা",
+        duration: 4800,
+        narration: "আমি দেরি না করে সঙ্গে সঙ্গে তাদের ইনবক্সে মেসেজ করি। যদিও সেখানে অনেকেই কাজটির জন্য যোগাযোগ করছিল।"
+      },
+      {
+        title: "৫. ডিল ফাইনাল ও ৫০% অ্যাডভান্স পেমেন্ট",
+        duration: 5000,
+        narration: "তবুও কথা বলার পর ক্লায়েন্ট আমার সঙ্গেই ডিল ফাইনাল করে এবং ৫০ শতাংশ অ্যাডভান্স পেমেন্ট দিয়ে দেয়।"
+      },
+      {
+        title: "৬. ইলাস্ট্রেটরে ডিজাইনের কাজ",
+        duration: 4800,
+        narration: "এরপর শুরু করি ডিজাইনের কাজ।"
+      },
+      {
+        title: "৭. রিভিশন ও অবশেষে ডিজাইন পছন্দ হওয়া",
+        duration: 5400,
+        narration: "কয়েকবার ডিজাইন করার পরেও ক্লায়েন্টের পছন্দ হচ্ছিল না। বেশ কয়েকবার রিভিশন দেওয়ার পর অবশেষে তার ডিজাইন পছন্দ হয়।"
+      },
+      {
+        title: "৮. বাকি পেমেন্ট সম্পন্ন",
+        duration: 4400,
+        narration: "এবং বাকি পেমেন্টও দিয়ে দেয়।"
+      },
+      {
+        title: "৯. কসমেটিকস ব্র্যান্ডের ফেসবুক কভার ডিজাইন",
+        duration: 5200,
+        narration: "এই কাজের পরপরই আমি একই গ্রুপ থেকে আরেকটি অর্ডার পাই। সেটি ছিল একটি কসমেটিকস ব্র্যান্ডের ফেসবুক কভার ডিজাইন, যার মূল্য ছিল ১,০০০ টাকা।"
+      },
+      {
+        title: "১০. মোট ইনকাম ৪,০০০ টাকা",
+        duration: 5000,
+        narration: "অর্থাৎ প্রথম দুটি অর্ডার মিলিয়ে আমার ইনকাম হয়েছিল ৪,০০০ টাকা।"
+      },
+      {
+        title: "১১. দর্শকদের প্রশ্ন",
+        duration: 6000,
+        narration: "আপনার প্রথম ফ্রিল্যান্সিং অর্ডার কত টাকার ছিল এবং কতদিন পর পেয়েছিলেন?"
+      }
     ];
 
-    function estimateVoiceDurationMs(text) {
-      const words = text.trim().split(/\s+/).filter(Boolean);
-      return Math.max(3200, words.length * 340);
+    const BANGLA_DIGITS = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+    function toBanglaNumber(num) {
+      return Number(num)
+        .toLocaleString("en-US")
+        .split("")
+        .map((ch) => (ch >= "0" && ch <= "9" ? BANGLA_DIGITS[Number(ch)] : ch))
+        .join("");
     }
 
-    // ব্যাকগ্রাউন্ডে ভাসমান কণা তৈরি
-    const particlesEl = document.getElementById('particles');
-    for (let i = 0; i < 18; i++) {
-      const p = document.createElement('span');
-      p.className = 'particle';
-      const sz = 2 + (i % 3);
-      p.style.width = `${sz}px`;
-      p.style.height = `${sz}px`;
-      p.style.left = `${(i * 19) % 96}%`;
-      p.style.top = `${(i * 23) % 90}%`;
-      p.style.animationDuration = `${4.5 + (i % 4)}s`;
-      p.style.animationDelay = `${(i % 5) * 0.4}s`;
-      particlesEl.appendChild(p);
-    }
-
-    let audioCtx = null;
-    let soundEnabled = true;
-
-    function ensureAudioCtx() {
-      if (!audioCtx) {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass) audioCtx = new AudioContextClass();
+    // Web Audio API Sound Synthesizer (Pop, Counter Tick, Chime, Ambient Pad)
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+        this.ambientGain = null;
+        this.ambientStarted = false;
       }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume().catch(() => {});
-      }
-    }
 
-    // সফট ট্রানজিশন ও সূক্ষ্ম পপ অ্যাকসেন্ট (ভয়েসওভার বা ক্যাপশন ছাড়া)
-    function playSoftTransitionAccent(freqStart = 280, freqEnd = 520, duration = 0.16, peak = 0.04) {
-      if (!soundEnabled) return;
-      ensureAudioCtx();
-      if (!audioCtx || audioCtx.state !== 'running') return;
-
-      const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freqStart, now);
-      osc.frequency.exponentialRampToValueAtTime(freqEnd, now + duration);
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.linearRampToValueAtTime(peak, now + 0.025);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + duration + 0.01);
-    }
-
-    const stageEl = document.getElementById('stage');
-    const tapIndicator = document.getElementById('tapIndicator');
-    const bottomCaption = document.getElementById('bottom-caption');
-    const counterEl = document.getElementById('counter');
-    const progressBar = document.getElementById('progressBar');
-    const soundBtn = document.getElementById('soundBtn');
-    const autoPlayBtn = document.getElementById('autoPlayBtn');
-    const replayBtn = document.getElementById('replayBtn');
-    const highlightBtn = document.getElementById('highlightBtn');
-    const dropperBtn = document.getElementById('dropperBtn');
-    const colorPicker = document.getElementById('colorPicker');
-
-    let currentStep = 0;
-    let isFirstLoad = true;
-    let isAutoPlaying = true;
-    let highlightEnabled = true;
-    let wordTimer = null;
-    let nextSceneTimer = null;
-    let indicatorTimer = null;
-    let sceneTimers = [];
-
-    function clearAllTimers() {
-      clearTimeout(wordTimer);
-      clearTimeout(nextSceneTimer);
-      sceneTimers.forEach(t => clearTimeout(t));
-      sceneTimers = [];
-    }
-
-    function showTapStatus(text) {
-      tapIndicator.textContent = text;
-      tapIndicator.classList.add('show');
-      clearTimeout(indicatorTimer);
-      indicatorTimer = setTimeout(() => {
-        tapIndicator.classList.remove('show');
-      }, 1100);
-    }
-
-    function syncAutoPlayUI(notifyScreen = false) {
-      autoPlayBtn.classList.toggle('active-toggle', isAutoPlaying);
-      autoPlayBtn.textContent = isAutoPlaying ? '▶ অটো: চালু' : '⏸ অটো: বন্ধ';
-      if (notifyScreen) {
-        showTapStatus(isAutoPlaying ? '▶ অটো চালু' : '⏸ অটো বন্ধ');
-      }
-    }
-
-    function toggleAutoPlay(notifyScreen = true) {
-      ensureAudioCtx();
-      isAutoPlaying = !isAutoPlaying;
-      syncAutoPlayUI(notifyScreen);
-      if (isAutoPlaying) {
-        goToScene(currentStep);
-      } else {
-        clearTimeout(nextSceneTimer);
-      }
-    }
-
-    function updateProgress(stepIdx, wordRatio = 0) {
-      const base = stepIdx / totalSteps;
-      const slice = (1 / totalSteps) * wordRatio;
-      const pct = Math.min(100, Math.max(4, (base + slice) * 100));
-      progressBar.style.width = `${pct}%`;
-    }
-
-    function scheduleNextScene(stepIdx) {
-      clearTimeout(nextSceneTimer);
-      if (!isAutoPlaying) return;
-      nextSceneTimer = setTimeout(() => {
-        goToScene((stepIdx + 1) % totalSteps);
-      }, 220);
-    }
-
-    // ক্যাপশন কার্ড সম্পূর্ণ নিঃশব্দ — শুধুমাত্র শব্দ হাইলাইট
-    function renderKaraokeSynced(text, stepIdx, totalDurationMs) {
-      bottomCaption.innerHTML = '';
-      const words = text.split(/\s+/).filter(Boolean);
-      const wordSpans = words.map((w) => {
-        const span = document.createElement('span');
-        span.className = 'cap-word';
-        span.textContent = w;
-        bottomCaption.appendChild(span);
-        return span;
-      });
-
-      if (!wordSpans.length) return;
-      const intervalMs = totalDurationMs / wordSpans.length;
-      let wIdx = 0;
-
-      function stepWord() {
-        wordSpans.forEach((el, i) => {
-          el.classList.remove('active-word');
-          el.classList.toggle('spoken', i < wIdx);
-        });
-
-        if (wIdx < wordSpans.length) {
-          wordSpans[wIdx].classList.add('active-word');
-          updateProgress(stepIdx, (wIdx + 1) / wordSpans.length);
-          wIdx++;
-          wordTimer = setTimeout(stepWord, intervalMs);
-        } else {
-          updateProgress(stepIdx, 1);
-          scheduleNextScene(stepIdx);
+      ensureContext() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+          }
+        }
+        if (this.ctx && this.ctx.state === "suspended") {
+          this.ctx.resume().catch(() => {});
+        }
+        if (this.enabled && !this.ambientStarted) {
+          this.startAmbient();
         }
       }
 
-      stepWord();
-    }
+      startAmbient() {
+        if (!this.ctx || this.ambientStarted) return;
+        try {
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const filter = this.ctx.createBiquadFilter();
+          const gain = this.ctx.createGain();
 
-    function animateSceneDetails(stepIdx, syncMs) {
-      if (stepIdx === 0) {
-        const cards = Array.from(document.querySelectorAll('.service-card'));
-        cards.forEach(c => c.classList.remove('lit'));
-        const stepGap = Math.max(450, (syncMs - 500) / cards.length);
-        cards.forEach((card, i) => {
-          const t = setTimeout(() => {
-            cards.forEach(x => x.classList.remove('lit'));
-            card.classList.add('lit');
-            playSoftTransitionAccent(320 + i * 55, 480 + i * 55, 0.11, 0.025);
-          }, 250 + i * stepGap);
-          sceneTimers.push(t);
-        });
-      } else if (stepIdx === 1) {
-        const items = Array.from(document.querySelectorAll('.result-item'));
-        items.forEach(el => el.classList.remove('show'));
-        const gap = Math.max(550, (syncMs - 600) / items.length);
-        items.forEach((item, i) => {
-          const t = setTimeout(() => {
-            item.classList.add('show');
-            playSoftTransitionAccent(360 + i * 70, 560 + i * 70, 0.12, 0.028);
-          }, 220 + i * gap);
-          sceneTimers.push(t);
-        });
-      } else if (stepIdx === 2) {
-        const lines = Array.from(document.querySelectorAll('.pillar-line'));
-        const bars = Array.from(document.querySelectorAll('.bar-col'));
-        const trend = document.querySelector('.trend-line');
-        lines.forEach(el => el.classList.remove('show'));
-        bars.forEach(b => b.classList.remove('grow'));
-        if (trend) trend.classList.remove('draw');
+          osc1.type = "sine";
+          osc2.type = "triangle";
+          osc1.frequency.value = 65.41; // C2
+          osc2.frequency.value = 98.0;  // G2
 
-        lines.forEach((line, i) => {
-          const t = setTimeout(() => {
-            line.classList.add('show');
-            playSoftTransitionAccent(300 + i * 80, 520 + i * 80, 0.12, 0.028);
-          }, 180 + i * 420);
-          sceneTimers.push(t);
-        });
+          filter.type = "lowpass";
+          filter.frequency.value = 210;
 
-        bars.forEach((bar, i) => {
-          const t = setTimeout(() => {
-            bar.classList.add('grow');
-          }, 900 + i * 160);
-          sceneTimers.push(t);
-        });
+          gain.gain.value = this.enabled ? 0.025 : 0.0001;
 
-        const tLine = setTimeout(() => {
-          if (trend) trend.classList.add('draw');
-        }, 1650);
-        sceneTimers.push(tLine);
+          osc1.connect(filter);
+          osc2.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc1.start();
+          osc2.start();
+
+          this.ambientGain = gain;
+          this.ambientStarted = true;
+        } catch (err) {
+          // Ignore audio start errors before user gesture
+        }
+      }
+
+      setEnabled(val) {
+        this.enabled = val;
+        if (this.ambientGain && this.ctx) {
+          this.ambientGain.gain.setTargetAtTime(val ? 0.025 : 0.0001, this.ctx.currentTime, 0.08);
+        }
+        if (val) {
+          this.ensureContext();
+        }
+      }
+
+      playPop(freq = 360) {
+        if (!this.enabled) return;
+        this.ensureContext();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq * 0.75, now);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.35, now + 0.09);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.09, now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.15);
+      }
+
+      playTick() {
+        if (!this.enabled || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(780, now);
+        gain.gain.setValueAtTime(0.025, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.03);
+      }
+
+      playChime() {
+        if (!this.enabled) return;
+        this.ensureContext();
+        if (!this.ctx) return;
+        const notes = [523.25, 659.25, 783.99];
+        notes.forEach((n, idx) => {
+          const now = this.ctx.currentTime + idx * 0.08;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(n, now);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.36);
+        });
       }
     }
 
-    function goToScene(stepIdx) {
-      clearAllTimers();
-      currentStep = ((stepIdx % totalSteps) + totalSteps) % totalSteps;
-      const line = voiceoverLines[currentStep];
-      const syncMs = estimateVoiceDurationMs(line);
+    const sound = new SoundEngine();
 
-      document.documentElement.style.setProperty('--sync-duration', `${(syncMs / 1000).toFixed(2)}s`);
+    // State & DOM references
+    let currentScene = 0;
+    let isPlaying = true;
+    let voiceEnabled = false;
+    let sceneTimer = null;
+    let counterInterval = null;
 
-      if (isFirstLoad) {
-        isFirstLoad = false;
-      } else {
-        playSoftTransitionAccent(220, 420, 0.18, 0.038);
+    const panels = Array.from(document.querySelectorAll(".scene-panel"));
+    const timelineEl = document.getElementById("sceneTimeline");
+    const counterBadge = document.getElementById("sceneCounterBadge");
+    const captionLabel = document.getElementById("sceneCaptionLabel");
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const replayBtn = document.getElementById("replayBtn");
+    const audioToggleBtn = document.getElementById("audioToggleBtn");
+    const audioIcon = document.getElementById("audioIcon");
+    const audioLabel = document.getElementById("audioLabel");
+    const voiceToggleBtn = document.getElementById("voiceToggleBtn");
+    const voiceLabel = document.getElementById("voiceLabel");
+
+    // Build segmented timeline buttons
+    SCENES.forEach((sc, idx) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.title = sc.title;
+      btn.className = "h-2 rounded-full bg-white/15 hover:bg-amber-400/50 transition-all cursor-pointer";
+      btn.addEventListener("click", () => {
+        sound.ensureContext();
+        goToScene(idx);
+      });
+      timelineEl.appendChild(btn);
+    });
+
+    const timelineBtns = Array.from(timelineEl.children);
+
+    function animateCounter(el, target, duration = 1100, tickSound = true) {
+      if (counterInterval) clearInterval(counterInterval);
+      const startTime = performance.now();
+      let lastTick = 0;
+
+      counterInterval = setInterval(() => {
+        const elapsed = performance.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const currentVal = Math.round(eased * target);
+        el.textContent = toBanglaNumber(currentVal);
+
+        if (tickSound && progress < 1 && elapsed - lastTick > 75) {
+          sound.playTick();
+          lastTick = elapsed;
+        }
+
+        if (progress >= 1) {
+          el.textContent = toBanglaNumber(target);
+          clearInterval(counterInterval);
+          counterInterval = null;
+        }
+      }, 24);
+    }
+
+    function speakScene(text) {
+      if (!voiceEnabled || !("speechSynthesis" in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "bn-BD";
+        utter.rate = 1.02;
+        window.speechSynthesis.speak(utter);
+      } catch (err) {
+        // Ignore speech errors
+      }
+    }
+
+    function runSceneEffects(index) {
+      // Reset states
+      const s1Check = document.getElementById("scene1Check");
+      const ring = document.getElementById("advanceRingCircle");
+      const ringText = document.getElementById("advancePercentText");
+      const bar = document.getElementById("finalPaymentBar");
+      const barPct = document.getElementById("finalPaymentPercent");
+      const barCheck = document.getElementById("finalPaymentCheck");
+      const meNode = document.getElementById("meClientNode");
+
+      s1Check.classList.remove("opacity-100", "scale-100");
+      s1Check.classList.add("opacity-0", "scale-50");
+
+      ring.style.strokeDashoffset = "276.46";
+      ringText.textContent = "০%";
+
+      bar.style.width = "0%";
+      barPct.textContent = "0%";
+      barCheck.classList.remove("scale-100", "opacity-100");
+      barCheck.classList.add("scale-75", "opacity-50");
+
+      meNode.classList.remove("scale-110");
+
+      sound.playPop(340 + index * 25);
+
+      if (index === 0) {
+        setTimeout(() => {
+          s1Check.classList.remove("opacity-0", "scale-50");
+          s1Check.classList.add("opacity-100", "scale-100");
+          sound.playChime();
+        }, 650);
+      } else if (index === 1) {
+        const el = document.getElementById("counterScene2");
+        el.textContent = "০";
+        setTimeout(() => {
+          animateCounter(el, 3000, 1150, true);
+          setTimeout(() => sound.playChime(), 1200);
+        }, 250);
+      } else if (index === 3) {
+        setTimeout(() => {
+          meNode.classList.add("scale-110");
+          sound.playPop(520);
+        }, 700);
+      } else if (index === 4) {
+        setTimeout(() => {
+          // 50% of 276.46 is 138.23
+          ring.style.strokeDashoffset = "138.23";
+          ringText.textContent = "৫০%";
+          sound.playChime();
+        }, 300);
+      } else if (index === 6) {
+        const icon = document.getElementById("revisionSpinIcon");
+        icon.style.transform = "rotate(360deg)";
+        setTimeout(() => { icon.style.transform = "rotate(0deg)"; }, 800);
+      } else if (index === 7) {
+        setTimeout(() => {
+          bar.style.width = "100%";
+          barPct.textContent = "100%";
+          setTimeout(() => {
+            barCheck.classList.remove("scale-75", "opacity-50");
+            barCheck.classList.add("scale-100", "opacity-100");
+            sound.playChime();
+          }, 850);
+        }, 250);
+      } else if (index === 9) {
+        const el = document.getElementById("totalIncomeCounter");
+        el.textContent = "০";
+        setTimeout(() => {
+          animateCounter(el, 4000, 1150, true);
+          setTimeout(() => sound.playChime(), 1200);
+        }, 250);
       }
 
-      scenes.forEach((sc, i) => {
-        sc.classList.remove('active');
-        void sc.offsetWidth;
-        if (i === currentStep) sc.classList.add('active');
+      speakScene(SCENES[index].narration);
+    }
+
+    function scheduleNextScene() {
+      clearTimeout(sceneTimer);
+      if (!isPlaying) return;
+      sceneTimer = setTimeout(() => {
+        if (currentScene < SCENES.length - 1) {
+          goToScene(currentScene + 1);
+        } else {
+          // Pause at outro until user clicks replay or next
+          isPlaying = false;
+          playPauseBtn.textContent = "▶ Play";
+        }
+      }, SCENES[currentScene].duration);
+    }
+
+    function goToScene(index) {
+      currentScene = Math.max(0, Math.min(SCENES.length - 1, index));
+
+      panels.forEach((p, idx) => {
+        p.classList.toggle("active", idx === currentScene);
       });
 
-      animateSceneDetails(currentStep, syncMs);
-      counterEl.textContent = `${String(currentStep + 1).padStart(2, '0')} / ${String(totalSteps).padStart(2, '0')}`;
-      renderKaraokeSynced(line, currentStep, syncMs);
+      timelineBtns.forEach((btn, idx) => {
+        if (idx < currentScene) {
+          btn.className = "h-2 rounded-full bg-amber-400/75 transition-all cursor-pointer";
+        } else if (idx === currentScene) {
+          btn.className = "h-2 rounded-full bg-amber-400 shadow-[0_0_10px_#ff9d1c] transition-all cursor-pointer";
+        } else {
+          btn.className = "h-2 rounded-full bg-white/15 hover:bg-amber-400/40 transition-all cursor-pointer";
+        }
+      });
+
+      counterBadge.textContent = `Scene ${currentScene + 1} / ${SCENES.length}`;
+      captionLabel.textContent = SCENES[currentScene].title;
+
+      runSceneEffects(currentScene);
+      scheduleNextScene();
     }
 
-    ['pointerdown', 'keydown'].forEach(evt => {
-      window.addEventListener(evt, ensureAudioCtx, { once: true });
-    });
-
-    stageEl.addEventListener('click', () => {
-      toggleAutoPlay(true);
-    });
-
-    soundBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      soundEnabled = !soundEnabled;
-      soundBtn.classList.toggle('active-toggle', soundEnabled);
-      soundBtn.textContent = soundEnabled ? '🔊 সাউন্ড: চালু' : '🔇 সাউন্ড: বন্ধ';
-      if (soundEnabled) {
-        ensureAudioCtx();
-        playSoftTransitionAccent(260, 480, 0.15, 0.035);
+    // Controls
+    playPauseBtn.addEventListener("click", () => {
+      sound.ensureContext();
+      isPlaying = !isPlaying;
+      playPauseBtn.textContent = isPlaying ? "⏸ Pause" : "▶ Play";
+      if (isPlaying) {
+        if (currentScene === SCENES.length - 1) {
+          goToScene(0);
+        } else {
+          scheduleNextScene();
+        }
+      } else {
+        clearTimeout(sceneTimer);
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
       }
     });
 
-    autoPlayBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleAutoPlay(true);
+    prevBtn.addEventListener("click", () => {
+      sound.ensureContext();
+      goToScene(currentScene > 0 ? currentScene - 1 : SCENES.length - 1);
     });
 
-    replayBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      ensureAudioCtx();
-      isAutoPlaying = true;
-      syncAutoPlayUI(false);
+    nextBtn.addEventListener("click", () => {
+      sound.ensureContext();
+      goToScene(currentScene < SCENES.length - 1 ? currentScene + 1 : 0);
+    });
+
+    replayBtn.addEventListener("click", () => {
+      sound.ensureContext();
+      isPlaying = true;
+      playPauseBtn.textContent = "⏸ Pause";
       goToScene(0);
     });
 
-    highlightBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      highlightEnabled = !highlightEnabled;
-      bottomCaption.classList.toggle('no-highlight', !highlightEnabled);
-      highlightBtn.classList.toggle('active-toggle', highlightEnabled);
-      highlightBtn.textContent = highlightEnabled ? '✨ হাইলাইট: চালু' : '✨ হাইলাইট: বন্ধ';
+    audioToggleBtn.addEventListener("click", () => {
+      const nextState = !sound.enabled;
+      sound.setEnabled(nextState);
+      audioIcon.textContent = nextState ? "🔊" : "🔇";
+      audioLabel.textContent = nextState ? "SFX On" : "SFX Off";
+      if (nextState) sound.playPop(440);
     });
 
-    dropperBtn.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      if ('EyeDropper' in window) {
-        try {
-          const eyeDropper = new EyeDropper();
-          const result = await eyeDropper.open();
-          document.documentElement.style.setProperty('--accent-yellow', result.sRGBHex);
-          colorPicker.value = result.sRGBHex;
-          return;
-        } catch (_) {}
+    voiceToggleBtn.addEventListener("click", () => {
+      voiceEnabled = !voiceEnabled;
+      voiceLabel.textContent = voiceEnabled ? "Voice On" : "Voice Off";
+      if (voiceEnabled) {
+        speakScene(SCENES[currentScene].narration);
+      } else if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
       }
-      colorPicker.click();
     });
 
-    colorPicker.addEventListener('click', (e) => e.stopPropagation());
-    colorPicker.addEventListener('input', (e) => {
-      document.documentElement.style.setProperty('--accent-yellow', e.target.value);
+    document.getElementById("revisionSpinBtn").addEventListener("click", () => {
+      sound.playPop(480);
+      const icon = document.getElementById("revisionSpinIcon");
+      icon.style.transform = "rotate(360deg)";
+      setTimeout(() => { icon.style.transform = "rotate(0deg)"; }, 750);
     });
 
-    goToScene(0);
+    // Kick off Scene 1
+    runSceneEffects(0);
+    scheduleNextScene();
   </script>
 </body>
 </html>
