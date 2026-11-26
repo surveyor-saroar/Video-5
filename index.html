@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Center Sunburst 50% Opacity</title>
+  <title>index.html - Watercolor Background</title>
   <style>
     * {
       box-sizing: border-box;
@@ -22,25 +22,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #06123a; /* বেস ডার্ক ব্যাকগ্রাউন্ড */
+      background-color: #eef4f7;
       font-family: system-ui, -apple-system, sans-serif;
     }
 
-    /* সেন্টার থেকে চারদিকে ছড়ানো ৫০% অপাসিটির সানবার্স্ট লেয়ার */
-    .sunburst-bg {
+    /* ওয়াটারকালার আভা ব্যাকগ্রাউন্ড লেয়ার */
+    .watercolor-bg {
       position: fixed;
       inset: 0;
       width: 100vw;
       height: 100vh;
-      opacity: 0.5;
       pointer-events: none;
       background:
-        radial-gradient(circle at 50% 50%, transparent 25%, rgba(6, 18, 58, 0.7) 100%),
-        repeating-conic-gradient(
-          from 0deg at 50% 50%,
-          #1D5FD6 0deg 6deg,
-          #0E3596 6deg 12deg
-        );
+        radial-gradient(circle at 72% 38%, rgba(126, 107, 214, 0.58) 0%, transparent 38%),
+        radial-gradient(circle at 65% 68%, rgba(74, 123, 216, 0.55) 0%, transparent 45%),
+        radial-gradient(circle at 28% 78%, rgba(18, 122, 150, 0.52) 0%, transparent 36%),
+        radial-gradient(circle at 22% 72%, rgba(88, 182, 201, 0.45) 0%, transparent 42%),
+        radial-gradient(circle at 15% 15%, rgba(232, 243, 242, 0.9) 0%, transparent 48%),
+        linear-gradient(135deg, #e8f3f2 0%, #d6e2f5 45%, #c5daf4 100%);
+      filter: blur(14px);
+      transform: scale(1.06);
     }
 
     .stage {
@@ -65,11 +66,11 @@
 </head>
 <body>
 
-  <div class="sunburst-bg"></div>
+  <div class="watercolor-bg"></div>
 
   <div class="stage" id="stage">
     <section class="scene active" data-scene="0">
-      <!-- আপনার সিন ১-এর কন্টেন্ট এখানে যুক্ত হবে (পূর্ণ ১০০% অপাসিটিতে থাকবে) -->
+      <!-- আপনার সিন ১-এর কন্টেন্ট এখানে যুক্ত হবে -->
     </section>
   </div>
 
