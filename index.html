@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>index.html - Scene 1 Motion Graphics</title>
+  <title>index.html - Scene 1 & Karaoke Caption</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --outer-bg: #111827;
-      --bg-top: #eef8f5;
-      --bg-warm: #faf5e4;
-      --bg-bottom: #cfd6d6;
+      --stage-bg: #111827; /* আপনার ব্যাকগ্রাউন্ড */
       --card-bg: #ffffff;
       --accent-green: #0f9d76;
       --accent-yellow: #ffd24c;
+      --text-light: #f9fafb;
+      --text-muted-light: #cbd5e1;
       --text-dark: #0f172a;
       --text-muted: #64748b;
-      --shadow: 0 20px 45px rgba(15, 23, 42, 0.14);
+      --shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      --caption-bg-alpha: 0.24;
       --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -37,11 +38,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 14px;
+      gap: 12px;
       background-color: var(--outer-bg);
       font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
-      color: var(--text-dark);
-      padding: 18px;
+      color: var(--text-light);
+      padding: 16px;
     }
 
     .stage {
@@ -51,28 +52,27 @@
       aspect-ratio: 16 / 9;
       border-radius: 20px;
       overflow: hidden;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(16, 185, 129, 0.16), transparent 42%),
-        radial-gradient(circle at 85% 22%, rgba(250, 204, 21, 0.2), transparent 45%),
-        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-warm) 55%, var(--bg-bottom) 100%);
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55);
+      background-color: var(--stage-bg);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.65);
     }
 
     .scene {
       position: absolute;
       inset: 0;
-      padding: 36px 46px;
+      padding: 32px 44px 116px;
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       transform: scale(0.96);
       transition: opacity 0.5s var(--ease-out), transform 0.65s var(--ease-out);
+      pointer-events: none;
     }
 
     .scene.active {
       opacity: 1;
       transform: scale(1);
+      pointer-events: auto;
     }
 
     .grid-2 {
@@ -86,7 +86,7 @@
     /* Slide & Stagger Entrance */
     .stagger {
       opacity: 0;
-      transform: translateY(22px) translateX(-10px);
+      transform: translateY(20px) translateX(-10px);
       transition: opacity 0.55s var(--ease-out), transform 0.65s var(--ease-out);
     }
 
@@ -99,21 +99,23 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: #e6f7f2;
-      color: var(--accent-green);
+      background: rgba(15, 157, 118, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: #34d399;
       font-weight: 700;
-      padding: 6px 14px;
+      padding: 5px 14px;
       border-radius: 999px;
-      font-size: 0.92rem;
-      margin-bottom: 12px;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
       transition-delay: 0.08s;
     }
 
     .hero-title {
-      font-size: clamp(1.85rem, 3.3vw, 2.85rem);
+      font-size: clamp(1.75rem, 3.1vw, 2.7rem);
       line-height: 1.24;
       font-weight: 700;
-      margin-bottom: 12px;
+      color: var(--text-light);
+      margin-bottom: 10px;
       transition-delay: 0.16s;
     }
 
@@ -121,19 +123,21 @@
     .hl {
       position: relative;
       display: inline-block;
+      color: var(--text-dark);
       z-index: 1;
+      padding: 0 4px;
     }
 
     .hl::after {
       content: "";
       position: absolute;
-      left: -4px;
-      right: -4px;
+      left: -2px;
+      right: -2px;
       bottom: 2px;
-      height: 38%;
+      height: 82%;
       background: var(--accent-yellow);
       z-index: -1;
-      border-radius: 5px;
+      border-radius: 6px;
       transform: scaleX(0);
       transform-origin: left;
       transition: transform 0.6s var(--ease-out) 0.32s;
@@ -144,10 +148,10 @@
     }
 
     .sub-copy {
-      font-size: 1.04rem;
-      color: var(--text-muted);
-      line-height: 1.55;
-      margin-bottom: 18px;
+      font-size: 1rem;
+      color: var(--text-muted-light);
+      line-height: 1.5;
+      margin-bottom: 16px;
       transition-delay: 0.24s;
     }
 
@@ -155,15 +159,16 @@
     .metrics-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 12px;
       transition-delay: 0.32s;
     }
 
     .metric-card {
-      background: rgba(255, 255, 255, 0.88);
+      background: var(--card-bg);
+      color: var(--text-dark);
       border-radius: 14px;
-      padding: 12px 14px;
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+      padding: 11px 14px;
+      box-shadow: var(--shadow);
       transition: transform 0.35s var(--ease-out);
     }
 
@@ -174,9 +179,9 @@
     .metric-top {
       display: flex;
       justify-content: space-between;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
     }
 
     .progress-track {
@@ -223,15 +228,16 @@
     .right-stack {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       transition-delay: 0.25s;
     }
 
     .search-mock {
       position: relative;
       background: var(--card-bg);
+      color: var(--text-dark);
       border-radius: 18px;
-      padding: 18px 20px;
+      padding: 16px 18px;
       box-shadow: var(--shadow);
       transform: scale(0.96);
       transition: transform 0.55s var(--ease-out) 0.25s;
@@ -242,7 +248,7 @@
     }
 
     .search-bar {
-      height: 40px;
+      height: 38px;
       border-radius: 10px;
       background: #f1f5f9;
       display: flex;
@@ -250,15 +256,15 @@
       gap: 8px;
       padding: 0 12px;
       color: var(--text-dark);
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 600;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .cursor {
       display: inline-block;
       width: 2px;
-      height: 18px;
+      height: 17px;
       background: var(--accent-green);
       animation: blink 0.8s infinite;
     }
@@ -269,10 +275,10 @@
     }
 
     .skeleton-line {
-      height: 10px;
+      height: 9px;
       border-radius: 99px;
       background: #e2e8f0;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
       transform: scaleX(0);
       transform-origin: left;
       transition: transform 0.45s var(--ease-out);
@@ -301,14 +307,15 @@
     }
 
     .result-popup {
-      background: #0f172a;
+      background: #1f2937;
+      border: 1px solid rgba(255, 255, 255, 0.14);
       color: #f8fafc;
       border-radius: 14px;
-      padding: 12px 16px;
+      padding: 11px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.25);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
       opacity: 0;
       transform: translateY(16px) scale(0.95);
       transition: opacity 0.45s var(--ease-out) 0.85s, transform 0.5s var(--ease-out) 0.85s;
@@ -319,15 +326,156 @@
       transform: translateY(0) scale(1);
     }
 
-    .replay-btn {
-      padding: 7px 16px;
+    /* নিচ থেকে প্রায় ১ ইঞ্চি (~96px) ওপরে কারাওকে ক্যাপশন বক্স */
+    #bottom-caption {
+      position: absolute;
+      left: 50%;
+      bottom: clamp(56px, 1in, 104px);
+      transform: translateX(-50%);
+      width: min(88%, 820px);
+      padding: 10px 20px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, var(--caption-bg-alpha));
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 6px 8px;
+      z-index: 20;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    .cap-word {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: clamp(0.98rem, 1.75vw, 1.25rem);
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+      transition: background-color 0.18s ease, color 0.18s ease, transform 0.2s var(--ease-out);
+    }
+
+    .cap-word.spoken {
+      color: #f8fafc;
+      opacity: 0.92;
+    }
+
+    .cap-word.active-word {
+      background-color: var(--accent-yellow);
+      color: #0f172a;
+      text-shadow: none;
+      transform: translateY(-2px) scale(1.04);
+    }
+
+    #bottom-caption.no-highlight .cap-word.active-word {
+      background-color: transparent;
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+      transform: none;
+    }
+
+    /* প্রোগ্রেস বার ও কন্ট্রোল প্যানেল */
+    .hud-bar {
+      width: 100%;
+      max-width: 1040px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 30;
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, #0f9d76, #ffd24c);
+      border-radius: 999px;
+      transition: width 0.25s linear;
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .counter-badge {
+      background: rgba(255, 255, 255, 0.1);
+      color: #f9fafb;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 7px 14px;
       border: none;
       border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1f2937;
+      color: #f9fafb;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      transition: background-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .btn:hover {
+      background: #374151;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn.primary {
       background: #0f9d76;
       color: #ffffff;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
+      border-color: transparent;
+    }
+
+    .btn.primary:hover {
+      background: #0c8262;
+    }
+
+    .btn.active-toggle {
+      background: #ffd24c;
+      color: #0f172a;
+      border-color: transparent;
+    }
+
+    .dropper-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -387,17 +535,60 @@
         </div>
       </div>
     </section>
+
+    <!-- নিচ থেকে প্রায় ১ ইঞ্চি ওপরে কারাওকে ক্যাপশন বক্স -->
+    <div id="bottom-caption" aria-live="polite"></div>
   </div>
 
-  <button class="replay-btn" id="replayBtn">সিন ১ আবার দেখুন</button>
+  <!-- কাউন্টার, প্রোগ্রেস বার ও কন্ট্রোল বাটন -->
+  <div class="hud-bar">
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="controls-row">
+      <span class="counter-badge" id="counter">01 / 10</span>
+
+      <div class="btn-group">
+        <button class="btn active-toggle" id="highlightBtn" type="button">✨ হাইলাইট: চালু</button>
+        <button class="btn" id="dropperBtn" type="button">💧 ড্রপার রঙ</button>
+        <input type="color" id="colorPicker" class="dropper-input" value="#ffd24c" />
+        <button class="btn primary" id="replayBtn" type="button">↻ Replay</button>
+      </div>
+    </div>
+  </div>
 
   <script>
+    const totalSteps = 10;
+    const voiceoverLines = [
+      "তুমি এখনো গুগলে দশটা লিংক ঘাঁটো?",
+      "পুরনো সার্চের ধরণ এখন দ্রুত বদলে যাচ্ছে।",
+      "সরাসরি উত্তর পেতে নতুন এআই টুল ব্যবহার করো।",
+      "সোর্স ও রেফারেন্সসহ নির্ভুল তথ্য পাওয়া যায়।",
+      "কোড, লেখা ও বিশ্লেষণ এখন অনেক সহজ।",
+      "ছবি ও তথ্য একসাথে বোঝার সুবিধা যুক্ত হয়েছে।",
+      "একাধিক মডেলের শক্তি এক জায়গায় পাওয়া যাচ্ছে।",
+      "কাজের গতি এক গুণ থেকে দশ গুণ বেড়েছে।",
+      "সময় বাঁচিয়ে মূল কাজে ফোকাস করা সম্ভব।",
+      "স্মার্ট সার্চের এই নতুন যুগে এখনই যুক্ত হও।"
+    ];
+
     const scene1 = document.getElementById('scene1');
     const matrixGrid = document.getElementById('matrixGrid');
     const speedVal = document.getElementById('speedVal');
     const matrixVal = document.getElementById('matrixVal');
     const typedText = document.getElementById('typedText');
+    const bottomCaption = document.getElementById('bottom-caption');
+    const counterEl = document.getElementById('counter');
+    const progressBar = document.getElementById('progressBar');
     const replayBtn = document.getElementById('replayBtn');
+    const highlightBtn = document.getElementById('highlightBtn');
+    const dropperBtn = document.getElementById('dropperBtn');
+    const colorPicker = document.getElementById('colorPicker');
+
+    let currentStep = 0;
+    let highlightEnabled = true;
+    let wordTimer = null;
 
     // ২৪টি ডট নিয়ে ম্যাট্রিক্স তৈরি
     const totalDots = 24;
@@ -432,7 +623,53 @@
       }, delayMs);
     }
 
-    function playScene1() {
+    function updateProgress(stepIdx, wordRatio = 0) {
+      const base = stepIdx / totalSteps;
+      const slice = (1 / totalSteps) * wordRatio;
+      const pct = Math.min(100, Math.max(10, (base + slice) * 100));
+      progressBar.style.width = `${pct}%`;
+    }
+
+    function renderKaraokeLine(text, stepIdx) {
+      clearTimeout(wordTimer);
+      bottomCaption.innerHTML = '';
+
+      const words = text.split(/\s+/).filter(Boolean);
+      const wordSpans = words.map((w) => {
+        const span = document.createElement('span');
+        span.className = 'cap-word';
+        span.textContent = w;
+        bottomCaption.appendChild(span);
+        return span;
+      });
+
+      if (!wordSpans.length) return;
+
+      let wIdx = 0;
+      const intervalMs = 280;
+
+      function stepWord() {
+        wordSpans.forEach((el, i) => {
+          el.classList.remove('active-word');
+          el.classList.toggle('spoken', i < wIdx);
+        });
+
+        if (wIdx < wordSpans.length) {
+          wordSpans[wIdx].classList.add('active-word');
+          updateProgress(stepIdx, (wIdx + 1) / wordSpans.length);
+          wIdx++;
+          wordTimer = setTimeout(stepWord, intervalMs);
+        } else {
+          updateProgress(stepIdx, 1);
+        }
+      }
+
+      stepWord();
+    }
+
+    function playSceneAndStep(stepIdx) {
+      currentStep = ((stepIdx % totalSteps) + totalSteps) % totalSteps;
+
       scene1.classList.remove('active');
       dots.forEach(d => d.classList.remove('on'));
       speedVal.textContent = '25%';
@@ -451,10 +688,40 @@
           dot.classList.add('on');
         }, 350 + i * 35);
       });
+
+      counterEl.textContent = `${String(currentStep + 1).padStart(2, '0')} / ${String(totalSteps).padStart(2, '0')}`;
+      renderKaraokeLine(voiceoverLines[currentStep], currentStep);
     }
 
-    replayBtn.addEventListener('click', playScene1);
-    playScene1();
+    replayBtn.addEventListener('click', () => {
+      playSceneAndStep((currentStep + 1) % totalSteps);
+    });
+
+    highlightBtn.addEventListener('click', () => {
+      highlightEnabled = !highlightEnabled;
+      bottomCaption.classList.toggle('no-highlight', !highlightEnabled);
+      highlightBtn.classList.toggle('active-toggle', highlightEnabled);
+      highlightBtn.textContent = highlightEnabled ? '✨ হাইলাইট: চালু' : '✨ হাইলাইট: বন্ধ';
+    });
+
+    dropperBtn.addEventListener('click', async () => {
+      if ('EyeDropper' in window) {
+        try {
+          const eyeDropper = new EyeDropper();
+          const result = await eyeDropper.open();
+          document.documentElement.style.setProperty('--accent-yellow', result.sRGBHex);
+          colorPicker.value = result.sRGBHex;
+          return;
+        } catch (_) {}
+      }
+      colorPicker.click();
+    });
+
+    colorPicker.addEventListener('input', (e) => {
+      document.documentElement.style.setProperty('--accent-yellow', e.target.value);
+    });
+
+    playSceneAndStep(0);
   </script>
 </body>
 </html>
